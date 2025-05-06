@@ -3,7 +3,7 @@ import { Button, List, ListItem, ListItemButton, ListItemIcon } from '@mui/mater
 import { Restaurant } from '@mui/icons-material';
 //import { Directions } from 'react-native-gesture-handler';
 
-export default function Comandas() {
+export default function Comandas({selectMesa}) {
 
   let mesas = [
     {
@@ -59,7 +59,7 @@ export default function Comandas() {
           <div key={item.id} style={styles.gridItem}>
             <ListItem disableGutters>
               <ListItemButton>
-                <Button variant="contained" color="primary" style={styles.button} fullWidth>
+                <Button variant="contained" color="primary" style={styles.button} fullWidth onClick={() => selectMesa(item.table_number)}>
                   <Restaurant style={styles.icon} />{item.table_number}
                 </Button>
               </ListItemButton>
