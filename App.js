@@ -10,33 +10,35 @@ export default function App() {
   const [mesaSelecionada, setMesaSelecionada] = useState(null);
   const [novoPedidoAberto, setNovoPedidoAberto] = useState(false);
 
-  if (!logado) {
-    return <Login onLogin={() => setLogado(true)} />;
-  }
-
-  if (mesaSelecionada && novoPedidoAberto) {
-    return (
-      <NovoPedido
-        onSalvar={(pedido) => {
-          setNovoPedidoAberto(false);
-          // Aqui você pode adicionar lógica para atualizar pedidos da mesa
-          alert('Pedido salvo!');
-        }}
-        onCancelar={() => setNovoPedidoAberto(false)}
-      />
-    );
-  }
-
-  if (mesaSelecionada) {
-    return (
-      <PedidosMesa
-        mesa={mesaSelecionada}
-        onNovoPedido={() => setNovoPedidoAberto(true)}
-        onFecharConta={() => alert('Conta fechada!')}
-        onVoltar={() => setMesaSelecionada(null)}
-      />
-    );
-  }
-
-  return <Comandas selectMesa={setMesaSelecionada} />;
+  return (
+    <>
+      {!logado && (
+        <Login onLogin={() => setLogado(true)} />
+      )}
+      
+      {logado && mesaSelecionada && novoPedidoAberto && (
+        <NovoPedido
+          onSalvar={(pedido) => {
+            setNovoPedidoAberto(false);
+            // Aqui você pode adicionar lógica para atualizar pedidos da mesa
+            alert('Pedido salvo!');
+          }}
+          onCancelar={() => setNovoPedidoAberto(false)}
+        />
+      )}
+      
+      {logado && mesaSelecionada && !novoPedidoAberto && (
+        <PedidosMesa
+          mesa={mesaSelecionada}
+          onNovoPedido={() => setNovoPedidoAberto(true)}
+          onFecharConta={() => alert('Conta fechada!')}
+          onVoltar={() => setMesaSelecionada(null)}
+        />
+      )}
+      
+      {logado && !mesaSelecionada && (
+        <Comandas selectMesa={setMesaSelecionada} />
+      )}
+    </>
+  );
 }

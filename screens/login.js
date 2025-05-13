@@ -5,6 +5,11 @@ import { LockOutlined } from '@mui/icons-material';
 
 export default function Login({ onLogin }) {
   const [telaCadastro, setTelaCadastro] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+
   React.useEffect(() => {
     // Verifica se já está logado
     const token = localStorage.getItem('accessToken');
@@ -16,10 +21,6 @@ export default function Login({ onLogin }) {
   if (telaCadastro) {
     return <CadastroUsuario onVoltar={() => setTelaCadastro(false)} />;
   }
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [erro, setErro] = useState('');
-  const [loading, setLoading] = useState(false);
 
   async function validarLogin(e) {
     e.preventDefault();
