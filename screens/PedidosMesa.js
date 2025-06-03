@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
-  Box, Typography, Paper, Button, Chip, Accordion, AccordionSummary, AccordionDetails, List, ListItem, ListItemText, Divider, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+  Box, Typography, Paper, Button, Chip, Accordion, AccordionSummary, AccordionDetails, 
+  List, ListItem, ListItemText, Divider, Dialog, DialogTitle, DialogContent, 
+  DialogContentText, DialogActions
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -22,7 +24,7 @@ function calcularTotal(pedidos) {
   }, 0);
 }
 
-export default function PedidosMesa({ mesa, onNovoPedido, onFecharConta }) {
+export default function PedidosMesa({ mesa, onNovoPedido, onFecharConta, onVoltar }) {
   const [pedidos, setPedidos] = useState([...pedidosMock]);
   const [modalOpen, setModalOpen] = useState(false);
   const [pedidoAlvo, setPedidoAlvo] = useState(null);
@@ -50,6 +52,16 @@ export default function PedidosMesa({ mesa, onNovoPedido, onFecharConta }) {
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', p: { xs: 2, sm: 4 } }}>
+      {/* Botão de Voltar adicionado aqui */}
+      <Button 
+        variant="outlined" 
+        color="primary" 
+        onClick={onVoltar}
+        sx={{ mb: 2 }}
+      >
+        Voltar
+      </Button>
+
       <Typography variant="h5" fontWeight={700} color="primary.main" gutterBottom>
         Pedidos da Mesa {mesa}
       </Typography>
