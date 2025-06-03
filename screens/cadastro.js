@@ -62,7 +62,7 @@ export default function CadastroUsuario({ onVoltar }) {
     setSucesso('');
     setLoading(true);
     try {
-      const resposta = await fetch('http://localhost:8080/user/', {
+      const resposta = await fetch('http://localhost:8000/user/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
