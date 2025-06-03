@@ -32,9 +32,9 @@ export default function App() {
           mesa={mesaSelecionada}
           onNovoPedido={() => setNovoPedidoAberto(true)}
           onFecharConta={() => alert('Conta fechada!')}
-          onVoltar={() => setMesaSelecionada(null)}
-        />
-      )}
+          onVoltar={() => setMesaSelecionada(null)}  // Esta prop já existe no seu código
+/>
+)}
       
       {logado && !mesaSelecionada && (
         <Comandas selectMesa={setMesaSelecionada} />
