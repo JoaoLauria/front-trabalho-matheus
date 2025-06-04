@@ -47,6 +47,7 @@ export default function PedidosMesa({ navigation, route }) {
       }
       
       setPedidos(data || []);
+      setCarregando(false);
     } catch (error) {
       const errorMsg = 'Erro ao buscar pedidos';
       
