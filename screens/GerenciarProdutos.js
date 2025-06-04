@@ -1,228 +1,129 @@
-import React, { useState, useEffect } from 'react';
-import { Box, CircularProgress, Typography, Button } from '@mui/material';
-import { useNavigation } from '@react-navigation/native';
-import { useError } from '../contexts/ErrorContext';
-import { 
-  carregarDadosProdutos, 
-  aplicarFiltrosProdutos, 
-  salvarProduto, 
-  excluirProduto 
-} from '../utils/produtosUtils';
-import ProdutoHeader from '../components/produtos/ProdutoHeader';
-import ProdutoFiltros from '../components/produtos/ProdutoFiltros';
-import ProdutoLista from '../components/produtos/ProdutoLista';
-import ProdutoFormDialog from '../components/produtos/ProdutoFormDialog';
-import ProdutoDeleteDialog from '../components/produtos/ProdutoDeleteDialog';
+import React from 'react';
 
-const GerenciarProdutos = () => {
-  const navigation = useNavigation();
-  const { showError, showSuccess, handleApiError } = useError();
-  
-  const [loading, setLoading] = useState(false);
-  const [loadingSave, setLoadingSave] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const [produtos, setProdutos] = useState([]);
-  const [produtosFiltrados, setProdutosFiltrados] = useState([]);
-  const [produtosAgrupados, setProdutosAgrupados] = useState({});
-  const [categorias, setCategorias] = useState([]);
-  const [expandedCategories, setExpandedCategories] = useState([]);
-  
-  const [openDialog, setOpenDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [currentProduto, setCurrentProduto] = useState(null);
-  
-  const [filtros, setFiltros] = useState({
-    nome: '',
-    categoria: '',
-    disponibilidade: ''
-  });
-  
-  useEffect(() => {
-    carregarDados();
-  }, []);
-  
-  useEffect(() => {
-    aplicarFiltros();
-  }, [filtros, produtos]);
-  
-  const carregarDados = async () => {
-    setLoading(true);
-    try {
-      const { produtos: produtosData, categorias: categoriasData, error } = await carregarDadosProdutos();
-      
-      if (error) {
-        throw error;
-      }
-      
-      setCategorias(categoriasData);
-      setProdutos(produtosData);
-      setProdutosFiltrados(produtosData);
-      
-    } catch (error) {
-      handleApiError(error, 'Erro ao carregar dados');
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const aplicarFiltros = () => {
-    if (!produtos.length) return;
+import { useError } from '../contexts/ErrorContext';
+import { AppPage, AppButton, AppAlert, AppModal } from '../components/common';
+import ProdutoFiltros from '../components/produtos/ProdutoFiltros';
+import ProdutoListaCondicional from '../components/produtos/ProdutoListaCondicional';
+import ProdutoDialogs from '../components/produtos/ProdutoDialogs';
+import withProdutoData from '../components/hoc/withProdutoData';
+import withProdutoCrud from '../components/hoc/withProdutoCrud';
+import commonStyles from '../styles/commonStyles';
+
+/**
+ * Componente para gerenciamento de produtos
+ * Utiliza HOCs para separação de responsabilidades:
+ * - withProdutoData: gerencia dados, filtros e listagem
+ * - withProdutoCrud: gerencia operações de criação, edição e exclusão
+ */
+function GerenciarProdutos(props) {
+  const { 
+    // Props do withProdutoData
+    produtos,
+    produtosFiltrados,
+    produtosAgrupados,
+    categorias,
+    expandedCategories,
+    loading,
+    erro,
+    filtros,
+    filtroExpandido,
+    buscarDados,
+    handleFiltroChange,
+    limparFiltros,
+    handleToggleExpand,
     
-    const { produtosFiltrados: resultado, produtosAgrupados: agrupados } = 
-      aplicarFiltrosProdutos(produtos, filtros, categorias);
+    // Props do withProdutoCrud
+    formData,
+    formErrors,
+    editingId,
+    deleteId,
+    dialogOpen,
+    handleNovoProduto,
+    handleEditarProduto,
+    handleConfirmarExclusao,
+    handleFormChange,
+    handleSalvarProduto,
+    handleExcluirProduto,
+    handleCloseDialogs,
     
-    setProdutosFiltrados(resultado);
-    
-    if (!filtros.categoria) {
-      setProdutosAgrupados(agrupados);
-    }
-  };
+    // Props do componente pai
+    navigation
+  } = props;
   
-  const handleFiltroChange = (e) => {
-    const { name, value } = e.target;
-    setFiltros(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  const { showError } = useError();
   
-  const limparFiltros = () => {
-    setFiltros({
-      nome: '',
-      categoria: '',
-      disponibilidade: ''
-    });
-  };
-  
-  const handleToggleExpand = (categoriaId) => {
-    setExpandedCategories(prev => {
-      if (prev.includes(categoriaId)) {
-        return prev.filter(id => id !== categoriaId);
-      } else {
-        return [...prev, categoriaId];
-      }
-    });
-  };
-  
-  const handleOpenDialog = (produto = null) => {
-    setCurrentProduto(produto);
-    setOpenDialog(true);
-  };
-  
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setCurrentProduto(null);
-  };
-  
-  const handleOpenDeleteDialog = (produto) => {
-    setCurrentProduto(produto);
-    setOpenDeleteDialog(true);
-  };
-  
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setCurrentProduto(null);
-  };
-  
-  const handleSaveProduto = async (produtoData, id) => {
-    setLoadingSave(true);
-    try {
-      const { data, error } = await salvarProduto(produtoData, id);
-      
-      if (error) throw error;
-      
-      await carregarDados();
-      
-      handleCloseDialog();
-      
-      showSuccess(id ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
-      
-    } catch (error) {
-      handleApiError(error, 'Erro ao salvar produto');
-    } finally {
-      setLoadingSave(false);
-    }
-  };
-  
-  const handleDeleteProduto = async () => {
-    if (!currentProduto) return;
-    
-    setLoadingDelete(true);
-    try {
-      const { success, error } = await excluirProduto(currentProduto.id);
-      
-      if (error) throw error;
-      
-      if (success) {
-        await carregarDados();
-        
-        handleCloseDeleteDialog();
-        
-        showSuccess('Produto excluído com sucesso!');
-      }
-      
-    } catch (error) {
-      handleApiError(error, 'Erro ao excluir produto');
-    } finally {
-      setLoadingDelete(false);
-    }
-  };
+  // Componente simplificado que usa as funções dos HOCs
   
   return (
-    <Box sx={{ flex: 1, p: 2, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
-      <ProdutoHeader 
-        onAddClick={() => handleOpenDialog()} 
-        loading={loading} 
-      />
+    <AppPage
+      title="Gerenciar Produtos"
+      showBackButton
+      onBackClick={() => navigation.goBack()}
+      headerActions={
+        <AppButton.AddButton
+          onClick={handleNovoProduto}
+        >
+          Novo Produto
+        </AppButton.AddButton>
+      }
+      sx={commonStyles.page}
+    >
+      {erro && (
+        <AppAlert severity="error" sx={{ mb: 3 }}>
+          {erro}
+        </AppAlert>
+      )}
       
+      {/* Filtros */}
       <ProdutoFiltros 
         filtros={filtros} 
         categorias={categorias} 
         handleFiltroChange={handleFiltroChange} 
         limparFiltros={limparFiltros} 
       />
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : produtosFiltrados.length === 0 ? (
-        <Box sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            Nenhum produto encontrado com os filtros selecionados.
-          </Typography>
-          <Button variant="outlined" onClick={limparFiltros}>Limpar Filtros</Button>
-        </Box>
-      ) : (
-        <ProdutoLista 
-          produtosFiltrados={produtosFiltrados}
-          produtosAgrupados={produtosAgrupados}
-          categorias={categorias}
-          filtros={filtros}
-          expandedCategories={expandedCategories}
-          handleToggleExpand={handleToggleExpand}
-          onEditClick={handleOpenDialog}
-          onDeleteClick={handleOpenDeleteDialog}
-        />
-      )}
       
-      <ProdutoFormDialog 
-        open={openDialog}
-        onClose={handleCloseDialog}
-        produto={currentProduto}
+      {/* Lista de Produtos */}
+      <ProdutoListaCondicional 
+        loading={loading}
+        filtros={filtros}
+        produtosFiltrados={produtosFiltrados}
+        produtosAgrupados={produtosAgrupados}
+        expandedCategories={expandedCategories}
+        handleToggleExpand={handleToggleExpand}
+        handleEditarProduto={handleEditarProduto}
+        handleConfirmarExclusao={handleConfirmarExclusao}
+        handleNovoProduto={handleNovoProduto}
+      />
+      
+      {/* Diálogos de produto (formulário) */}
+      <ProdutoDialogs 
+        dialogOpen={dialogOpen.form}
+        formData={formData}
+        formErrors={formErrors}
+        handleFormChange={handleFormChange}
+        handleSalvarProduto={handleSalvarProduto}
+        handleExcluirProduto={handleExcluirProduto}
+        handleCloseDialogs={handleCloseDialogs}
         categorias={categorias}
-        onSave={handleSaveProduto}
-        loading={loadingSave}
+        editingId={editingId}
       />
       
-      <ProdutoDeleteDialog 
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        produto={currentProduto}
-        onDelete={handleDeleteProduto}
-        loading={loadingDelete}
+      {/* Modal de Confirmação de Exclusão */}
+      <AppModal.Delete
+        open={dialogOpen.delete}
+        onClose={handleCloseDialogs}
+        onConfirm={handleExcluirProduto}
+        title="Excluir Produto"
+        message={
+          deleteId && produtos.find(p => p.id === deleteId)
+            ? `Tem certeza que deseja excluir o produto "${produtos.find(p => p.id === deleteId).name}"? Esta ação não pode ser desfeita.`
+            : `Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.`
+        }
       />
-    </Box>
+    </AppPage>
   );
-};
+}
 
-export default GerenciarProdutos;
+// Aplicar os HOCs ao componente GerenciarProdutos
+// withProdutoData deve ser o mais externo para que withProdutoCrud tenha acesso às suas props
+export default withProdutoData(withProdutoCrud(GerenciarProdutos));

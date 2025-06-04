@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useError } from '../contexts/ErrorContext';
-import {
-  Box, Typography, Button, IconButton, TextField, Paper, List, ListItem,
-  ListItemText, ListItemSecondaryAction, Divider, CircularProgress,
-  Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, Switch,
-  Alert, Tooltip
-} from '@mui/material';
+import { Box, Typography, Alert } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -13,9 +8,18 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import ApiService from '../services/ApiService';
+import { 
+  AppPage, 
+  AppButton, 
+  AppTextField, 
+  AppList, 
+  AppDialog, 
+  AppSwitch 
+} from '../components/common';
+import commonStyles from '../styles/commonStyles';
 
 export default function GerenciarCategorias({ navigation }) {
-  const { handleApiError } = useError();
+  const { handleApiError, showError, showSuccess } = useError();
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
@@ -98,6 +102,7 @@ export default function GerenciarCategorias({ navigation }) {
       setCategorias(categorias.filter(cat => cat.id !== categoriaAtual.id));
       setConfirmDeleteDialogOpen(false);
       setCategoriaAtual(null);
+      showSuccess(`Categoria "${categoriaAtual.name}" excluída com sucesso.`);
     } catch (error) {
       const errorMsg = `Erro ao excluir categoria: ${error?.message || 'Falha na comunicação com o servidor'}`;
       console.error('Erro ao excluir categoria:', error);
@@ -138,9 +143,15 @@ export default function GerenciarCategorias({ navigation }) {
         throw new Error(error);
       }
       
-      // Atualizar lista de categorias
+      // Atualizar lista de categorias após salvar
       await buscarCategorias();
       setDialogOpen(false);
+      
+      // Mostrar mensagem de sucesso
+      const mensagem = categoriaAtual
+        ? `Categoria "${formData.name}" atualizada com sucesso.`
+        : `Categoria "${formData.name}" criada com sucesso.`;
+      showSuccess(mensagem);
     } catch (error) {
       const action = categoriaAtual ? 'atualizar' : 'criar';
       const errorMsg = `Erro ao ${action} categoria: ${error?.message || 'Falha na comunicação com o servidor'}`;
@@ -153,190 +164,138 @@ export default function GerenciarCategorias({ navigation }) {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, sm: 4 }, maxWidth: 1100, mx: 'auto' }}>
-      {/* Header com navegação, título e botão de adicionar */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton 
-            color="primary" 
-            onClick={() => navigation.goBack()}
-            sx={{ mr: 2 }}
-            aria-label="voltar"
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h5" fontWeight={600}>
-            Gerenciar Categorias
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
+    <AppPage
+      title="Gerenciar Categorias"
+      showBackButton
+      onBackClick={() => navigation.goBack()}
+      headerActions={
+        <AppButton.AddButton
           onClick={handleNovaCategoria}
-          sx={{ ml: 2 }}
         >
-          Adicionar
-        </Button>
-      </Box>
-      
-      {/* Mensagem de erro, se houver */}
-      {erro && <Alert severity="error" sx={{ mb: 3 }}>{erro}</Alert>}
+          Nova Categoria
+        </AppButton.AddButton>
+      }
+      sx={commonStyles.page}
+    >
+      {erro && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {erro}
+        </Alert>
+      )}
 
-      {/* Conteúdo principal */}
-      <Paper elevation={3} sx={{ p: 2 }}>
-        {/* Estado de carregamento */}
-        {loading && !categorias.length ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-            <CircularProgress />
-          </Box>
-        ) : categorias.length === 0 ? (
-          <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography color="text.secondary">
-              Nenhuma categoria encontrada.
-            </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-              Clique em "Adicionar" para criar uma nova categoria.
-            </Typography>
-          </Box>
-        ) : (
-          <List>
-            {categorias.map((categoria, index) => (
-              <React.Fragment key={categoria.id}>
-                {index > 0 && <Divider />}
-                <ListItem sx={{ py: 2 }}>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="subtitle1" fontWeight={500}>
-                          {categoria.name}
-                        </Typography>
-                        {!categoria.is_active && (
-                          <Typography 
-                            component="span" 
-                            variant="caption" 
-                            color="error"
-                            sx={{ ml: 1 }}
-                          >
-                            (Inativa)
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                    secondary={categoria.description || 'Sem descrição'}
-                  />
-                  <Box>
-                    <IconButton 
-                      aria-label="editar" 
-                      onClick={() => handleEditarCategoria(categoria)} 
-                      sx={{ mr: 1 }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton 
-                      aria-label="excluir" 
-                      onClick={() => handleConfirmarExclusao(categoria)} 
-                      color="error"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </ListItem>
-              </React.Fragment>
-            ))}
-          </List>
+      <AppList
+        loading={loading && categorias.length === 0}
+        items={categorias}
+        emptyMessage="Nenhuma categoria encontrada. Crie uma nova categoria para começar."
+        divider
+        renderItem={(categoria, index) => (
+          <AppList.AppListItem
+            key={categoria.id}
+            primary={
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography variant="subtitle1" component="span" fontWeight="medium">
+                  {categoria.name}
+                </Typography>
+                {categoria.is_active === false && (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ ml: 1 }}
+                  >
+                    (Inativa)
+                  </Typography>
+                )}
+              </Box>
+            }
+            secondary={categoria.description || 'Sem descrição'}
+            action={
+              <Box>
+                <AppButton.IconButton
+                  icon={<EditIcon />}
+                  onClick={() => handleEditarCategoria(categoria)}
+                  tooltip="Editar categoria"
+                  sx={{ mr: 1 }}
+                />
+                <AppButton.IconButton
+                  icon={<DeleteIcon />}
+                  onClick={() => handleConfirmarExclusao(categoria)}
+                  tooltip="Excluir categoria"
+                  color="error"
+                />
+              </Box>
+            }
+            sx={commonStyles.listItem}
+          />
         )}
-      </Paper>
+        sx={commonStyles.list}
+      />
 
       {/* Diálogo para criar/editar categoria */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          {categoriaAtual ? `Editar Categoria: ${categoriaAtual.name}` : 'Nova Categoria'}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="name"
-              label="Nome da Categoria"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
+      <AppDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title={categoriaAtual ? `Editar Categoria: ${categoriaAtual.name}` : 'Nova Categoria'}
+        maxWidth="sm"
+        fullWidth
+        actions={
+          <>
+            <AppButton.CancelButton onClick={() => setDialogOpen(false)} />
+            <AppButton.SaveButton 
+              onClick={handleSalvarCategoria}
+              loading={loading}
+              disabled={!formData.name.trim()}
             />
-            <TextField
-              margin="dense"
-              name="description"
-              label="Descrição"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={formData.description}
-              onChange={handleInputChange}
-              multiline
-              rows={3}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formData.is_active}
-                  onChange={handleInputChange}
-                  name="is_active"
-                  color="primary"
-                />
-              }
-              label="Categoria Ativa"
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} color="inherit">
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleSalvarCategoria} 
-            color="primary" 
-            variant="contained"
-            disabled={loading || !formData.name.trim()}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Salvar'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </>
+        }
+      >
+        <Box sx={commonStyles.formContainer}>
+          <AppTextField
+            autoFocus
+            name="name"
+            label="Nome da Categoria"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+            fullWidth
+          />
+          
+          <AppTextField
+            name="description"
+            label="Descrição"
+            value={formData.description}
+            onChange={handleInputChange}
+            multiline
+            rows={3}
+            fullWidth
+          />
+          
+          <AppSwitch
+            name="is_active"
+            label="Categoria Ativa"
+            checked={formData.is_active}
+            onChange={handleInputChange}
+          />
+        </Box>
+      </AppDialog>
 
       {/* Diálogo de confirmação para excluir categoria */}
-      <Dialog
+      <AppDialog.DeleteConfirmDialog
         open={confirmDeleteDialogOpen}
         onClose={() => setConfirmDeleteDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle>Confirmar Exclusão</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Tem certeza que deseja excluir a categoria "{categoriaAtual?.name}"?
-          </Typography>
-          <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1 }}>
-            Esta ação não pode ser desfeita e pode afetar produtos vinculados a esta categoria.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDeleteDialogOpen(false)} color="inherit">
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleExcluirCategoria} 
-            color="error" 
-            variant="contained"
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Excluir'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+        onConfirm={handleExcluirCategoria}
+        title="Confirmar Exclusão"
+        loading={loading}
+        content={
+          <>
+            <Typography>
+              Tem certeza que deseja excluir a categoria "{categoriaAtual?.name}"?
+            </Typography>
+            <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1 }}>
+              Esta ação não pode ser desfeita e pode afetar produtos vinculados a esta categoria.
+            </Typography>
+          </>
+        }
+      />
+    </AppPage>
   );
 }

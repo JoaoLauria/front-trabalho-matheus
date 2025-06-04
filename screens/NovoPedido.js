@@ -109,35 +109,17 @@ const NovoPedido = () => {
     }
   }
 
-  async function fetchAdicionais(produtoId) {
-    try {
-      const { data, error } = await ApiService.products.getProductAdditionals(produtoId);
-      
-      if (error) {
-        throw new Error(error);
-      }
-      
-      return data || [];
-    } catch (error) {
-      console.error(`Erro ao buscar adicionais para o produto ${produtoId}:`, error);
-      return [];
-    }
-  }
+  // Função fetchAdicionais removida pois a API ainda não está implementada
 
   async function handleSelecionarItem(produto) {
     setLoading(true);
     try {
-      const adicionais = await fetchAdicionais(produto.id);
-
+      // Removida chamada à API de adicionais que ainda não está implementada
       const novoItem = {
         ...produto,
         quantidade: 1,
         observacao: '',
-        adicionais: adicionais.map(adicional => ({
-          ...adicional,
-          selecionado: false,
-          quantidade: 1
-        }))
+        adicionais: [] // Inicializado com array vazio até que a API esteja disponível
       };
 
       setItensSelecionados(prev => [...prev, novoItem]);

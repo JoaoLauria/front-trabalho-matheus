@@ -1,118 +1,92 @@
-import React from 'react';
-import {
-  Box,
-  Paper,
-  InputBase,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button
-} from '@mui/material';
-import { Search, Close, Category, FilterList } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { MenuItem } from '@mui/material';
+import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
+import { AppFilter, AppTextField, AppSelect, AppButton } from '../common';
+
+/**
+ * Componente de filtros para produtos
+ * @param {Object} props - Propriedades do componente
+ * @param {Object} props.filtros - Estado atual dos filtros
+ * @param {Array} props.categorias - Lista de categorias disponíveis
+ * @param {Function} props.handleFiltroChange - Função para alterar os filtros
+ * @param {Function} props.limparFiltros - Função para limpar todos os filtros
+ */
 const ProdutoFiltros = ({ filtros, categorias, handleFiltroChange, limparFiltros }) => {
+  const [filtroExpandido, setFiltroExpandido] = useState(true);
+  
+  // Verifica se algum filtro está ativo
+  const temFiltrosAtivos = filtros.categoria || filtros.nome || filtros.disponibilidade !== '';
+  
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        p: 2, 
-        mb: 3, 
-        borderRadius: 2,
-        background: 'linear-gradient(to right bottom, rgba(255,255,255,0.98), rgba(255,255,255,0.95))',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-      }}
+    <AppFilter
+      title="Filtrar Produtos"
+      expanded={filtroExpandido}
+      onToggleExpand={() => setFiltroExpandido(!filtroExpandido)}
+      onClearFilters={temFiltrosAtivos ? limparFiltros : undefined}
     >
-      <Box sx={{ mb: 2 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            borderRadius: 2,
-            bgcolor: 'rgba(0,0,0,0.03)',
-            px: 2,
-            py: 0.5,
-            border: '1px solid',
-            borderColor: 'divider',
-            '&:hover': {
-              bgcolor: 'rgba(0,0,0,0.04)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-            },
-            transition: 'all 0.2s'
+      <AppFilter.FullWidthItem>
+        <AppTextField
+          name="nome"
+          label="Buscar"
+          value={filtros.nome}
+          onChange={handleFiltroChange}
+          fullWidth
+          placeholder="Digite o nome ou descrição do produto..."
+          InputProps={{
+            startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
+            endAdornment: filtros.nome ? (
+              <AppButton.IconButton
+                icon={<ClearIcon />}
+                onClick={() => handleFiltroChange({ target: { name: 'nome', value: '' }})}
+                size="small"
+              />
+            ) : null
+          }}
+        />
+      </AppFilter.FullWidthItem>
+      
+      <AppFilter.HalfWidthItem>
+        <AppSelect
+          name="categoria"
+          value={filtros.categoria}
+          onChange={handleFiltroChange}
+          label="Categoria"
+          fullWidth
+          sx={{ 
+            width: '100%', 
+            '& .MuiInputBase-root': { width: '100%' },
+            '& .MuiSelect-select': { width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' } 
           }}
         >
-          <Search color="primary" sx={{ mr: 1 }} />
-          <InputBase
-            placeholder="Buscar produtos por nome ou descrição..."
-            fullWidth
-            value={filtros.nome}
-            onChange={(e) => handleFiltroChange({ target: { name: 'nome', value: e.target.value } })}
-            sx={{ py: 1 }}
-          />
-          {filtros.nome && (
-            <IconButton 
-              size="small" 
-              onClick={() => handleFiltroChange({ target: { name: 'nome', value: '' } })}
-              sx={{ color: 'grey.500' }}
-            >
-              <Close fontSize="small" />
-            </IconButton>
-          )}
-        </Paper>
-      </Box>
-      
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-        <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="categoria-filtro-label">Categoria</InputLabel>
-          <Select
-            labelId="categoria-filtro-label"
-            value={filtros.categoria}
-            onChange={(e) => handleFiltroChange({ target: { name: 'categoria', value: e.target.value } })}
-            label="Categoria"
-            startAdornment={<Category sx={{ ml: 1, mr: 0.5, color: 'primary.main' }} />}
-          >
-            <MenuItem value="">
-              <em>Todas as categorias</em>
+          <MenuItem value="">Todas Categorias</MenuItem>
+          {categorias.map((categoria) => (
+            <MenuItem key={categoria.id} value={categoria.id.toString()}>
+              {categoria.name}
             </MenuItem>
-            {categorias.map((categoria) => (
-              <MenuItem key={categoria.id} value={categoria.id}>
-                {categoria.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        
-        <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel id="disponibilidade-filtro-label">Disponibilidade</InputLabel>
-          <Select
-            labelId="disponibilidade-filtro-label"
-            value={filtros.disponibilidade}
-            onChange={(e) => handleFiltroChange({ target: { name: 'disponibilidade', value: e.target.value } })}
-            label="Disponibilidade"
-          >
-            <MenuItem value="">
-              <em>Todos os produtos</em>
-            </MenuItem>
-            <MenuItem value="true">Disponíveis</MenuItem>
-            <MenuItem value="false">Indisponíveis</MenuItem>
-          </Select>
-        </FormControl>
-        
-        {(filtros.categoria || filtros.nome || filtros.disponibilidade !== '') && (
-          <Button 
-            variant="outlined" 
-            color="secondary"
-            onClick={limparFiltros}
-            startIcon={<FilterList />}
-            sx={{ height: 56 }}
-          >
-            Limpar Filtros
-          </Button>
-        )}
-      </Box>
-    </Paper>
+          ))}
+        </AppSelect>
+      </AppFilter.HalfWidthItem>
+
+      <AppFilter.HalfWidthItem>
+        <AppSelect
+          name="disponibilidade"
+          value={filtros.disponibilidade}
+          onChange={handleFiltroChange}
+          label="Disponibilidade"
+          fullWidth
+          sx={{ 
+            width: '100%', 
+            '& .MuiInputBase-root': { width: '100%' },
+            '& .MuiSelect-select': { width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' } 
+          }}
+        >
+          <MenuItem value="">Todos os Status</MenuItem>
+          <MenuItem value="true">Disponíveis</MenuItem>
+          <MenuItem value="false">Indisponíveis</MenuItem>
+        </AppSelect>
+      </AppFilter.HalfWidthItem>
+    </AppFilter>
   );
 };
 

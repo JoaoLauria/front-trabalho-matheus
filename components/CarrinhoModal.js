@@ -1,15 +1,9 @@
 import React from 'react';
-import { 
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
-  List, ListItem, ListItemText, IconButton, Box, Badge, Paper, Divider, Chip
-} from '@mui/material';
-import { 
-  ShoppingCart as ShoppingCartIcon, 
-  Close as CloseIcon, 
-  Delete as DeleteIcon,
-  Add as AddIcon,
-  Remove as RemoveIcon
-} from '@mui/icons-material';
+import { Badge, Fade, Paper } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
+import { AppBox, AppTypography, AppModal, AppCartItem, AppEmptyState } from './common';
+import { colors } from '../styles/theme';
 
 const CarrinhoModal = ({
   open,
@@ -36,199 +30,177 @@ const CarrinhoModal = ({
     return acc + itemTotal;
   }, 0);
 
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="sm"
-      aria-labelledby="carrinho-dialog-title"
-      PaperProps={{
-        sx: { borderRadius: 2, overflow: 'hidden' }
-      }}
-    >
-      <DialogTitle 
-        id="carrinho-dialog-title"
+  const cartHeader = (
+    <AppBox.FlexBox sx={{ 
+      alignItems: 'center',
+      py: 1
+    }}>
+      <Badge 
+        badgeContent={carrinho.length} 
+        color="error" 
         sx={{ 
-          bgcolor: 'primary.main', 
-          color: 'white',
-          py: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
+          mr: 1.5,
+          '& .MuiBadge-badge': {
+            fontSize: '0.75rem',
+            fontWeight: 'bold',
+            minWidth: '20px',
+            height: '20px',
+            borderRadius: '10px',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+          }
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Badge badgeContent={carrinho.length} color="error" sx={{ mr: 1 }}>
-            <ShoppingCartIcon />
-          </Badge>
-          <Typography variant="h6" component="span">Carrinho de Pedidos</Typography>
-        </Box>
-      </DialogTitle>
-      <DialogContent dividers sx={{ p: 0, bgcolor: 'grey.50' }}>
-        {carrinho.length === 0 ? (
-          <Box sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <ShoppingCartIcon sx={{ fontSize: 60, color: 'grey.400', mb: 2 }} />
-            <Typography align="center" variant="h6" color="text.secondary">
-              Seu carrinho está vazio
-            </Typography>
-            <Typography align="center" variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Adicione itens para continuar
-            </Typography>
-          </Box>
-        ) : (
-          <List sx={{ p: 0 }}>
-            {carrinho.map((item, index) => (
-              <Paper 
-                key={`${item.produto.id}-${index}`}
-                elevation={0} 
-                sx={{ 
-                  m: 1, 
-                  p: 1, 
-                  borderRadius: 1, 
-                  border: '1px solid', 
-                  borderColor: 'grey.200',
-                  bgcolor: 'white'
-                }}
-              >
-                <ListItem
-                  alignItems="flex-start"
-                  disableGutters
-                  sx={{ px: 1, display: 'flex', flexDirection: 'column', width: '100%' }}
-                >
-                  <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Box sx={{ mr: 1, display: 'flex', alignItems: 'center', bgcolor: 'grey.100', borderRadius: 1, p: 0.5 }}>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => handleAlterarQuantidadeCarrinho(index, Math.max(1, item.quantidade - 1))}
-                          sx={{ p: 0.5 }}
-                        >
-                          <RemoveIcon fontSize="small" />
-                        </IconButton>
-                        <Typography sx={{ mx: 1, fontWeight: 'bold' }}>{item.quantidade}</Typography>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => handleAlterarQuantidadeCarrinho(index, item.quantidade + 1)}
-                          sx={{ p: 0.5 }}
-                        >
-                          <AddIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                      <Typography variant="subtitle1" fontWeight="bold">
-                        {item.produto.name}
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="subtitle1" fontWeight="bold" color="primary.main" sx={{ mr: 1 }}>
-                        R$ {(parseFloat(item.produto.price) * item.quantidade).toFixed(2)}
-                      </Typography>
-                      <IconButton 
-                        onClick={() => handleRemoverDoCarrinho(index)}
-                        color="error"
-                        sx={{ bgcolor: 'error.light', color: 'white', '&:hover': { bgcolor: 'error.main' }, ml: 1 }}
-                        size="small"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                  
-                  <ListItemText
-                    sx={{ ml: 4, mt: 0 }}
-                    secondary={
-                      <Box>
+        <ShoppingCartIcon sx={{ color: colors.primary.main, fontSize: '1.75rem' }} />
+      </Badge>
+      <AppTypography.Subtitle 
+        component="span" 
+        sx={{ 
+          fontWeight: 600,
+          fontSize: { xs: '1.1rem', sm: '1.25rem' },
+          color: colors.text.primary
+        }}
+      >
+        Carrinho de Pedidos
+      </AppTypography.Subtitle>
+    </AppBox.FlexBox>
+  );
 
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5, fontStyle: 'italic' }}>
-                          {item.produto.description}
-                        </Typography>
-                        
-                        {item.observacao && (
-                          <Paper variant="outlined" sx={{ p: 0.5, mt: 1, bgcolor: 'grey.50', borderColor: 'grey.200' }}>
-                            <Typography variant="caption" display="block">
-                              <strong>Observação:</strong> {item.observacao}
-                            </Typography>
-                          </Paper>
-                        )}
-                        
-                        {item.adicionaisSelecionados && item.adicionaisSelecionados.length > 0 && (
-                          <Box sx={{ mt: 1 }}>
-                            <Typography variant="caption" color="primary.main" fontWeight="bold">
-                              Adicionais:
-                            </Typography>
-                            {item.adicionaisSelecionados.map(adicional => (
-                              <Box key={adicional.id} sx={{ display: 'flex', justifyContent: 'space-between', ml: 1, mt: 0.5 }}>
-                                <Typography variant="caption">
-                                  + {adicional.quantidade}x {adicional.name}
-                                </Typography>
-                                <Typography variant="caption" fontWeight="bold">
-                                  R$ {(parseFloat(adicional.price) * adicional.quantidade).toFixed(2)}
-                                </Typography>
-                              </Box>
-                            ))}
-                          </Box>
-                        )}
-                      </Box>
-                    }
-                  />
-                </ListItem>
-              </Paper>
-            ))}
-          </List>
-        )}
-      </DialogContent>
-      
-      <Box sx={{ 
-        p: 2, 
-        display: 'flex', 
-        flexDirection: 'column',
-        bgcolor: 'primary.dark',
-        color: 'white'
+  return (
+    <AppModal.Cart
+      open={open}
+      onClose={onClose}
+      onContinueShopping={onClose}
+      onFinishOrder={handleSalvar}
+      disableFinish={carrinho.length === 0 || loading}
+      loading={loading}
+      maxWidth="sm"
+      title={cartHeader}
+    >
+      <AppBox sx={{ 
+        bgcolor: 'background.paper', 
+        p: 0,
+        borderRadius: 2,
+        overflow: 'hidden',
+        boxShadow: 'inset 0 0 10px rgba(0,0,0,0.03)',
+        maxHeight: { xs: '50vh', sm: '60vh' },
+        overflowY: 'auto'
       }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="body1">
-            Subtotal:
-          </Typography>
-          <Typography variant="body1">
-            R$ {total.toFixed(2)}
-          </Typography>
-        </Box>
-        
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-          <Typography variant="h6" fontWeight="bold">
-            TOTAL:
-          </Typography>
-          <Typography variant="h6" fontWeight="bold">
-            R$ {total.toFixed(2)}
-          </Typography>
-        </Box>
-      </Box>
+        <Fade in={true}>
+          <div>
+            {carrinho.length === 0 ? (
+              <AppEmptyState.Cart />
+            ) : (
+              <AppBox sx={{ p: { xs: 1.5, sm: 2 } }}>
+                {carrinho.map((item, index) => (
+                  <Paper
+                    key={`${item.produto.id}-${index}`}
+                    elevation={0}
+                    sx={{
+                      mb: 2,
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        transform: 'translateY(-2px)'
+                      }
+                    }}
+                  >
+                    <AppCartItem
+                      item={{
+                        id: index,
+                        name: item.produto.name,
+                        description: item.produto.description,
+                        price: parseFloat(item.produto.price),
+                        quantity: item.quantidade,
+                        observation: item.observacao,
+                        additionals: item.adicionaisSelecionados ? item.adicionaisSelecionados.map(adicional => ({
+                          id: adicional.id,
+                          name: adicional.name,
+                          price: parseFloat(adicional.price),
+                          quantity: adicional.quantidade
+                        })) : []
+                      }}
+                      onRemove={() => handleRemoverDoCarrinho(index)}
+                      onQuantityChange={(_, newQuantity) => handleAlterarQuantidadeCarrinho(index, newQuantity)}
+                      showControls={true}
+                      sx={{ p: { xs: 1.5, sm: 2 }, mb: 0 }}
+                    />
+                  </Paper>
+                ))}
+              </AppBox>
+            )}
+          </div>
+        </Fade>
+      </AppBox>
       
-      <DialogActions sx={{ p: 2, bgcolor: 'grey.100' }}>
-        <Button 
-          onClick={onClose} 
-          color="inherit"
-          variant="outlined"
-          sx={{ borderRadius: 2 }}
-        >
-          Continuar Comprando
-        </Button>
-        <Button 
-          onClick={handleSalvar} 
-          color="success" 
-          variant="contained"
-          disabled={carrinho.length === 0 || loading}
-          sx={{ 
-            borderRadius: 2,
-            fontWeight: 'bold',
-            px: 3
-          }}
-        >
-          {loading ? 'Salvando...' : 'Finalizar Pedido'}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <Paper
+        elevation={0}
+        sx={{
+          mt: 2,
+          borderRadius: 3,
+          overflow: 'hidden',
+          background: `linear-gradient(135deg, ${colors.primary.dark} 0%, ${colors.primary.main} 100%)`,
+          boxShadow: '0 8px 20px rgba(0,0,0,0.15)'
+        }}
+      >
+        <AppBox.ColumnBox sx={{ 
+          p: { xs: 2, sm: 2.5 }, 
+          color: 'white',
+        }}>
+          <AppBox.SpaceBetweenBox sx={{ alignItems: 'center' }}>
+            <AppTypography.Description 
+              color="inherit"
+              sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                opacity: 0.9
+              }}
+            >
+              Subtotal:
+            </AppTypography.Description>
+            <AppTypography.Description 
+              color="inherit"
+              sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                fontWeight: 500,
+                opacity: 0.9
+              }}
+            >
+              R$ {total.toFixed(2)}
+            </AppTypography.Description>
+          </AppBox.SpaceBetweenBox>
+          
+          <Fade in={true} timeout={500}>
+            <AppBox.SpaceBetweenBox 
+              sx={{ 
+                alignItems: 'center', 
+                mt: 1.5,
+                py: 1,
+                px: { xs: 1, sm: 1.5 },
+                borderRadius: 2,
+                backgroundColor: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(8px)'
+              }}
+            >
+              <AppTypography.Subtitle 
+                color="inherit" 
+                fontWeight="bold"
+                sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
+              >
+                TOTAL:
+              </AppTypography.Subtitle>
+              <AppTypography.Subtitle 
+                color="inherit" 
+                fontWeight="bold"
+                sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
+              >
+                R$ {total.toFixed(2)}
+              </AppTypography.Subtitle>
+            </AppBox.SpaceBetweenBox>
+          </Fade>
+        </AppBox.ColumnBox>
+      </Paper>
+    </AppModal.Cart>
   );
 };
 
