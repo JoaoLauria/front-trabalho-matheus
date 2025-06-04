@@ -11,6 +11,7 @@ import PedidosMesa from './screens/PedidosMesa';
 import NovoPedido from './screens/NovoPedido';
 import CadastroUsuario from './screens/cadastro';
 import CadastroMesa from './screens/CadastroMesa';
+import GerenciarCategorias from './screens/GerenciarCategorias';
 
 // Criando os navegadores
 const Stack = createNativeStackNavigator();
@@ -80,6 +81,7 @@ export default function App() {
               <Stack.Screen name="NovoPedido" component={NovoPedido} />
               <Stack.Screen name="Cardapio" component={Cardapio} />
               <Stack.Screen name="CadastroMesa" component={CadastroMesa} />
+              <Stack.Screen name="GerenciarCategorias" component={GerenciarCategorias} />
             </>
           )}
         </Stack.Navigator>

@@ -1,7 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useError } from '../contexts/ErrorContext';
-import { Grid, Paper, Typography, Button, Box, Tooltip, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { Restaurant, EventSeat, ExitToApp, Add } from '@mui/icons-material';
+import { 
+  Grid, Paper, Typography, Button, Box, Tooltip, CircularProgress, Alert, 
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, 
+  Menu, MenuItem, ListItemIcon, ListItemText
+} from '@mui/material';
+import { 
+  Restaurant, EventSeat, ExitToApp, Add, Menu as MenuIcon, 
+  Category, Settings, Dashboard
+} from '@mui/icons-material';
 import { AuthContext } from '../App';
 import ApiService from '../services/ApiService';
 
@@ -14,6 +21,28 @@ export default function Comandas({ navigation }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [mesaAlvo, setMesaAlvo] = useState(null);
   const [qtdPessoas, setQtdPessoas] = useState('1');
+  
+  // Estado para controlar o menu burger
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const menuOpen = Boolean(menuAnchorEl);
+  
+  const handleMenuClick = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+  
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+  
+  const handleGerenciarCategorias = () => {
+    handleMenuClose();
+    navigation.navigate('GerenciarCategorias');
+  };
+  
+  const handleNovaMesa = () => {
+    handleMenuClose();
+    navigation.navigate('CadastroMesa');
+  };
 
 
   const buscarMesas = async () => {
@@ -60,21 +89,61 @@ export default function Comandas({ navigation }) {
   return (
     <Box sx={{ p: { xs: 2, sm: 4 }, maxWidth: 1100, mx: 'auto' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Add />}
-          onClick={() => navigation.navigate('CadastroMesa')}
-        >
-          Nova Mesa
-        </Button>
+        <Box>
+          <IconButton
+            color="primary"
+            aria-label="menu"
+            aria-controls={menuOpen ? 'menu-appbar' : undefined}
+            aria-haspopup="true"
+            aria-expanded={menuOpen ? 'true' : undefined}
+            onClick={handleMenuClick}
+            sx={{ border: '1px solid', borderColor: 'primary.main' }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={menuAnchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <MenuItem onClick={handleNovaMesa}>
+              <ListItemIcon>
+                <Add fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Nova Mesa</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleGerenciarCategorias}>
+              <ListItemIcon>
+                <Category fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Gerenciar Categorias</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <ListItemIcon>
+                <Dashboard fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Dashboard</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleMenuClose}>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Configurações</ListItemText>
+            </MenuItem>
+          </Menu>
+        </Box>
         <Button
           variant="outlined"
           color="error"
           startIcon={<ExitToApp />}
           onClick={() => {
             authContext.logout();
-            navigation.navigate('Login');
+            // Não precisamos navegar manualmente, o App.js vai redirecionar automaticamente
+            // devido à renderização condicional baseada no estado de autenticação
           }}
         >
           Sair

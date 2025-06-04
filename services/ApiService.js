@@ -98,6 +98,115 @@ export const ApiService = {
         console.error('Erro ao buscar categorias:', error);
         return { data: null, error: error.message };
       }
+    },
+
+    /**
+     * Busca detalhes de uma categoria específica
+     * @param {number} categoryId - ID da categoria
+     * @returns {Promise<Object>} { data: Category, error }
+     */
+    getCategoryById: async (categoryId) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`);
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao buscar categoria ${categoryId}:`, error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Cria uma nova categoria
+     * @param {Object} categoryData - Dados da categoria
+     * @param {string} categoryData.name - Nome da categoria
+     * @param {string} categoryData.description - Descrição da categoria
+     * @param {boolean} categoryData.is_active - Status de ativação da categoria
+     * @returns {Promise<Object>} { data: Category, error }
+     */
+    createCategory: async (categoryData) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/categories/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(categoryData)
+        });
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error('Erro ao criar categoria:', error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Atualiza uma categoria existente (atualização completa)
+     * @param {number} categoryId - ID da categoria
+     * @param {Object} categoryData - Dados atualizados da categoria
+     * @returns {Promise<Object>} { data: Category, error }
+     */
+    updateCategory: async (categoryId, categoryData) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(categoryData)
+        });
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao atualizar categoria ${categoryId}:`, error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Atualiza parcialmente uma categoria existente
+     * @param {number} categoryId - ID da categoria
+     * @param {Object} categoryData - Dados parciais para atualização
+     * @returns {Promise<Object>} { data: Category, error }
+     */
+    patchCategory: async (categoryId, categoryData) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(categoryData)
+        });
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao atualizar parcialmente categoria ${categoryId}:`, error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Exclui uma categoria
+     * @param {number} categoryId - ID da categoria
+     * @returns {Promise<Object>} { data, error }
+     */
+    deleteCategory: async (categoryId) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`, {
+          method: 'DELETE'
+        });
+        
+        // Para DELETE, geralmente retorna 204 No Content
+        if (response.status === 204) {
+          return { data: { success: true }, error: null };
+        }
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao excluir categoria ${categoryId}:`, error);
+        return { data: null, error: error.message };
+      }
     }
   },
   
