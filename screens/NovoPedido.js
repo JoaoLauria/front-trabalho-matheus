@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Paper, Box, CircularProgress, Typography, Fab, Container } from '@mui/material';
+import { Paper, Box, CircularProgress, Typography, Fab, Container, TextField, Button } from '@mui/material';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
+import AlertDialog from '../components/AlertDialog';
 
 import PedidoHeader from '../components/PedidoHeader';
 import SearchBar from '../components/SearchBar';
@@ -11,7 +12,6 @@ import ProdutosList from '../components/ProdutosList';
 import ItensSelecionados from '../components/ItensSelecionados';
 import CarrinhoModal from '../components/CarrinhoModal';
 
-
 import ApiService from '../services/ApiService';
 import { agruparProdutosPorCategoria, adicionaisIguais } from '../utils/pedidoUtils';
 
@@ -19,7 +19,6 @@ const NovoPedido = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { mesa } = route.params || {};
-
 
   const [categorias, setCategorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
@@ -31,12 +30,23 @@ const NovoPedido = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [inputObservacoes, setInputObservacoes] = useState({});
-
+  const [alertDialog, setAlertDialog] = useState({
+    open: false,
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+  });
 
   useEffect(() => {
     if (!mesa) {
-      alert('Mesa não especificada');
-      navigation.navigate('Comandas');
+      setAlertDialog({
+        open: true,
+        title: 'Erro',
+        message: 'Mesa não especificada',
+        type: 'error',
+        onConfirm: () => navigation.goBack()
+      });
     }
   }, [mesa, navigation]);
 
@@ -80,7 +90,6 @@ const NovoPedido = () => {
     }
   }
 
-
   async function fetchAdicionais(produtoId) {
     try {
       return await ApiService.fetchAdicionais(produtoId);
@@ -90,14 +99,10 @@ const NovoPedido = () => {
     }
   }
 
-
   async function handleSelecionarItem(produto) {
     setLoading(true);
-    
     try {
-
       const adicionais = await fetchAdicionais(produto.id);
-      
 
       const novoItem = {
         ...produto,
@@ -109,16 +114,21 @@ const NovoPedido = () => {
           quantidade: 1
         }))
       };
-      
+
       setItensSelecionados(prev => [...prev, novoItem]);
     } catch (error) {
       console.error('Erro ao selecionar item:', error);
-      alert(`Erro ao selecionar produto: ${error.message}`);
+      setAlertDialog({
+        open: true,
+        title: 'Erro',
+        message: `Erro ao selecionar produto: ${error.message}`,
+        type: 'error'
+      });
+      setLoading(false);
     } finally {
       setLoading(false);
     }
   }
-
 
   function handleRemoverItem(index) {
     setItensSelecionados(prev => prev.filter((_, i) => i !== index));
@@ -131,16 +141,15 @@ const NovoPedido = () => {
 
   function handleAlterarQuantidade(index, novaQuantidade) {
     if (novaQuantidade < 1) return;
-    
-    setItensSelecionados(prev => 
-      prev.map((item, i) => 
-        i === index 
-          ? { ...item, quantidade: novaQuantidade } 
+
+    setItensSelecionados(prev =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, quantidade: novaQuantidade }
           : item
       )
     );
   }
-
 
   function handleObservacaoInput(index, texto) {
     setInputObservacoes(prev => ({
@@ -149,30 +158,28 @@ const NovoPedido = () => {
     }));
   }
 
-
   function handleObservacaoCommit(index) {
     const observacao = inputObservacoes[index];
     if (observacao === undefined) return;
-    
-    setItensSelecionados(prev => 
-      prev.map((item, i) => 
-        i === index 
-          ? { ...item, observacao } 
+
+    setItensSelecionados(prev =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, observacao }
           : item
       )
     );
   }
 
-
   function handleToggleAdicional(index, adicionalIndex, checked) {
-    setItensSelecionados(prev => 
+    setItensSelecionados(prev =>
       prev.map((item, i) => {
         if (i === index) {
           return {
             ...item,
-            adicionais: item.adicionais.map((adicional, j) => 
-              j === adicionalIndex 
-                ? { ...adicional, selecionado: checked } 
+            adicionais: item.adicionais.map((adicional, j) =>
+              j === adicionalIndex
+                ? { ...adicional, selecionado: checked }
                 : adicional
             )
           };
@@ -181,19 +188,18 @@ const NovoPedido = () => {
       })
     );
   }
-
 
   function handleAlterarQtdAdicional(index, adicionalIndex, novaQuantidade) {
     if (novaQuantidade < 1) return;
-    
-    setItensSelecionados(prev => 
+
+    setItensSelecionados(prev =>
       prev.map((item, i) => {
         if (i === index) {
           return {
             ...item,
-            adicionais: item.adicionais.map((adicional, j) => 
-              j === adicionalIndex 
-                ? { ...adicional, quantidade: novaQuantidade } 
+            adicionais: item.adicionais.map((adicional, j) =>
+              j === adicionalIndex
+                ? { ...adicional, quantidade: novaQuantidade }
                 : adicional
             )
           };
@@ -203,40 +209,30 @@ const NovoPedido = () => {
     );
   }
 
-
   function handleAdicionarCompleto(index) {
-
     const item = itensSelecionados[index];
     if (!item) return;
-    
 
     const observacao = inputObservacoes[index];
     if (observacao !== undefined) {
-
       const itemAtualizado = {
         ...item,
         observacao: observacao
       };
-      
 
       handleAdicionarAoCarrinho(itemAtualizado);
     } else {
-
       handleAdicionarAoCarrinho(item);
     }
-    
 
     handleRemoverItem(index);
   }
 
-
   function adicionaisIguais(adicionais1, adicionais2) {
     if (adicionais1.length !== adicionais2.length) return false;
-    
 
     const sorted1 = [...adicionais1].sort((a, b) => a.id - b.id);
     const sorted2 = [...adicionais2].sort((a, b) => a.id - b.id);
-    
 
     return sorted1.every((adicional, index) => {
       const adicional2 = sorted2[index];
@@ -247,15 +243,12 @@ const NovoPedido = () => {
     });
   }
 
-
   function handleAdicionarAoCarrinho(item) {
-
     const adicionaisSelecionados = item.adicionais
       .filter(adicional => adicional.selecionado)
       .map(({ id, name, price, quantidade }) => ({
         id, name, price, quantidade
       }));
-    
 
     const itemCarrinho = {
       produto: {
@@ -268,27 +261,24 @@ const NovoPedido = () => {
       observacao: item.observacao,
       adicionaisSelecionados
     };
-    
-
 
     const indexExistente = carrinho.findIndex(carrinhoItem => {
-
       const obsCarrinho = carrinhoItem.observacao || '';
       const obsNova = itemCarrinho.observacao || '';
       const observacoesIguais = obsCarrinho.trim() === obsNova.trim();
-      
+
       return (
         carrinhoItem.produto.id === itemCarrinho.produto.id &&
         observacoesIguais &&
         adicionaisIguais(carrinhoItem.adicionaisSelecionados, itemCarrinho.adicionaisSelecionados)
       );
     });
-    
+
     if (indexExistente >= 0) {
-      setCarrinho(prev => 
-        prev.map((item, index) => 
-          index === indexExistente 
-            ? { ...item, quantidade: item.quantidade + itemCarrinho.quantidade } 
+      setCarrinho(prev =>
+        prev.map((item, index) =>
+          index === indexExistente
+            ? { ...item, quantidade: item.quantidade + itemCarrinho.quantidade }
             : item
         )
       );
@@ -297,36 +287,37 @@ const NovoPedido = () => {
     }
   }
 
-
   function handleRemoverDoCarrinho(index) {
     setCarrinho(prev => prev.filter((_, i) => i !== index));
   }
-  
 
   function handleAlterarQuantidadeCarrinho(index, novaQuantidade) {
     if (novaQuantidade < 1) return;
-    
-    setCarrinho(prev => 
-      prev.map((item, i) => 
-        i === index 
-          ? { ...item, quantidade: novaQuantidade } 
+
+    setCarrinho(prev =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, quantidade: novaQuantidade }
           : item
       )
     );
   }
 
-
   async function handleSalvar() {
     if (carrinho.length === 0) {
-      alert('Adicione itens ao carrinho antes de finalizar o pedido');
+      setAlertDialog({
+        open: true,
+        title: 'Aviso',
+        message: 'Adicione itens ao carrinho antes de finalizar o pedido',
+        type: 'info'
+      });
       return;
     }
-    
+
     setLoading(true);
     setError('');
-    
-    try {
 
+    try {
       const itens = carrinho.map(item => ({
         product: item.produto.id,
         quantity: item.quantidade,
@@ -336,47 +327,41 @@ const NovoPedido = () => {
           quantity: adicional.quantidade
         }))
       }));
-      
-
 
       const tableId = typeof mesa === 'object' ? mesa.id || mesa : mesa;
-      
+
       const pedidoPayload = {
         table: tableId,
         items: itens
       };
-      
+
       console.log('Mesa original:', mesa);
       console.log('ID da mesa usado:', tableId);
       console.log('Payload do pedido:', JSON.stringify(pedidoPayload, null, 2));
-      
 
       const novoPedido = await ApiService.criarPedido(pedidoPayload);
       console.log('Pedido criado com sucesso:', novoPedido);
-      
 
       setCarrinho([]);
-      
-
       setCarrinhoModalOpen(false);
-      
-
       navigation.navigate('PedidosMesa', { mesa });
-      
     } catch (error) {
       console.error('Erro ao salvar pedido:', error);
       setError(`Falha ao salvar pedido: ${error.message}`);
-      alert(`Erro ao finalizar pedido: ${error.message}`);
-    } finally {
+      setAlertDialog({
+        open: true,
+        title: 'Erro',
+        message: `Erro ao finalizar pedido: ${error.message}`,
+        type: 'error'
+      });
       setLoading(false);
+      setError(error.message);
     }
   }
-
 
   function handleToggleCarrinhoModal() {
     setCarrinhoModalOpen(prev => !prev);
   }
-  
 
   function handleVoltar() {
     navigation.navigate('PedidosMesa', { mesa });
@@ -384,31 +369,26 @@ const NovoPedido = () => {
 
   return (
     <div style={{ padding: 16, display: 'flex', flexDirection: 'column', height: '100vh' }}>
-
-      <PedidoHeader 
-        mesa={mesa} 
-        carrinho={carrinho} 
+      <PedidoHeader
+        mesa={mesa}
+        carrinho={carrinho}
         onOpenCarrinho={handleToggleCarrinhoModal}
         onVoltar={handleVoltar}
       />
-      
 
       <SearchBar busca={busca} setBusca={setBusca} />
-      
 
-      <CategoriaSelector 
-        categorias={categorias} 
-        categoriaId={categoriaId} 
-        setCategoriaId={setCategoriaId} 
+      <CategoriaSelector
+        categorias={categorias}
+        categoriaId={categoriaId}
+        setCategoriaId={setCategoriaId}
       />
-      
 
       {loading && <CircularProgress size={24} sx={{ mx: 'auto', my: 2 }} />}
       {error && <Typography color="error" sx={{ my: 2 }}>{error}</Typography>}
-      
 
       <Paper elevation={3} sx={{ p: 2, mb: 2, flexGrow: 1, overflow: 'auto' }}>
-        <ProdutosList 
+        <ProdutosList
           loading={loading}
           error={error}
           produtos={produtos}
@@ -419,9 +399,8 @@ const NovoPedido = () => {
           handleSelecionarItem={handleSelecionarItem}
         />
       </Paper>
-      
 
-      <ItensSelecionados 
+      <ItensSelecionados
         itensSelecionados={itensSelecionados}
         handleRemoverItem={handleRemoverItem}
         handleAlterarQuantidade={handleAlterarQuantidade}
@@ -432,19 +411,17 @@ const NovoPedido = () => {
         handleAdicionarCompleto={handleAdicionarCompleto}
         inputObservacoes={inputObservacoes}
       />
-      
 
-      <Fab 
-        color="primary" 
+      <Fab
+        color="primary"
         aria-label="carrinho"
         onClick={handleToggleCarrinhoModal}
         sx={{ position: 'fixed', bottom: 16, right: 16, display: { sm: 'none' } }}
       >
         <ShoppingCartIcon />
       </Fab>
-      
 
-      <CarrinhoModal 
+      <CarrinhoModal
         open={carrinhoModalOpen}
         onClose={handleToggleCarrinhoModal}
         carrinho={carrinho}
@@ -452,6 +429,15 @@ const NovoPedido = () => {
         handleAlterarQuantidadeCarrinho={handleAlterarQuantidadeCarrinho}
         handleSalvar={handleSalvar}
         loading={loading}
+      />
+
+      <AlertDialog
+        open={alertDialog.open}
+        onClose={() => setAlertDialog(prev => ({ ...prev, open: false }))}
+        title={alertDialog.title}
+        message={alertDialog.message}
+        type={alertDialog.type}
+        onConfirm={alertDialog.onConfirm}
       />
     </div>
   );
