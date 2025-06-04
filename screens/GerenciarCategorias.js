@@ -5,7 +5,11 @@ import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  ArrowBack as ArrowBackIcon
+  ArrowBack as ArrowBackIcon,
+  Category as CategoryIcon,
+  AddCircle as AddCircleIcon,
+  RestaurantMenu as RestaurantMenuIcon,
+  PostAdd as PostAddIcon
 } from '@mui/icons-material';
 import ApiService from '../services/ApiService';
 import { 
@@ -16,6 +20,7 @@ import {
   AppDialog, 
   AppSwitch 
 } from '../components/common';
+import CategoriaLista from '../components/categorias/CategoriaLista';
 import commonStyles from '../styles/commonStyles';
 
 export default function GerenciarCategorias({ navigation }) {
@@ -37,13 +42,30 @@ export default function GerenciarCategorias({ navigation }) {
     setLoading(true);
     setErro('');
     try {
-      const { data, error } = await ApiService.categories.getAllCategories();
+      const { data: categorias, error: categoriasError } = await ApiService.categories.getAllCategories();
       
-      if (error) {
-        throw new Error(error);
+      if (categoriasError) {
+        throw new Error(categoriasError);
       }
       
-      setCategorias(data || []);
+      // Buscar produtos para contar quantos estão vinculados a cada categoria
+      const { data: produtos, error: produtosError } = await ApiService.products.getProducts();
+      
+      if (produtosError) {
+        console.warn('Erro ao buscar produtos para contagem:', produtosError);
+        // Continua mesmo com erro na contagem de produtos
+      }
+      
+      // Adicionar contagem de produtos a cada categoria
+      const categoriasComContagem = categorias.map(categoria => {
+        const produtosVinculados = produtos ? produtos.filter(p => p.category === categoria.id) : [];
+        return {
+          ...categoria,
+          produtos_count: produtosVinculados.length
+        };
+      });
+      
+      setCategorias(categoriasComContagem || []);
     } catch (error) {
       const errorMsg = 'Falha ao carregar categorias. Tente novamente.';
       console.error('Erro ao buscar categorias:', error);
@@ -171,63 +193,20 @@ export default function GerenciarCategorias({ navigation }) {
       headerActions={
         <AppButton.AddButton
           onClick={handleNovaCategoria}
+          startIcon={<AddIcon />}
         >
           Nova Categoria
         </AppButton.AddButton>
       }
       sx={commonStyles.page}
     >
-      {erro && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {erro}
-        </Alert>
-      )}
-
-      <AppList
-        loading={loading && categorias.length === 0}
-        items={categorias}
-        emptyMessage="Nenhuma categoria encontrada. Crie uma nova categoria para começar."
-        divider
-        renderItem={(categoria, index) => (
-          <AppList.AppListItem
-            key={categoria.id}
-            primary={
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography variant="subtitle1" component="span" fontWeight="medium">
-                  {categoria.name}
-                </Typography>
-                {categoria.is_active === false && (
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ ml: 1 }}
-                  >
-                    (Inativa)
-                  </Typography>
-                )}
-              </Box>
-            }
-            secondary={categoria.description || 'Sem descrição'}
-            action={
-              <Box>
-                <AppButton.IconButton
-                  icon={<EditIcon />}
-                  onClick={() => handleEditarCategoria(categoria)}
-                  tooltip="Editar categoria"
-                  sx={{ mr: 1 }}
-                />
-                <AppButton.IconButton
-                  icon={<DeleteIcon />}
-                  onClick={() => handleConfirmarExclusao(categoria)}
-                  tooltip="Excluir categoria"
-                  color="error"
-                />
-              </Box>
-            }
-            sx={commonStyles.listItem}
-          />
-        )}
-        sx={commonStyles.list}
+      <CategoriaLista
+        categorias={categorias}
+        loading={loading}
+        handleNovaCategoria={handleNovaCategoria}
+        handleEditarCategoria={handleEditarCategoria}
+        handleConfirmarExclusao={handleConfirmarExclusao}
+        erro={erro}
       />
 
       {/* Diálogo para criar/editar categoria */}
