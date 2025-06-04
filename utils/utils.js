@@ -52,11 +52,13 @@ export const agruparProdutosPorCategoria = (produtos) => {
   if (!Array.isArray(produtos)) return {};
   
   return produtos.reduce((acc, produto) => {
-    const categoriaId = produto.category?.id || 'sem-categoria';
-    if (!acc[categoriaId]) {
-      acc[categoriaId] = [];
+    // Usar category_details.name como chave para agrupar produtos
+    const categoriaNome = produto.category_details?.name || 'Sem categoria';
+    
+    if (!acc[categoriaNome]) {
+      acc[categoriaNome] = [];
     }
-    acc[categoriaId].push(produto);
+    acc[categoriaNome].push(produto);
     return acc;
   }, {});
 };

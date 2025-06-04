@@ -40,27 +40,13 @@ export default function PedidosMesa({ navigation, route }) {
     try {
       const { data, error } = await ApiService.orders.getOrdersByTable(mesa);
       
-      console.log('Dados recebidos da API:', JSON.stringify(data, null, 2));
       
       // Análise detalhada da estrutura dos dados
       if (Array.isArray(data) && data.length > 0) {
         const primeiroPedido = data[0];
-        console.log('Estrutura do primeiro pedido:', Object.keys(primeiroPedido));
         
         if (primeiroPedido.items && Array.isArray(primeiroPedido.items) && primeiroPedido.items.length > 0) {
           const primeiroItem = primeiroPedido.items[0];
-          console.log('Estrutura do primeiro item:', Object.keys(primeiroItem));
-          console.log('Valor de product no primeiro item:', primeiroItem.product);
-          console.log('Tipo de product:', typeof primeiroItem.product);
-          
-          if (typeof primeiroItem.product === 'object' && primeiroItem.product !== null) {
-            console.log('Propriedades de product:', Object.keys(primeiroItem.product));
-          } else if (typeof primeiroItem.product === 'number') {
-            console.log('product é um ID numérico, precisamos buscar os detalhes do produto');
-          }
-          
-          console.log('Valor de price:', primeiroItem.price);
-          console.log('Valor de quantity:', primeiroItem.quantity);
         }
       }
       
@@ -69,28 +55,17 @@ export default function PedidosMesa({ navigation, route }) {
       }
       
       if (Array.isArray(data)) {
-        console.log('Dados são um array');
-        if (data.length > 0) {
-          console.log('Exemplo de pedido:', JSON.stringify(data[0], null, 2));
-          if (data[0].items && data[0].items.length > 0) {
-            console.log('Exemplo de item:', JSON.stringify(data[0].items[0], null, 2));
-          }
-        }
         setPedidos(data);
       } else if (data && typeof data === 'object') {
-        console.log('Dados são um objeto');
         const possibleArrays = ['results', 'orders', 'data', 'items'];
         for (const key of possibleArrays) {
           if (Array.isArray(data[key])) {
-            console.log(`Usando array em data.${key}`);
             setPedidos(data[key]);
             return;
           }
         }
-        console.log('Nenhum array encontrado no objeto');
         setPedidos([]);
       } else {
-        console.log('Dados não são nem array nem objeto');
         setPedidos([]);
       }
     } catch (error) {

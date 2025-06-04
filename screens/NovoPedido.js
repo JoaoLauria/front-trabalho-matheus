@@ -352,7 +352,6 @@ const NovoPedido = () => {
         throw new Error(error);
       }
       
-      console.log('Pedido criado com sucesso:', data);
 
       setCarrinho([]);
       setCarrinhoModalOpen(false);

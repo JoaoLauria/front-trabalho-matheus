@@ -160,7 +160,6 @@ export default function Comandas({ navigation }) {
                         boxShadow: 'none',
                       }}
                       onClick={() => {
-                        console.log('Navegando para PedidosMesa com ID da mesa:', item.id);
                         navigation.navigate('PedidosMesa', { mesa: item.id });
                       }}
                     >
