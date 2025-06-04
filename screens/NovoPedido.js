@@ -1,641 +1,460 @@
-import React, { useState } from 'react';
-import {
-  Box, Typography, Paper, Button, TextField, InputAdornment, IconButton, List, ListItem, ListItemText, Divider, Chip, Select, MenuItem, FormControl, InputLabel, OutlinedInput, Checkbox, ListItemIcon, Avatar, Badge, Modal, Backdrop, Fade
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
-import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import LocalCafeIcon from '@mui/icons-material/LocalCafe';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Paper, Box, CircularProgress, Typography, Fab, Container } from '@mui/material';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import CloseIcon from '@mui/icons-material/Close';
 
-// Mock de itens do cardápio
-const itensMock = [
-  // Pizzas
-  { id: 1, nome: 'Pizza Margherita', categoria: 'Pizza', preco: 40, adicionais: [
-    { id: 1, nome: 'Bacon', preco: 5 },
-    { id: 2, nome: 'Salada', preco: 3 },
-  ] },
-  { id: 6, nome: 'Pizza Calabresa', categoria: 'Pizza', preco: 42, adicionais: [
-    { id: 1, nome: 'Bacon', preco: 5 },
-    { id: 3, nome: 'Cebola', preco: 2 },
-  ] },
-  { id: 7, nome: 'Pizza Quatro Queijos', categoria: 'Pizza', preco: 45, adicionais: [
-    { id: 4, nome: 'Catupiry', preco: 6 },
-  ] },
 
-  // Massas
-  { id: 2, nome: 'Lasanha', categoria: 'Massas', preco: 38, adicionais: [] },
-  { id: 8, nome: 'Ravioli de Ricota', categoria: 'Massas', preco: 36, adicionais: [] },
-  { id: 9, nome: 'Nhoque ao Sugo', categoria: 'Massas', preco: 34, adicionais: [] },
+import PedidoHeader from '../components/PedidoHeader';
+import SearchBar from '../components/SearchBar';
+import CategoriaSelector from '../components/CategoriaSelector';
+import ProdutosList from '../components/ProdutosList';
+import ItensSelecionados from '../components/ItensSelecionados';
+import CarrinhoModal from '../components/CarrinhoModal';
 
-  // Bebidas
-  { id: 3, nome: 'Coca-Cola', categoria: 'Bebidas', preco: 8, adicionais: [] },
-  { id: 4, nome: 'Suco de Laranja', categoria: 'Bebidas', preco: 10, adicionais: [] },
-  { id: 10, nome: 'Água com Gás', categoria: 'Bebidas', preco: 6, adicionais: [] },
-  { id: 11, nome: 'Cerveja Artesanal', categoria: 'Bebidas', preco: 14, adicionais: [] },
 
-  // Lanches
-  { id: 5, nome: 'Hambúrguer', categoria: 'Lanches', preco: 25, adicionais: [
-    { id: 3, nome: 'Queijo extra', preco: 4 },
-    { id: 4, nome: 'Bacon', preco: 5 },
-  ] },
-  { id: 12, nome: 'Cheeseburger', categoria: 'Lanches', preco: 23, adicionais: [
-    { id: 3, nome: 'Queijo extra', preco: 4 },
-  ] },
-  { id: 13, nome: 'Sanduíche Natural', categoria: 'Lanches', preco: 18, adicionais: [] },
+import ApiService from '../services/ApiService';
+import { agruparProdutosPorCategoria, adicionaisIguais } from '../utils/pedidoUtils';
 
-  // Sobremesas
-  { id: 14, nome: 'Petit Gâteau', categoria: 'Sobremesas', preco: 22, adicionais: [] },
-  { id: 15, nome: 'Sorvete 2 bolas', categoria: 'Sobremesas', preco: 16, adicionais: [
-    { id: 5, nome: 'Calda de chocolate', preco: 2 },
-    { id: 6, nome: 'Granulado', preco: 1 },
-  ] },
+const NovoPedido = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { mesa } = route.params || {};
 
-  // Saladas
-  { id: 16, nome: 'Salada Caesar', categoria: 'Saladas', preco: 20, adicionais: [
-    { id: 7, nome: 'Frango grelhado', preco: 6 },
-  ] },
-  { id: 17, nome: 'Salada Grega', categoria: 'Saladas', preco: 19, adicionais: [] },
 
-  // Petiscos
-  { id: 18, nome: 'Batata Frita', categoria: 'Petiscos', preco: 16, adicionais: [] },
-  { id: 19, nome: 'Iscas de Frango', categoria: 'Petiscos', preco: 22, adicionais: [] },
-
-  // Sushi
-  { id: 20, nome: 'Sushi Salmão', categoria: 'Sushi', preco: 28, adicionais: [
-    { id: 8, nome: 'Cream cheese', preco: 3 },
-  ] },
-  { id: 21, nome: 'Temaki Atum', categoria: 'Sushi', preco: 32, adicionais: [] },
-];
-
-const categorias = [...new Set(itensMock.map(item => item.categoria))];
-
-// Mapeamento de ícones para categorias
-const categoriaIcons = {
-  'Pizza': <LocalPizzaIcon fontSize="large" />,
-  'Massas': <LocalDiningIcon fontSize="large" />,
-  'Bebidas': <LocalCafeIcon fontSize="large" />,
-  'Lanches': <FastfoodIcon fontSize="large" />,
-  'default': <RestaurantIcon fontSize="large" />
-};
-
-export default function NovoPedido({ onSalvar, onCancelar }) {
-  // Estados do componente
+  const [categorias, setCategorias] = useState([]);
+  const [produtos, setProdutos] = useState([]);
+  const [categoriaId, setCategoriaId] = useState('');
   const [busca, setBusca] = useState('');
-  const [categoria, setCategoria] = useState('');
   const [itensSelecionados, setItensSelecionados] = useState([]);
-  const [inputObservacoes, setInputObservacoes] = useState({});
   const [carrinho, setCarrinho] = useState([]);
   const [carrinhoModalOpen, setCarrinhoModalOpen] = useState(false);
-  
-  // Total de itens no carrinho
-  const totalItensCarrinho = carrinho.reduce((total, item) => total + item.quantidade, 0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [inputObservacoes, setInputObservacoes] = useState({});
 
-  // Filtra itens por busca e categoria
-  const itensFiltrados = itensMock.filter(item =>
-    (!categoria || item.categoria === categoria) &&
-    (item.nome.toLowerCase().includes(busca.toLowerCase()))
-  );
 
-  // Funções para manipulação do carrinho
-  function handleCarrinhoRemover(idx) {
-    setCarrinho(carrinho => carrinho.filter((_, i) => i !== idx));
+  useEffect(() => {
+    if (!mesa) {
+      alert('Mesa não especificada');
+      navigation.navigate('Comandas');
+    }
+  }, [mesa, navigation]);
+
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
+
+  useEffect(() => {
+    fetchProdutos();
+  }, [categoriaId, busca]);
+
+  const produtosPorCategoria = useMemo(() => {
+    return agruparProdutosPorCategoria(produtos);
+  }, [produtos]);
+
+  async function fetchCategorias() {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await ApiService.fetchCategorias();
+      setCategorias(data);
+    } catch (error) {
+      console.error('Erro ao buscar categorias:', error);
+      setError('Falha ao carregar categorias. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleCarrinhoQtd(idx, novaQtd) {
-    setCarrinho(carrinho => carrinho.map((item, i) => 
-      i === idx ? { ...item, quantidade: Math.max(1, novaQtd) } : item
-    ));
+  async function fetchProdutos() {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await ApiService.fetchProdutos(categoriaId, busca);
+      setProdutos(data);
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+      setError('Falha ao carregar produtos. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleSelecionarItem(item) {
-    if (itensSelecionados.find(i => i.id === item.id)) return;
-    setItensSelecionados([
-      ...itensSelecionados,
-      {
-        id: item.id,
+
+  async function fetchAdicionais(produtoId) {
+    try {
+      return await ApiService.fetchAdicionais(produtoId);
+    } catch (error) {
+      console.error(`Erro ao buscar adicionais para o produto ${produtoId}:`, error);
+      return [];
+    }
+  }
+
+
+  async function handleSelecionarItem(produto) {
+    setLoading(true);
+    
+    try {
+
+      const adicionais = await fetchAdicionais(produto.id);
+      
+
+      const novoItem = {
+        ...produto,
         quantidade: 1,
         observacao: '',
-        adicionais: []
-      }
-    ]);
+        adicionais: adicionais.map(adicional => ({
+          ...adicional,
+          selecionado: false,
+          quantidade: 1
+        }))
+      };
+      
+      setItensSelecionados(prev => [...prev, novoItem]);
+    } catch (error) {
+      console.error('Erro ao selecionar item:', error);
+      alert(`Erro ao selecionar produto: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  // Função para comparar adicionais (id e quantidade)
-  function adicionaisIguais(a1, a2) {
-    if (a1.length !== a2.length) return false;
-    const sorted1 = [...a1].sort((x, y) => x.id - y.id);
-    const sorted2 = [...a2].sort((x, y) => x.id - y.id);
-    return sorted1.every((ad, idx) => ad.id === sorted2[idx].id && ad.quantidade === sorted2[idx].quantidade);
-  }
 
-  // Função para adicionar ao carrinho
-  function handleAdicionarAoCarrinho(itemId) {
-    // Garante que a última observação digitada seja salva
-    setItensSelecionados(prev => {
-      const atualizados = prev.map(i => {
-        if (i.id !== itemId) return i;
-        return { ...i, observacao: inputObservacoes[itemId] !== undefined ? inputObservacoes[itemId] : i.observacao };
-      });
-      
-      // Após atualizar, adiciona ao carrinho
-      const sel = atualizados.find(i => i.id === itemId);
-      if (!sel) return atualizados;
-      
-      const idxExistente = carrinho.findIndex(c =>
-        c.id === sel.id &&
-        c.observacao === sel.observacao &&
-        adicionaisIguais(c.adicionais, sel.adicionais)
-      );
-      
-      if (idxExistente >= 0) {
-        setCarrinho(carrinho.map((c, idx) =>
-          idx === idxExistente ? { ...c, quantidade: c.quantidade + sel.quantidade } : c
-        ));
-      } else {
-        setCarrinho([...carrinho, { ...sel }]);
-      }
-      
-      // Limpa o campo de observação local
-      setInputObservacoes(obs => {
-        const novo = { ...obs };
-        delete novo[itemId];
-        return novo;
-      });
-      
-      // Remove da edição
-      return atualizados.filter(i => i.id !== itemId);
+  function handleRemoverItem(index) {
+    setItensSelecionados(prev => prev.filter((_, i) => i !== index));
+    setInputObservacoes(prev => {
+      const newInputs = { ...prev };
+      delete newInputs[index];
+      return newInputs;
     });
   }
 
-  function handleAlterarQuantidade(id, quantidade) {
-    setItensSelecionados(itensSelecionados.map(i => 
-      i.id === id ? { ...i, quantidade: Math.max(1, quantidade) } : i
-    ));
+  function handleAlterarQuantidade(index, novaQuantidade) {
+    if (novaQuantidade < 1) return;
+    
+    setItensSelecionados(prev => 
+      prev.map((item, i) => 
+        i === index 
+          ? { ...item, quantidade: novaQuantidade } 
+          : item
+      )
+    );
   }
 
-  // Atualiza o campo local de observação enquanto digita
-  function handleObservacaoInput(id, valor) {
-    setInputObservacoes(prev => ({ ...prev, [id]: valor }));
-  }
-  
-  // Salva observação no estado global ao sair do campo ou pressionar Enter
-  function handleObservacaoCommit(id) {
-    setItensSelecionados(prev => prev.map(i => {
-      if (i.id !== id) return i;
-      return { ...i, observacao: inputObservacoes[id] ?? '' };
+
+  function handleObservacaoInput(index, texto) {
+    setInputObservacoes(prev => ({
+      ...prev,
+      [index]: texto
     }));
   }
-  
-  // Handler para garantir que a observação seja salva antes de adicionar
-  function handleAdicionarCompleto(itemId) {
-    handleObservacaoCommit(itemId);
-    // Aguarda o commit antes de adicionar ao carrinho
-    setTimeout(() => handleAdicionarAoCarrinho(itemId), 0);
+
+
+  function handleObservacaoCommit(index) {
+    const observacao = inputObservacoes[index];
+    if (observacao === undefined) return;
+    
+    setItensSelecionados(prev => 
+      prev.map((item, i) => 
+        i === index 
+          ? { ...item, observacao } 
+          : item
+      )
+    );
   }
 
-  function handleToggleAdicional(itemId, adicionalId) {
-    setItensSelecionados(itensSelecionados.map(i => {
-      if (i.id !== itemId) return i;
-      const jaSelecionado = i.adicionais.find(a => a.id === adicionalId);
-      return {
-        ...i,
-        adicionais: jaSelecionado
-          ? i.adicionais.filter(a => a.id !== adicionalId)
-          : [...i.adicionais, { id: adicionalId, quantidade: 1 }]
+
+  function handleToggleAdicional(index, adicionalIndex, checked) {
+    setItensSelecionados(prev => 
+      prev.map((item, i) => {
+        if (i === index) {
+          return {
+            ...item,
+            adicionais: item.adicionais.map((adicional, j) => 
+              j === adicionalIndex 
+                ? { ...adicional, selecionado: checked } 
+                : adicional
+            )
+          };
+        }
+        return item;
+      })
+    );
+  }
+
+
+  function handleAlterarQtdAdicional(index, adicionalIndex, novaQuantidade) {
+    if (novaQuantidade < 1) return;
+    
+    setItensSelecionados(prev => 
+      prev.map((item, i) => {
+        if (i === index) {
+          return {
+            ...item,
+            adicionais: item.adicionais.map((adicional, j) => 
+              j === adicionalIndex 
+                ? { ...adicional, quantidade: novaQuantidade } 
+                : adicional
+            )
+          };
+        }
+        return item;
+      })
+    );
+  }
+
+
+  function handleAdicionarCompleto(index) {
+
+    const item = itensSelecionados[index];
+    if (!item) return;
+    
+
+    const observacao = inputObservacoes[index];
+    if (observacao !== undefined) {
+
+      const itemAtualizado = {
+        ...item,
+        observacao: observacao
       };
-    }));
+      
+
+      handleAdicionarAoCarrinho(itemAtualizado);
+    } else {
+
+      handleAdicionarAoCarrinho(item);
+    }
+    
+
+    handleRemoverItem(index);
   }
 
-  function handleAlterarQtdAdicional(itemId, adicionalId, quantidade) {
-    setItensSelecionados(itensSelecionados.map(i => {
-      if (i.id !== itemId) return i;
-      return {
-        ...i,
-        adicionais: i.adicionais.map(a =>
-          a.id === adicionalId ? { ...a, quantidade: Math.max(1, quantidade) } : a
+
+  function adicionaisIguais(adicionais1, adicionais2) {
+    if (adicionais1.length !== adicionais2.length) return false;
+    
+
+    const sorted1 = [...adicionais1].sort((a, b) => a.id - b.id);
+    const sorted2 = [...adicionais2].sort((a, b) => a.id - b.id);
+    
+
+    return sorted1.every((adicional, index) => {
+      const adicional2 = sorted2[index];
+      return (
+        adicional.id === adicional2.id &&
+        adicional.quantidade === adicional2.quantidade
+      );
+    });
+  }
+
+
+  function handleAdicionarAoCarrinho(item) {
+
+    const adicionaisSelecionados = item.adicionais
+      .filter(adicional => adicional.selecionado)
+      .map(({ id, name, price, quantidade }) => ({
+        id, name, price, quantidade
+      }));
+    
+
+    const itemCarrinho = {
+      produto: {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        description: item.description
+      },
+      quantidade: item.quantidade,
+      observacao: item.observacao,
+      adicionaisSelecionados
+    };
+    
+
+
+    const indexExistente = carrinho.findIndex(carrinhoItem => {
+
+      const obsCarrinho = carrinhoItem.observacao || '';
+      const obsNova = itemCarrinho.observacao || '';
+      const observacoesIguais = obsCarrinho.trim() === obsNova.trim();
+      
+      return (
+        carrinhoItem.produto.id === itemCarrinho.produto.id &&
+        observacoesIguais &&
+        adicionaisIguais(carrinhoItem.adicionaisSelecionados, itemCarrinho.adicionaisSelecionados)
+      );
+    });
+    
+    if (indexExistente >= 0) {
+      setCarrinho(prev => 
+        prev.map((item, index) => 
+          index === indexExistente 
+            ? { ...item, quantidade: item.quantidade + itemCarrinho.quantidade } 
+            : item
         )
+      );
+    } else {
+      setCarrinho(prev => [...prev, itemCarrinho]);
+    }
+  }
+
+
+  function handleRemoverDoCarrinho(index) {
+    setCarrinho(prev => prev.filter((_, i) => i !== index));
+  }
+  
+
+  function handleAlterarQuantidadeCarrinho(index, novaQuantidade) {
+    if (novaQuantidade < 1) return;
+    
+    setCarrinho(prev => 
+      prev.map((item, i) => 
+        i === index 
+          ? { ...item, quantidade: novaQuantidade } 
+          : item
+      )
+    );
+  }
+
+
+  async function handleSalvar() {
+    if (carrinho.length === 0) {
+      alert('Adicione itens ao carrinho antes de finalizar o pedido');
+      return;
+    }
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+
+      const itens = carrinho.map(item => ({
+        product: item.produto.id,
+        quantity: item.quantidade,
+        notes: item.observacao || '',
+        additionals: item.adicionaisSelecionados.map(adicional => ({
+          additional: adicional.id,
+          quantity: adicional.quantidade
+        }))
+      }));
+      
+
+
+      const tableId = typeof mesa === 'object' ? mesa.id || mesa : mesa;
+      
+      const pedidoPayload = {
+        table: tableId,
+        items: itens
       };
-    }));
-  }
-
-  function handleRemoverItem(id) {
-    setItensSelecionados(itensSelecionados.filter(i => i.id !== id));
-  }
-
-  function handleSalvar() {
-    onSalvar && onSalvar(carrinho);
-  }
-
-  // Função para abrir/fechar o modal do carrinho
-  const handleToggleCarrinhoModal = () => {
-    setCarrinhoModalOpen(!carrinhoModalOpen);
-  };
-
-  // Calcular o valor total do carrinho
-  const calcularTotal = () => {
-    return carrinho.reduce((total, c) => {
-      const item = itensMock.find(i => i.id === c.id);
-      if (!item) return total;
       
-      const subtotalAdicionais = c.adicionais.reduce((soma, a) => {
-        const ad = item.adicionais.find(x => x.id === a.id);
-        return ad ? soma + ad.preco * a.quantidade : soma;
-      }, 0);
+      console.log('Mesa original:', mesa);
+      console.log('ID da mesa usado:', tableId);
+      console.log('Payload do pedido:', JSON.stringify(pedidoPayload, null, 2));
       
-      return total + (item.preco + subtotalAdicionais) * c.quantidade;
-    }, 0);
-  };
+
+      const novoPedido = await ApiService.criarPedido(pedidoPayload);
+      console.log('Pedido criado com sucesso:', novoPedido);
+      
+
+      setCarrinho([]);
+      
+
+      setCarrinhoModalOpen(false);
+      
+
+      navigation.navigate('PedidosMesa', { mesa });
+      
+    } catch (error) {
+      console.error('Erro ao salvar pedido:', error);
+      setError(`Falha ao salvar pedido: ${error.message}`);
+      alert(`Erro ao finalizar pedido: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  function handleToggleCarrinhoModal() {
+    setCarrinhoModalOpen(prev => !prev);
+  }
+  
+
+  function handleVoltar() {
+    navigation.navigate('PedidosMesa', { mesa });
+  }
 
   return (
-    <div style={{
-      maxWidth: '600px',
-      margin: '32px auto',
-      padding: '16px 24px',
-      maxHeight: '90vh',
-      overflowY: 'auto',
-      background: '#fff',
-      borderRadius: '12px',
-      boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-    }}>
+    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', height: '100vh' }}>
 
-      {/* Cabeçalho com título e ícone do carrinho */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" fontWeight={700} color="primary.main">
-          Novo Pedido
-        </Typography>
-        
-        <IconButton 
-          color="primary" 
-          onClick={handleToggleCarrinhoModal}
-          sx={{ 
-            bgcolor: 'primary.light', 
-            color: 'white',
-            '&:hover': { bgcolor: 'primary.main' } 
-          }}
-        >
-          <Badge badgeContent={totalItensCarrinho} color="error">
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
-      </Box>
-      {/* Área principal com busca, categorias e listagem de itens */}
-      <Paper elevation={3} sx={{ p: 2, mb: 2, flex: '1 1 0', overflow: 'auto', minHeight: 300, maxHeight: 'calc(100vh - 180px)' }}>
-        {/* Campo de busca */}
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            label="Buscar item"
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            fullWidth
-            size="small"
-          />
-        </Box>
-        
-        {/* Carrossel de categorias */}
-        <Box sx={{ mb: 2, overflow: 'auto' }}>
-          <Box sx={{ display: 'flex', gap: 2, pb: 1 }}>
-            {/* Opção "Todas" */}
-            <Box 
-              onClick={() => setCategoria('')}
-              sx={{
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center',
-                cursor: 'pointer',
-                minWidth: 60,
-                opacity: categoria === '' ? 1 : 0.7,
-                transition: 'all 0.2s',
-                '&:hover': { opacity: 1 }
-              }}
-            >
-              <Avatar 
-                sx={{ 
-                  bgcolor: categoria === '' ? 'primary.main' : 'grey.300',
-                  width: 56, 
-                  height: 56,
-                  mb: 0.5
-                }}
-              >
-                <RestaurantIcon fontSize="large" />
-              </Avatar>
-              <Typography variant="caption" align="center" fontWeight={categoria === '' ? 'bold' : 'normal'}>
-                Todas
-              </Typography>
-            </Box>
-            
-            {/* Categorias */}
-            {categorias.map(cat => (
-              <Box 
-                key={cat}
-                onClick={() => setCategoria(cat)}
-                sx={{
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  minWidth: 60,
-                  opacity: categoria === cat ? 1 : 0.7,
-                  transition: 'all 0.2s',
-                  '&:hover': { opacity: 1 }
-                }}
-              >
-                <Avatar 
-                  sx={{ 
-                    bgcolor: categoria === cat ? 'primary.main' : 'grey.300',
-                    width: 56, 
-                    height: 56,
-                    mb: 0.5
-                  }}
-                >
-                  {categoriaIcons[cat] || categoriaIcons['default']}
-                </Avatar>
-                <Typography variant="caption" align="center" fontWeight={categoria === cat ? 'bold' : 'normal'}>
-                  {cat}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
+      <PedidoHeader 
+        mesa={mesa} 
+        carrinho={carrinho} 
+        onOpenCarrinho={handleToggleCarrinhoModal}
+        onVoltar={handleVoltar}
+      />
+      
 
-        {/* Listagem de itens por categoria */}
-        <List sx={{ maxHeight: 'calc(100vh - 320px)', overflow: 'auto' }}>
-          {/* Agrupar itens por categoria */}
-          {categorias
-            .filter(cat => itensFiltrados.some(item => item.categoria === cat))
-            .map(cat => (
-              <React.Fragment key={cat}>
-                {/* Cabeçalho da categoria */}
-                <ListItem sx={{ bgcolor: 'primary.light', color: 'white', py: 0.5 }}>
-                  <Typography variant="subtitle2" fontWeight="bold">{cat}</Typography>
-                </ListItem>
-                
-                {/* Itens da categoria */}
-                {itensFiltrados
-                  .filter(item => item.categoria === cat)
-                  .sort((a, b) => a.nome.localeCompare(b.nome))
-                  .map(item => (
-                    <ListItem 
-                      key={item.id} 
-                      onClick={() => handleSelecionarItem(item)} 
-                      disabled={!!itensSelecionados.find(i => i.id === item.id)} 
-                      sx={{ cursor: 'pointer', pl: 3 }}
-                    >
-                      <ListItemText
-                        primary={item.nome}
-                        secondary={`R$ ${item.preco.toFixed(2)}`}
-                      />
-                      <Chip label="Selecionar" color="primary" size="small" sx={{ ml: 2, cursor: 'pointer' }} />
-                    </ListItem>
-                  ))
-                }
-              </React.Fragment>
-            ))
-          }
-          
-          {/* Mensagem quando não há itens */}
-          {itensFiltrados.length === 0 && (
-            <ListItem>
-              <ListItemText primary="Nenhum item encontrado" />
-            </ListItem>
-          )}
-        </List>
+      <SearchBar busca={busca} setBusca={setBusca} />
+      
+
+      <CategoriaSelector 
+        categorias={categorias} 
+        categoriaId={categoriaId} 
+        setCategoriaId={setCategoriaId} 
+      />
+      
+
+      {loading && <CircularProgress size={24} sx={{ mx: 'auto', my: 2 }} />}
+      {error && <Typography color="error" sx={{ my: 2 }}>{error}</Typography>}
+      
+
+      <Paper elevation={3} sx={{ p: 2, mb: 2, flexGrow: 1, overflow: 'auto' }}>
+        <ProdutosList 
+          loading={loading}
+          error={error}
+          produtos={produtos}
+          produtosPorCategoria={produtosPorCategoria}
+          categorias={categorias}
+          carrinho={carrinho}
+          itensSelecionados={itensSelecionados}
+          handleSelecionarItem={handleSelecionarItem}
+        />
       </Paper>
-      {itensSelecionados.length > 0 && (
-        <Paper elevation={3} sx={{ p: 2, mb: 2, maxHeight: 250, overflow: 'auto', flexShrink: 0 }}>
-          <Typography variant="subtitle1" fontWeight={600} gutterBottom>Itens em edição</Typography>
-          <List>
-            {itensSelecionados.map(sel => {
-              const item = itensMock.find(i => i.id === sel.id);
-              return (
-                <React.Fragment key={sel.id + JSON.stringify(sel.adicionais) + sel.observacao}>
-                  <ListItem alignItems="flex-start">
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="subtitle1" fontWeight={600}>{item.nome}</Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, mt: 0.5 }}>
-                        <TextField
-                          label="Qtd."
-                          type="number"
-                          size="small"
-                          value={sel.quantidade}
-                          onChange={e => handleAlterarQuantidade(sel.id, Number(e.target.value))}
-                          sx={{ width: 80 }}
-                          inputProps={{ min: 1 }}
-                        />
-                        <TextField
-                          label="Observação"
-                          size="small"
-                          value={inputObservacoes[sel.id] !== undefined ? inputObservacoes[sel.id] : sel.observacao}
-                          onChange={e => handleObservacaoInput(sel.id, e.target.value)}
-                          // Remover onBlur para evitar conflito com clique no botão Adicionar
-                          onKeyDown={e => { if (e.key === 'Enter') handleObservacaoCommit(sel.id); }}
-                          sx={{ width: 180 }}
-                          inputProps={{ maxLength: 100 }}
-                        />
-                      </Box>
-                      {item.adicionais.length > 0 && (
-                        <FormControl sx={{ mt: 1, width: '100%' }}>
-                          <InputLabel>Adicionais</InputLabel>
-                          <Select
-                            multiple
-                            value={sel.adicionais.map(a => a.id)}
-                            onChange={e => handleToggleAdicional(sel.id, e.target.value[e.target.value.length - 1])}
-                            input={<OutlinedInput label="Adicionais" />}
-                            renderValue={selected =>
-                              item.adicionais.filter(a => selected.includes(a.id)).map(a => a.nome).join(', ')
-                            }
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  maxHeight: 200
-                                }
-                              }
-                            }}
-                          >
-                            {item.adicionais.map(adic => {
-                              const adicionalSelecionado = sel.adicionais.find(a => a.id === adic.id);
-                              return (
-                                <MenuItem key={adic.id} value={adic.id}>
-                                  <Checkbox checked={!!adicionalSelecionado} />
-                                  <ListItemText primary={`${adic.nome} (+R$ ${adic.preco.toFixed(2)})`} />
-                                  {adicionalSelecionado && (
-                                    <TextField
-                                      label="Qtd."
-                                      type="number"
-                                      size="small"
-                                      value={adicionalSelecionado.quantidade}
-                                      onChange={e => handleAlterarQtdAdicional(sel.id, adic.id, Number(e.target.value))}
-                                      sx={{ width: 60, ml: 1 }}
-                                      inputProps={{ min: 1 }}
-                                    />
-                                  )}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select>
-                        </FormControl>
-                      )}
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, ml: 2 }}>
-                      <Button color="success" variant="contained" size="small" onClick={() => handleAdicionarCompleto(sel.id)} sx={{ mb: 1 }}>Adicionar</Button>
-                      <Button color="error" variant="outlined" size="small" onClick={() => handleRemoverItem(sel.id)} >Remover</Button>
-                    </Box>
-                  </ListItem>
-                  <Divider sx={{ my: 1 }} />
-                </React.Fragment>
-              );
-            })}
-          </List>
-        </Paper>
-      )}
       
-      {/* Botões de ação no final da página */}
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3, mb: 2 }}>
-        <Button variant="outlined" color="secondary" onClick={onCancelar}>
-          Cancelar
-        </Button>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={() => onSalvar(carrinho)} 
-          disabled={carrinho.length === 0}
-          startIcon={<ShoppingCartIcon />}
-        >
-          Finalizar Pedido ({totalItensCarrinho} {totalItensCarrinho === 1 ? 'item' : 'itens'})
-        </Button>
-      </Box>
+
+      <ItensSelecionados 
+        itensSelecionados={itensSelecionados}
+        handleRemoverItem={handleRemoverItem}
+        handleAlterarQuantidade={handleAlterarQuantidade}
+        handleObservacaoInput={handleObservacaoInput}
+        handleObservacaoCommit={handleObservacaoCommit}
+        handleToggleAdicional={handleToggleAdicional}
+        handleAlterarQtdAdicional={handleAlterarQtdAdicional}
+        handleAdicionarCompleto={handleAdicionarCompleto}
+        inputObservacoes={inputObservacoes}
+      />
       
-      {/* Modal do Carrinho */}
-      <Modal
+
+      <Fab 
+        color="primary" 
+        aria-label="carrinho"
+        onClick={handleToggleCarrinhoModal}
+        sx={{ position: 'fixed', bottom: 16, right: 16, display: { sm: 'none' } }}
+      >
+        <ShoppingCartIcon />
+      </Fab>
+      
+
+      <CarrinhoModal 
         open={carrinhoModalOpen}
         onClose={handleToggleCarrinhoModal}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={carrinhoModalOpen}>
-          <Paper 
-            sx={{ 
-              position: 'absolute', 
-              top: '50%', 
-              left: '50%', 
-              transform: 'translate(-50%, -50%)', 
-              width: '90%', 
-              maxWidth: 500,
-              maxHeight: '90vh',
-              p: 3,
-              outline: 'none',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden'
-            }}
-          >
-            {/* Cabeçalho do modal */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>
-                Carrinho de Compras
-              </Typography>
-              <IconButton onClick={handleToggleCarrinhoModal} size="small">
-                <CloseIcon />
-              </IconButton>
-            </Box>
-            
-            {/* Lista de itens do carrinho */}
-            {carrinho.length > 0 ? (
-              <Box sx={{ overflow: 'auto', flex: 1, mb: 2, maxHeight: '60vh' }}>
-                <List>
-                  {carrinho.map((c, idx) => {
-                    const item = itensMock.find(i => i.id === c.id);
-                    // Calcular subtotal do item
-                    const subtotalAdicionais = c.adicionais.reduce((soma, a) => {
-                      const ad = item.adicionais.find(x => x.id === a.id);
-                      return ad ? soma + ad.preco * a.quantidade : soma;
-                    }, 0);
-                    const subtotal = (item.preco + subtotalAdicionais) * c.quantidade;
-                    return (
-                      <React.Fragment key={idx + c.id + JSON.stringify(c.adicionais) + c.observacao}>
-                        <ListItem alignItems="flex-start" sx={{ gap: 2 }}>
-                          <Box sx={{ flex: 1 }}>
-                            <Typography variant="subtitle1" fontWeight={600}>{item.nome}</Typography>
-                            <Typography variant="body2">
-                              Obs: {c.observacao || '-'}
-                              {c.adicionais.length > 0 && (
-                                <>
-                                  <br />Adicionais: {c.adicionais.map(a => {
-                                    const ad = item.adicionais.find(x => x.id === a.id);
-                                    return ad ? `${ad.nome} x${a.quantidade}` : '';
-                                  }).join(', ')}
-                                </>
-                              )}
-                              <br />
-                              <strong>Subtotal: R$ {subtotal.toFixed(2)}</strong>
-                            </Typography>
-                          </Box>
-                          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Button size="small" variant="outlined" color="primary" onClick={() => handleCarrinhoQtd(idx, c.quantidade - 1)} disabled={c.quantidade <= 1} sx={{ minWidth: 32, px: 1 }}>-</Button>
-                              <Typography>{c.quantidade}</Typography>
-                              <Button size="small" variant="outlined" color="primary" onClick={() => handleCarrinhoQtd(idx, c.quantidade + 1)} sx={{ minWidth: 32, px: 1 }}>+</Button>
-                            </Box>
-                            <Button size="small" variant="outlined" color="error" onClick={() => handleCarrinhoRemover(idx)} sx={{ mt: 1 }}>Remover</Button>
-                          </Box>
-                        </ListItem>
-                        <Divider sx={{ my: 1 }} />
-                      </React.Fragment>
-                    );
-                  })}
-                </List>
-              </Box>
-            ) : (
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', py: 4 }}>
-                <ShoppingCartIcon sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }} />
-                <Typography variant="h6" color="text.secondary">Seu carrinho está vazio</Typography>
-                <Typography variant="body2" color="text.secondary">Adicione itens para continuar</Typography>
-              </Box>
-            )}
-            
-            {/* Rodapé com total e botões */}
-            {carrinho.length > 0 && (
-              <>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 2, borderTop: '1px solid', borderColor: 'divider' }}>
-                  <Typography variant="subtitle1" fontWeight={600}>Total</Typography>
-                  <Typography variant="subtitle1" fontWeight={600}>R$ {calcularTotal().toFixed(2)}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
-                  <Button variant="outlined" color="secondary" onClick={handleToggleCarrinhoModal}>
-                    Continuar Comprando
-                  </Button>
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={() => {
-                      handleToggleCarrinhoModal();
-                      onSalvar(carrinho);
-                    }}
-                  >
-                    Finalizar Pedido
-                  </Button>
-                </Box>
-              </>
-            )}
-          </Paper>
-        </Fade>
-      </Modal>
+        carrinho={carrinho}
+        handleRemoverDoCarrinho={handleRemoverDoCarrinho}
+        handleAlterarQuantidadeCarrinho={handleAlterarQuantidadeCarrinho}
+        handleSalvar={handleSalvar}
+        loading={loading}
+      />
     </div>
   );
-}
+};
+
+export default NovoPedido;

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Paper, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
+import { AuthContext } from '../App';
 
-export default function CadastroUsuario({ onVoltar }) {
+export default function CadastroUsuario({ navigation }) {
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -105,7 +106,7 @@ export default function CadastroUsuario({ onVoltar }) {
             <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2, fontWeight: 700, borderRadius: 2, py: 1.2 }} disabled={loading || buscandoCep}>
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar'}
             </Button>
-            <Button fullWidth variant="outlined" color="secondary" sx={{ mb: 1, borderRadius: 2 }} onClick={onVoltar} disabled={loading}>
+            <Button fullWidth variant="outlined" color="secondary" sx={{ mb: 1, borderRadius: 2 }} onClick={() => navigation.navigate('Login')} disabled={loading}>
               Voltar para Login
             </Button>
           </Box>

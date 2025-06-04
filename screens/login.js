@@ -1,26 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Paper, Typography, TextField, Button, Alert, Link, CircularProgress } from '@mui/material';
-import CadastroUsuario from './cadastro';
 import { LockOutlined } from '@mui/icons-material';
+import { AuthContext } from '../App';
 
-export default function Login({ onLogin }) {
-  const [telaCadastro, setTelaCadastro] = useState(false);
+export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
-
-  React.useEffect(() => {
-    // Verifica se já está logado
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      onLogin(token);
-    }
-  }, [onLogin]);
-
-  if (telaCadastro) {
-    return <CadastroUsuario onVoltar={() => setTelaCadastro(false)} />;
-  }
+  const { login } = useContext(AuthContext);
 
   async function validarLogin(e) {
     e.preventDefault();
@@ -43,9 +31,8 @@ export default function Login({ onLogin }) {
       }
       const data = await response.json();
       if (data && data.access) {
-        localStorage.setItem('accessToken', data.access);
         setLoading(false);
-        onLogin(data.access);
+        login(data.access); // Usa a função login do contexto
       } else {
         setLoading(false);
         setErro('Resposta inválida do servidor.');
@@ -103,7 +90,7 @@ export default function Login({ onLogin }) {
               <Link href="#" underline="hover" onClick={e => e.preventDefault()} fontSize={14} color="text.secondary">
                 Esqueci minha senha
               </Link>
-              <Link href="#" underline="hover" onClick={e => { e.preventDefault(); setTelaCadastro(true); }} fontSize={14} color="text.secondary">
+              <Link href="#" underline="hover" onClick={e => { e.preventDefault(); navigation.navigate('Cadastro'); }} fontSize={14} color="text.secondary">
                 Criar conta
               </Link>
             </Box>
