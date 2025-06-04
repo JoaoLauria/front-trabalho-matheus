@@ -215,6 +215,29 @@ export const ApiService = {
    */
   products: {
     /**
+     * Busca todos os produtos
+     * @param {Object} params - Parâmetros de busca
+     * @param {string} params.category - Categoria do produto
+     * @param {string} params.search - Termo de busca
+     * @param {boolean} params.is_available - Filtrar por disponibilidade
+     * @returns {Promise<Object>} { data: Array<Product>, error }
+     */
+    getProducts: async ({ category = '', search = '', is_available = '' } = {}) => {
+      try {
+        let url = `${API_BASE_URL}/products/?`;
+        if (category) url += `category=${category}&`;
+        if (search) url += `search=${search}&`;
+        if (is_available !== '') url += `is_available=${is_available}&`;
+        
+        const response = await fetch(url);
+        return await handleResponse(response);
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
      * Busca produtos por categoria
      * @param {number} categoryId - ID da categoria
      * @returns {Promise<Object>} { data: Array<Product>, error }
@@ -228,28 +251,117 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
+
     /**
-     * Busca produtos
-     * @param {Object} params - Parâmetros de busca
-     * @param {string} params.category - Categoria do produto
-     * @param {string} params.search - Termo de busca
-     * @returns {Promise<Object>} { data: Array<Product>, error }
+     * Busca detalhes de um produto específico
+     * @param {number} productId - ID do produto
+     * @returns {Promise<Object>} { data: Product, error }
      */
-    getProducts: async ({ category = '', search = '' } = {}) => {
+    getProductById: async (productId) => {
       try {
-        const params = new URLSearchParams();
-        if (category) params.append('category', category);
-        if (search) params.append('search', search);
-        
-        const response = await fetch(`${API_BASE_URL}/products/?${params}`);
+        const response = await fetch(`${API_BASE_URL}/products/${productId}/`);
         return await handleResponse(response);
       } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        console.error(`Erro ao buscar produto ${productId}:`, error);
         return { data: null, error: error.message };
       }
     },
-    
+
+    /**
+     * Cria um novo produto
+     * @param {Object} productData - Dados do produto
+     * @param {string} productData.name - Nome do produto
+     * @param {string} productData.description - Descrição do produto
+     * @param {number} productData.price - Preço do produto
+     * @param {number} productData.category - ID da categoria do produto
+     * @param {boolean} productData.is_available - Status de disponibilidade do produto
+     * @returns {Promise<Object>} { data: Product, error }
+     */
+    createProduct: async (productData) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(productData)
+        });
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error('Erro ao criar produto:', error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Atualiza um produto existente (atualização completa)
+     * @param {number} productId - ID do produto
+     * @param {Object} productData - Dados atualizados do produto
+     * @returns {Promise<Object>} { data: Product, error }
+     */
+    updateProduct: async (productId, productData) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(productData)
+        });
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao atualizar produto ${productId}:`, error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Atualiza parcialmente um produto existente
+     * @param {number} productId - ID do produto
+     * @param {Object} productData - Dados parciais para atualização
+     * @returns {Promise<Object>} { data: Product, error }
+     */
+    patchProduct: async (productId, productData) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(productData)
+        });
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao atualizar parcialmente produto ${productId}:`, error);
+        return { data: null, error: error.message };
+      }
+    },
+
+    /**
+     * Exclui um produto
+     * @param {number} productId - ID do produto
+     * @returns {Promise<Object>} { data, error }
+     */
+    deleteProduct: async (productId) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
+          method: 'DELETE',
+        });
+        
+        if (response.status === 204) {
+          return { data: true, error: null };
+        }
+        
+        return await handleResponse(response);
+      } catch (error) {
+        console.error(`Erro ao excluir produto ${productId}:`, error);
+        return { data: null, error: error.message };
+      }
+    },
+
     /**
      * Busca adicionais disponíveis para um produto
      * @param {number} productId - ID do produto
@@ -260,10 +372,10 @@ export const ApiService = {
         const response = await fetch(`${API_BASE_URL}/products/${productId}/additionals/`);
         return await handleResponse(response);
       } catch (error) {
-        console.error(`Erro ao buscar adicionais para o produto ${productId}:`, error);
+        console.error(`Erro ao buscar adicionais do produto ${productId}:`, error);
         return { data: null, error: error.message };
       }
-    }
+    },
   },
   
   /**

@@ -4,23 +4,34 @@ import ErrorSnackbar from '../components/ErrorSnackbar';
 const ErrorContext = createContext();
 
 export function ErrorProvider({ children }) {
-  const [error, setError] = useState({
+  const [notification, setNotification] = useState({
     open: false,
     message: '',
-    duration: 6000
+    duration: 6000,
+    severity: 'error'
   });
 
   const showError = (message, duration = 6000) => {
-    setError({
+    setNotification({
       open: true,
       message,
-      duration
+      duration,
+      severity: 'error'
+    });
+  };
+  
+  const showSuccess = (message, duration = 6000) => {
+    setNotification({
+      open: true,
+      message,
+      duration,
+      severity: 'success'
     });
   };
 
-  const clearError = () => {
-    setError({
-      ...error,
+  const clearNotification = () => {
+    setNotification({
+      ...notification,
       open: false
     });
   };
@@ -56,13 +67,14 @@ export function ErrorProvider({ children }) {
   };
 
   return (
-    <ErrorContext.Provider value={{ showError, clearError, handleApiError, isConnectionError }}>
+    <ErrorContext.Provider value={{ showError, showSuccess, clearNotification, handleApiError, isConnectionError }}>
       {children}
       <ErrorSnackbar
-        open={error.open}
-        message={error.message}
-        onClose={clearError}
-        duration={error.duration}
+        open={notification.open}
+        message={notification.message}
+        onClose={clearNotification}
+        duration={notification.duration}
+        severity={notification.severity}
       />
     </ErrorContext.Provider>
   );

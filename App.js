@@ -11,6 +11,7 @@ import NovoPedido from './screens/NovoPedido';
 import CadastroUsuario from './screens/cadastro';
 import CadastroMesa from './screens/CadastroMesa';
 import GerenciarCategorias from './screens/GerenciarCategorias';
+import GerenciarProdutos from './screens/GerenciarProdutos';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +74,7 @@ export default function App() {
               <Stack.Screen name="Cardapio" component={Cardapio} />
               <Stack.Screen name="CadastroMesa" component={CadastroMesa} />
               <Stack.Screen name="GerenciarCategorias" component={GerenciarCategorias} />
+              <Stack.Screen name="GerenciarProdutos" component={GerenciarProdutos} />
             </>
           )}
         </Stack.Navigator>

@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { 
   Restaurant, EventSeat, ExitToApp, Add, Menu as MenuIcon, 
-  Category, Settings, Dashboard
+  Category, Settings, Dashboard, RestaurantMenu
 } from '@mui/icons-material';
 import { AuthContext } from '../App';
 import ApiService from '../services/ApiService';
@@ -42,6 +42,11 @@ export default function Comandas({ navigation }) {
   const handleNovaMesa = () => {
     handleMenuClose();
     navigation.navigate('CadastroMesa');
+  };
+  
+  const handleGerenciarProdutos = () => {
+    handleMenuClose();
+    navigation.navigate('GerenciarProdutos');
   };
 
 
@@ -121,6 +126,12 @@ export default function Comandas({ navigation }) {
                 <Category fontSize="small" />
               </ListItemIcon>
               <ListItemText>Gerenciar Categorias</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleGerenciarProdutos}>
+              <ListItemIcon>
+                <RestaurantMenu fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Gerenciar Produtos</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleMenuClose}>
               <ListItemIcon>
