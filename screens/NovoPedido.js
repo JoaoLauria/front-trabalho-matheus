@@ -13,7 +13,7 @@ import ItensSelecionados from '../components/ItensSelecionados';
 import CarrinhoModal from '../components/CarrinhoModal';
 
 import ApiService from '../services/ApiService';
-import { agruparProdutosPorCategoria, adicionaisIguais } from '../utils/pedidoUtils';
+import { agruparProdutosPorCategoria, adicionaisIguais, formatarMoeda } from '../utils/utils';
 
 const NovoPedido = () => {
   const navigation = useNavigation();
@@ -66,8 +66,13 @@ const NovoPedido = () => {
     setLoading(true);
     setError('');
     try {
-      const data = await ApiService.fetchCategorias();
-      setCategorias(data);
+      const { data, error } = await ApiService.categories.getAllCategories();
+      
+      if (error) {
+        throw new Error(error);
+      }
+      
+      setCategorias(data || []);
     } catch (error) {
       console.error('Erro ao buscar categorias:', error);
       setError('Falha ao carregar categorias. Tente novamente.');
@@ -80,8 +85,16 @@ const NovoPedido = () => {
     setLoading(true);
     setError('');
     try {
-      const data = await ApiService.fetchProdutos(categoriaId, busca);
-      setProdutos(data);
+      const { data, error } = await ApiService.products.getProducts({
+        category: categoriaId || undefined,
+        search: busca || undefined
+      });
+      
+      if (error) {
+        throw new Error(error);
+      }
+      
+      setProdutos(data || []);
     } catch (error) {
       console.error('Erro ao buscar produtos:', error);
       setError('Falha ao carregar produtos. Tente novamente.');
@@ -92,7 +105,13 @@ const NovoPedido = () => {
 
   async function fetchAdicionais(produtoId) {
     try {
-      return await ApiService.fetchAdicionais(produtoId);
+      const { data, error } = await ApiService.products.getProductAdditionals(produtoId);
+      
+      if (error) {
+        throw new Error(error);
+      }
+      
+      return data || [];
     } catch (error) {
       console.error(`Erro ao buscar adicionais para o produto ${produtoId}:`, error);
       return [];
@@ -228,21 +247,6 @@ const NovoPedido = () => {
     handleRemoverItem(index);
   }
 
-  function adicionaisIguais(adicionais1, adicionais2) {
-    if (adicionais1.length !== adicionais2.length) return false;
-
-    const sorted1 = [...adicionais1].sort((a, b) => a.id - b.id);
-    const sorted2 = [...adicionais2].sort((a, b) => a.id - b.id);
-
-    return sorted1.every((adicional, index) => {
-      const adicional2 = sorted2[index];
-      return (
-        adicional.id === adicional2.id &&
-        adicional.quantidade === adicional2.quantidade
-      );
-    });
-  }
-
   function handleAdicionarAoCarrinho(item) {
     const adicionaisSelecionados = item.adicionais
       .filter(adicional => adicional.selecionado)
@@ -335,16 +339,24 @@ const NovoPedido = () => {
         items: itens
       };
 
-      console.log('Mesa original:', mesa);
-      console.log('ID da mesa usado:', tableId);
-      console.log('Payload do pedido:', JSON.stringify(pedidoPayload, null, 2));
-
-      const novoPedido = await ApiService.criarPedido(pedidoPayload);
-      console.log('Pedido criado com sucesso:', novoPedido);
+      const { data, error } = await ApiService.orders.createOrder(pedidoPayload);
+      
+      if (error) {
+        throw new Error(error);
+      }
+      
+      console.log('Pedido criado com sucesso:', data);
 
       setCarrinho([]);
       setCarrinhoModalOpen(false);
-      navigation.navigate('PedidosMesa', { mesa });
+      
+      setAlertDialog({
+        open: true,
+        title: 'Sucesso',
+        message: 'Pedido criado com sucesso!',
+        type: 'success',
+        onConfirm: () => navigation.navigate('PedidosMesa', { mesa })
+      });
     } catch (error) {
       console.error('Erro ao salvar pedido:', error);
       setError(`Falha ao salvar pedido: ${error.message}`);
@@ -355,7 +367,6 @@ const NovoPedido = () => {
         type: 'error'
       });
       setLoading(false);
-      setError(error.message);
     }
   }
 

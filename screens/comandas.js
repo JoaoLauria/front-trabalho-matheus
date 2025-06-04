@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Grid, Paper, Typography, Button, Box, Tooltip, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { Restaurant, EventSeat, ExitToApp, Add } from '@mui/icons-material';
 import { AuthContext } from '../App';
+import ApiService from '../services/ApiService';
 
 export default function Comandas({ navigation }) {
   const [mesas, setMesas] = useState([]);
@@ -11,33 +12,21 @@ export default function Comandas({ navigation }) {
   const [mesaAlvo, setMesaAlvo] = useState(null);
   const [qtdPessoas, setQtdPessoas] = useState('1');
 
-  // Função para buscar mesas do servidor
+
   const fetchMesas = async () => {
     setLoading(true);
     setErro('');
     try {
-      const response = await fetch('http://localhost:8000/tables/');
-      if (!response.ok) throw new Error('Erro ao buscar mesas.');
-      const data = await response.json();
+      const { data, error } = await ApiService.tables.getAllTables();
       
-      // Garantir que mesas seja sempre um array
+      if (error) {
+        throw new Error(error);
+      }
+      
       if (Array.isArray(data)) {
         setMesas(data);
-      } else if (data && typeof data === 'object') {
-        // Se a API retornar um objeto com uma propriedade que contém o array
-        // Por exemplo: { results: [...] } ou { tables: [...] }
-        const possibleArrays = ['results', 'tables', 'data', 'items'];
-        for (const key of possibleArrays) {
-          if (Array.isArray(data[key])) {
-            setMesas(data[key]);
-            return;
-          }
-        }
-        // Se não encontrou um array em nenhuma propriedade conhecida
-        console.error('Resposta da API não contém um array:', data);
-        setMesas([]);
       } else {
-        console.error('Resposta da API não é um array nem um objeto:', data);
+        console.error('Resposta da API não é um array:', data);
         setMesas([]);
       }
     } catch (err) {
@@ -49,12 +38,12 @@ export default function Comandas({ navigation }) {
     }
   };
 
-  // Buscar mesas quando o componente montar
+
   useEffect(() => {
     fetchMesas();
   }, []);
   
-  // Atualizar mesas quando a tela receber foco (voltar de outra tela)
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       fetchMesas();
@@ -228,7 +217,7 @@ export default function Comandas({ navigation }) {
                 pattern="[0-9]*"
                 value={qtdPessoas}
                 onChange={(e) => {
-                  // Aceitar apenas números
+
                   const value = e.target.value.replace(/[^0-9]/g, '');
                   setQtdPessoas(value);
                 }}
@@ -265,27 +254,20 @@ export default function Comandas({ navigation }) {
               <Button 
                 onClick={async () => {
                   try {
-                    const response = await fetch(`http://localhost:8000/tables/${mesaAlvo.id}/set-unavailable/`, {
-                      method: 'PATCH',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        people_count: qtdPessoas
-                      })
+                    const { data, error } = await ApiService.tables.setTableUnavailable(mesaAlvo.id, {
+                      people_count: parseInt(qtdPessoas)
                     });
                     
-                    if (!response.ok) {
-                      throw new Error('Erro ao abrir a mesa');
+                    if (error) {
+                      throw new Error(error);
                     }
                     
                     setMesas(mesas.map(m => m.id === mesaAlvo.id ? { ...m, seats: qtdPessoas, is_available: false } : m));
                     setModalOpen(false);
-                    // Passar o ID da mesa em vez do número
-                    console.log('Navegando para PedidosMesa com ID da mesa:', mesaAlvo.id);
                     navigation.navigate('PedidosMesa', { mesa: mesaAlvo.id });
                   } catch (error) {
                     console.error('Erro ao abrir mesa:', error);
+                    setErro(`Erro ao abrir mesa: ${error.message}`);
                   }
                 }}
                 color="success"

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Typography, Paper, Chip } from '@mui/material';
+import { Box, Typography, Paper, Chip, IconButton } from '@mui/material';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import PeopleIcon from '@mui/icons-material/People';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export default function MesaHeader({ mesa, total }) {
+export default function MesaHeader({ mesa, total, onVoltar }) {
   return (
     <Paper 
       elevation={2} 
@@ -17,6 +18,16 @@ export default function MesaHeader({ mesa, total }) {
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton 
+            onClick={onVoltar}
+            sx={{ 
+              color: 'white', 
+              mr: 1,
+              '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+            }}
+          >
+            <ArrowBackIcon />
+          </IconButton>
           <TableRestaurantIcon sx={{ mr: 1.5, fontSize: 28 }} />
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>

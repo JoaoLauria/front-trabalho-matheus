@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Box, Paper, Typography, TextField, Button, Alert, Link, CircularProgress } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { AuthContext } from '../App';
+import ApiService from '../services/ApiService';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -19,27 +20,21 @@ export default function Login({ navigation }) {
     }
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/user/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!response.ok) {
+      const { data, error } = await ApiService.users.login(email, password);
+      
+      if (error) {
         throw new Error('Usuário ou senha inválidos.');
       }
-      const data = await response.json();
+      
       if (data && data.access) {
-        setLoading(false);
         login(data.access); // Usa a função login do contexto
       } else {
-        setLoading(false);
         setErro('Resposta inválida do servidor.');
       }
     } catch (err) {
-      setLoading(false);
       setErro(err.message || 'Erro ao fazer login.');
+    } finally {
+      setLoading(false);
     }
   }
 

@@ -10,6 +10,7 @@ import {
   Alert
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import ApiService from '../services/ApiService';
 
 export default function CadastroMesa({ navigation }) {
   const [numeroMesa, setNumeroMesa] = useState('');
@@ -27,7 +28,7 @@ export default function CadastroMesa({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    // Validação básica
+
     if (!numeroMesa) {
       setSnackbar({
         open: true,
@@ -40,37 +41,31 @@ export default function CadastroMesa({ navigation }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/tables/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          table_number: numeroMesa,
-          capacity: capacidade ? Number(capacidade) : 4,
-          is_available: true
-        })
-      });
-
-      if (response.ok) {
-        setSnackbar({
-          open: true,
-          message: 'Mesa cadastrada com sucesso!',
-          severity: 'success'
-        });
-        
-        // Limpar campos
-        setNumeroMesa('');
-        setCapacidade('');
-        setDescricao('');
-        
-        // Voltar para a tela de comandas imediatamente
-        // A lista será atualizada automaticamente pelo useEffect com o listener de foco
-        navigation.navigate('Comandas');
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao cadastrar mesa');
+      const tableData = {
+        table_number: numeroMesa,
+        capacity: capacidade ? Number(capacidade) : 4,
+        is_available: true
+      };
+      
+      const { data, error } = await ApiService.tables.createTable(tableData);
+      
+      if (error) {
+        throw new Error(error);
       }
+      
+      setSnackbar({
+        open: true,
+        message: 'Mesa cadastrada com sucesso!',
+        severity: 'success'
+      });
+      
+
+      setNumeroMesa('');
+      setCapacidade('');
+      setDescricao('');
+      
+
+      navigation.navigate('Comandas');
     } catch (error) {
       setSnackbar({
         open: true,

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Box, Paper, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 import { AuthContext } from '../App';
+import ApiService from '../services/ApiService';
 
 export default function CadastroUsuario({ navigation }) {
   const [form, setForm] = useState({
@@ -21,7 +22,7 @@ export default function CadastroUsuario({ navigation }) {
   const [sucesso, setSucesso] = useState('');
   const [buscandoCep, setBuscandoCep] = useState(false);
 
-  // Busca ViaCEP
+
   async function buscarCep(cep) {
     setBuscandoCep(true);
     setErro('');
@@ -46,32 +47,29 @@ export default function CadastroUsuario({ navigation }) {
     setBuscandoCep(false);
   }
 
-  // Atualiza campos do formulário
+
   function handleChange(e) {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
-    // Busca CEP quando 8 dígitos
+
     if (name === 'cep' && value.length === 8) {
       buscarCep(value);
     }
   }
 
-  // Submete cadastro
+
   async function handleSubmit(e) {
     e.preventDefault();
     setErro('');
     setSucesso('');
     setLoading(true);
     try {
-      const resposta = await fetch('http://localhost:8000/user/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (!resposta.ok) {
-        const erroData = await resposta.json();
-        throw new Error(erroData.detail || 'Erro ao cadastrar usuário.');
+      const { data, error } = await ApiService.users.createUser(form);
+      
+      if (error) {
+        throw new Error(error);
       }
+      
       setSucesso('Usuário cadastrado com sucesso!');
       setForm({
         email: '', password: '', full_name: '', cep: '', address: '', address_number: '', address_complement: '', neighborhood: '', city: '', state: '', country: 'Brasil',

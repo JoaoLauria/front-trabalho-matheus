@@ -6,7 +6,8 @@ import StatusChangeDialog from '../components/StatusChangeDialog';
 import PedidoItem from '../components/PedidoItem';
 import MesaHeader from '../components/MesaHeader';
 import ActionButtons from '../components/ActionButtons';
-import { calcularTotal } from '../utils/pedidosUtils';
+import { calcularTotal, formatarMoeda, getStatusColor } from '../utils/utils';
+import ApiService from '../services/ApiService';
 
 export default function PedidosMesa({ navigation, route }) {
   const mesa = route.params?.mesa;
@@ -37,30 +38,64 @@ export default function PedidosMesa({ navigation, route }) {
     setCarregando(true);
     setErro(null);
     try {
-      const response = await fetch(`http://localhost:8000/tables/${mesa}/orders/`);
+      const { data, error } = await ApiService.orders.getOrdersByTable(mesa);
       
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar pedidos: ${response.status}`);
+      console.log('Dados recebidos da API:', JSON.stringify(data, null, 2));
+      
+      // Análise detalhada da estrutura dos dados
+      if (Array.isArray(data) && data.length > 0) {
+        const primeiroPedido = data[0];
+        console.log('Estrutura do primeiro pedido:', Object.keys(primeiroPedido));
+        
+        if (primeiroPedido.items && Array.isArray(primeiroPedido.items) && primeiroPedido.items.length > 0) {
+          const primeiroItem = primeiroPedido.items[0];
+          console.log('Estrutura do primeiro item:', Object.keys(primeiroItem));
+          console.log('Valor de product no primeiro item:', primeiroItem.product);
+          console.log('Tipo de product:', typeof primeiroItem.product);
+          
+          if (typeof primeiroItem.product === 'object' && primeiroItem.product !== null) {
+            console.log('Propriedades de product:', Object.keys(primeiroItem.product));
+          } else if (typeof primeiroItem.product === 'number') {
+            console.log('product é um ID numérico, precisamos buscar os detalhes do produto');
+          }
+          
+          console.log('Valor de price:', primeiroItem.price);
+          console.log('Valor de quantity:', primeiroItem.quantity);
+        }
       }
       
-      const data = await response.json();
+      if (error) {
+        throw new Error(error);
+      }
       
       if (Array.isArray(data)) {
+        console.log('Dados são um array');
+        if (data.length > 0) {
+          console.log('Exemplo de pedido:', JSON.stringify(data[0], null, 2));
+          if (data[0].items && data[0].items.length > 0) {
+            console.log('Exemplo de item:', JSON.stringify(data[0].items[0], null, 2));
+          }
+        }
         setPedidos(data);
       } else if (data && typeof data === 'object') {
+        console.log('Dados são um objeto');
         const possibleArrays = ['results', 'orders', 'data', 'items'];
         for (const key of possibleArrays) {
           if (Array.isArray(data[key])) {
+            console.log(`Usando array em data.${key}`);
             setPedidos(data[key]);
             return;
           }
         }
+        console.log('Nenhum array encontrado no objeto');
         setPedidos([]);
       } else {
+        console.log('Dados não são nem array nem objeto');
         setPedidos([]);
       }
     } catch (error) {
       setErro('Não foi possível carregar os pedidos. Tente novamente.');
+      console.error(error);
     } finally {
       setCarregando(false);
     }
@@ -85,16 +120,10 @@ export default function PedidosMesa({ navigation, route }) {
     try {
       const novoStatus = acao === 'finalizar' ? 'finalizado' : 'cancelado';
       
-      const response = await fetch(`http://localhost:8000/orders/${pedido.id}/status/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: novoStatus })
-      });
+      const { data, error } = await ApiService.orders.updateOrderStatus(pedido.id, novoStatus);
       
-      if (!response.ok) {
-        throw new Error(`Erro ao atualizar status: ${response.status}`);
+      if (error) {
+        throw new Error(error);
       }
       
       setStatusDialog(prev => ({ ...prev, open: false }));
@@ -132,15 +161,10 @@ export default function PedidosMesa({ navigation, route }) {
     try {
       setConfirmDialog(prev => ({ ...prev, open: false }));
       
-      const response = await fetch(`http://localhost:8000/tables/${mesa}/set-available/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const { data, error } = await ApiService.tables.setTableAvailable(mesa);
       
-      if (!response.ok) {
-        throw new Error(`Erro ao fechar conta: ${response.status}`);
+      if (error) {
+        throw new Error(error);
       }
       
       setAlertDialog({
@@ -164,7 +188,11 @@ export default function PedidosMesa({ navigation, route }) {
 
   return (
     <Box sx={{ p: 2 }}>
-      <MesaHeader mesa={mesa} total={total} />
+      <MesaHeader 
+        mesa={mesa} 
+        total={total} 
+        onVoltar={() => navigation.navigate('Comandas')} 
+      />
       
       <ActionButtons 
         onNovoPedido={() => navigation.navigate('NovoPedido', { mesa })}

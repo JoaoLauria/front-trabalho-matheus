@@ -6,7 +6,8 @@ import StatusChangeDialog from '../components/StatusChangeDialog';
 import PedidoItem from '../components/PedidoItem';
 import MesaHeader from '../components/MesaHeader';
 import ActionButtons from '../components/ActionButtons';
-import { calcularTotal } from '../utils/pedidosUtils';
+import { calcularTotal } from '../utils/utils';
+import ApiService from '../services/ApiService';
 
 export default function PedidosMesa({ navigation, route }) {
   const mesa = route.params?.mesa;
@@ -37,30 +38,16 @@ export default function PedidosMesa({ navigation, route }) {
     setCarregando(true);
     setErro(null);
     try {
-      const response = await fetch(`http://localhost:8000/tables/${mesa}/orders/`);
+      const { data, error } = await ApiService.orders.getOrdersByTable(mesa);
       
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar pedidos: ${response.status}`);
+      if (error) {
+        throw new Error(error);
       }
       
-      const data = await response.json();
-      
-      if (Array.isArray(data)) {
-        setPedidos(data);
-      } else if (data && typeof data === 'object') {
-        const possibleArrays = ['results', 'orders', 'data', 'items'];
-        for (const key of possibleArrays) {
-          if (Array.isArray(data[key])) {
-            setPedidos(data[key]);
-            return;
-          }
-        }
-        setPedidos([]);
-      } else {
-        setPedidos([]);
-      }
+      setPedidos(data || []);
     } catch (error) {
       setErro('Não foi possível carregar os pedidos. Tente novamente.');
+      console.error(error);
     } finally {
       setCarregando(false);
     }
@@ -85,16 +72,10 @@ export default function PedidosMesa({ navigation, route }) {
     try {
       const novoStatus = acao === 'finalizar' ? 'finalizado' : 'cancelado';
       
-      const response = await fetch(`http://localhost:8000/orders/${pedido.id}/status/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: novoStatus })
-      });
+      const { error } = await ApiService.orders.updateOrderStatus(pedido.id, novoStatus);
       
-      if (!response.ok) {
-        throw new Error(`Erro ao atualizar status: ${response.status}`);
+      if (error) {
+        throw new Error(error);
       }
       
       setStatusDialog(prev => ({ ...prev, open: false }));
@@ -132,15 +113,10 @@ export default function PedidosMesa({ navigation, route }) {
     try {
       setConfirmDialog(prev => ({ ...prev, open: false }));
       
-      const response = await fetch(`http://localhost:8000/tables/${mesa}/set-available/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const { error } = await ApiService.tables.setTableAvailable(mesa);
       
-      if (!response.ok) {
-        throw new Error(`Erro ao fechar conta: ${response.status}`);
+      if (error) {
+        throw new Error(error);
       }
       
       setAlertDialog({
@@ -164,7 +140,11 @@ export default function PedidosMesa({ navigation, route }) {
 
   return (
     <Box sx={{ p: 2 }}>
-      <MesaHeader mesa={mesa} total={total} />
+      <MesaHeader 
+        mesa={mesa} 
+        total={total} 
+        onVoltar={() => navigation.navigate('Comandas')} 
+      />
       
       <ActionButtons 
         onNovoPedido={() => navigation.navigate('NovoPedido', { mesa })}
