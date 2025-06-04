@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useError } from '../contexts/ErrorContext';
 import {
   Box, 
   Typography, 
@@ -13,6 +14,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import ApiService from '../services/ApiService';
 
 export default function CadastroMesa({ navigation }) {
+  const { handleApiError, isConnectionError } = useError();
   const [numeroMesa, setNumeroMesa] = useState('');
   const [capacidade, setCapacidade] = useState('');
   const [descricao, setDescricao] = useState('');
@@ -67,9 +69,13 @@ export default function CadastroMesa({ navigation }) {
 
       navigation.navigate('Comandas');
     } catch (error) {
+      const errorMsg = `Erro: ${error?.message || 'Falha ao cadastrar mesa'}`;
+      
+      handleApiError(error || errorMsg);
+      
       setSnackbar({
         open: true,
-        message: `Erro: ${error.message}`,
+        message: errorMsg,
         severity: 'error'
       });
     } finally {

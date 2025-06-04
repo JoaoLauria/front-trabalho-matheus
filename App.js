@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { ErrorProvider } from './contexts/ErrorContext';
 
 // Importando as telas
 import Login from './screens/login';
@@ -62,7 +63,8 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
+      <ErrorProvider>
+        <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {!logado ? (
             // Rotas para usuários não autenticados
@@ -81,7 +83,8 @@ export default function App() {
             </>
           )}
         </Stack.Navigator>
-      </NavigationContainer>
+        </NavigationContainer>
+      </ErrorProvider>
     </AuthContext.Provider>
   );
 }

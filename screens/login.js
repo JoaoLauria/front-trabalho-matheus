@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useError } from '../contexts/ErrorContext';
 import { Box, Paper, Typography, TextField, Button, Alert, Link, CircularProgress } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { AuthContext } from '../App';
@@ -9,7 +10,8 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
+  const { handleApiError, isConnectionError } = useError();
 
   async function validarLogin(e) {
     e.preventDefault();
@@ -27,12 +29,16 @@ export default function Login({ navigation }) {
       }
       
       if (data && data.access) {
-        login(data.access); // Usa a função login do contexto
+        authContext.login(data.access); // Usa a função login do contexto
       } else {
         setErro('Resposta inválida do servidor.');
       }
-    } catch (err) {
-      setErro(err.message || 'Erro ao fazer login.');
+    } catch (error) {
+      const errorMsg = 'Erro ao fazer login. Verifique suas credenciais.';
+      
+      setErro(errorMsg);
+      handleApiError(error || errorMsg);
+      console.error('Erro ao fazer login:', error);
     } finally {
       setLoading(false);
     }

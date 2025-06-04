@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useError } from '../contexts/ErrorContext';
 import { Grid, Paper, Typography, Button, Box, Tooltip, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { Restaurant, EventSeat, ExitToApp, Add } from '@mui/icons-material';
 import { AuthContext } from '../App';
 import ApiService from '../services/ApiService';
 
 export default function Comandas({ navigation }) {
+  const { handleApiError, isConnectionError } = useError();
   const [mesas, setMesas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
@@ -13,7 +15,7 @@ export default function Comandas({ navigation }) {
   const [qtdPessoas, setQtdPessoas] = useState('1');
 
 
-  const fetchMesas = async () => {
+  const buscarMesas = async () => {
     setLoading(true);
     setErro('');
     try {
@@ -29,10 +31,12 @@ export default function Comandas({ navigation }) {
         console.error('Resposta da API não é um array:', data);
         setMesas([]);
       }
-    } catch (err) {
-      console.error('Erro ao buscar mesas:', err);
-      setErro(err.message || 'Erro desconhecido.');
-      setMesas([]);
+    } catch (error) {
+      const errorMsg = 'Não foi possível carregar as mesas.';
+      
+      setErro(errorMsg);
+      handleApiError(error || errorMsg);
+      console.error('Erro ao buscar mesas:', error);
     } finally {
       setLoading(false);
     }
@@ -40,13 +44,13 @@ export default function Comandas({ navigation }) {
 
 
   useEffect(() => {
-    fetchMesas();
+    buscarMesas();
   }, []);
   
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      fetchMesas();
+      buscarMesas();
     });
     
     return unsubscribe;
@@ -266,8 +270,9 @@ export default function Comandas({ navigation }) {
                     setModalOpen(false);
                     navigation.navigate('PedidosMesa', { mesa: mesaAlvo.id });
                   } catch (error) {
-                    console.error('Erro ao abrir mesa:', error);
-                    setErro(`Erro ao abrir mesa: ${error.message}`);
+                    const errorMsg = `Erro ao abrir mesa: ${error?.message || 'Falha na comunicação com o servidor'}`;
+                    setErro(errorMsg);
+                    handleApiError(error || errorMsg);
                   }
                 }}
                 color="success"

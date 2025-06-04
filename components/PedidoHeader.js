@@ -39,7 +39,7 @@ const PedidoHeader = ({ mesa, carrinho, onOpenCarrinho, onVoltar }) => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Chip 
               icon={<RestaurantIcon fontSize="small" />} 
-              label={`Mesa ${mesa?.table_number || mesa?.id}`} 
+              label={`Mesa ${typeof mesa === 'object' ? (mesa?.table_number || mesa?.id) : mesa}`} 
               size="small" 
               sx={{ 
                 bgcolor: 'rgba(255,255,255,0.2)', 

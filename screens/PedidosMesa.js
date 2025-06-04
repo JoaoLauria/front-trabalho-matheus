@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useError } from '../contexts/ErrorContext';
 import { Box, Typography, Paper, CircularProgress } from '@mui/material';
 import AlertDialog from '../components/AlertDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -10,6 +11,7 @@ import { calcularTotal } from '../utils/utils';
 import ApiService from '../services/ApiService';
 
 export default function PedidosMesa({ navigation, route }) {
+  const { handleApiError, isConnectionError } = useError();
   const mesa = route.params?.mesa;
   const [pedidos, setPedidos] = useState([]);
   const [alertDialog, setAlertDialog] = useState({
@@ -46,9 +48,10 @@ export default function PedidosMesa({ navigation, route }) {
       
       setPedidos(data || []);
     } catch (error) {
-      setErro('Não foi possível carregar os pedidos. Tente novamente.');
-      console.error(error);
-    } finally {
+      const errorMsg = 'Erro ao buscar pedidos';
+      
+      console.error('Erro ao buscar pedidos:', error);
+      handleApiError(error || errorMsg);
       setCarregando(false);
     }
   };
@@ -90,10 +93,13 @@ export default function PedidosMesa({ navigation, route }) {
         }
       });
     } catch (error) {
+      const errorMsg = `Erro ao atualizar status: ${error?.message || 'Falha na comunicação com o servidor'}`;
+      
+      handleApiError(error || errorMsg);
       setAlertDialog({
         open: true,
         title: 'Erro',
-        message: `Erro ao atualizar status: ${error.message}`,
+        message: errorMsg,
         type: 'error'
       });
     }
@@ -127,10 +133,13 @@ export default function PedidosMesa({ navigation, route }) {
         onConfirm: () => navigation.navigate('Comandas')
       });
     } catch (error) {
+      const errorMsg = `Erro ao fechar conta: ${error?.message || 'Falha na comunicação com o servidor'}`;
+      
+      handleApiError(error || errorMsg);
       setAlertDialog({
         open: true,
         title: 'Erro',
-        message: `Erro ao fechar conta: ${error.message}`,
+        message: errorMsg,
         type: 'error'
       });
     }

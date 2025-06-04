@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useError } from '../contexts/ErrorContext';
 import { Paper, Box, CircularProgress, Typography, Fab, Container, TextField, Button } from '@mui/material';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -19,6 +20,7 @@ const NovoPedido = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { mesa } = route.params || {};
+  const { handleApiError, isConnectionError } = useError();
 
   const [categorias, setCategorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
@@ -74,8 +76,10 @@ const NovoPedido = () => {
       
       setCategorias(data || []);
     } catch (error) {
+      const errorMsg = 'Falha ao carregar categorias. Tente novamente.';
       console.error('Erro ao buscar categorias:', error);
-      setError('Falha ao carregar categorias. Tente novamente.');
+      setError(errorMsg);
+      handleApiError(error || errorMsg);
     } finally {
       setLoading(false);
     }
@@ -96,8 +100,10 @@ const NovoPedido = () => {
       
       setProdutos(data || []);
     } catch (error) {
+      const errorMsg = 'Falha ao carregar produtos. Tente novamente.';
       console.error('Erro ao buscar produtos:', error);
-      setError('Falha ao carregar produtos. Tente novamente.');
+      setError(errorMsg);
+      handleApiError(error || errorMsg);
     } finally {
       setLoading(false);
     }
@@ -136,14 +142,15 @@ const NovoPedido = () => {
 
       setItensSelecionados(prev => [...prev, novoItem]);
     } catch (error) {
+      const errorMsg = `Erro ao selecionar produto: ${error?.message || 'Falha na comunicação com o servidor'}`;
       console.error('Erro ao selecionar item:', error);
+      handleApiError(error || errorMsg);
       setAlertDialog({
         open: true,
         title: 'Erro',
-        message: `Erro ao selecionar produto: ${error.message}`,
+        message: errorMsg,
         type: 'error'
       });
-      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -358,12 +365,14 @@ const NovoPedido = () => {
         onConfirm: () => navigation.navigate('PedidosMesa', { mesa })
       });
     } catch (error) {
+      const errorMsg = `Erro ao finalizar pedido: ${error?.message || 'Falha na comunicação com o servidor'}`;
       console.error('Erro ao salvar pedido:', error);
-      setError(`Falha ao salvar pedido: ${error.message}`);
+      setError(`Falha ao salvar pedido: ${error?.message || 'Erro desconhecido'}`);
+      handleApiError(error || errorMsg);
       setAlertDialog({
         open: true,
         title: 'Erro',
-        message: `Erro ao finalizar pedido: ${error.message}`,
+        message: errorMsg,
         type: 'error'
       });
       setLoading(false);
