@@ -7,6 +7,7 @@ import ApiService from '../services/ApiService';
 
 export default function Comandas({ navigation }) {
   const { handleApiError, isConnectionError } = useError();
+  const authContext = useContext(AuthContext);
   const [mesas, setMesas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
@@ -72,8 +73,8 @@ export default function Comandas({ navigation }) {
           color="error"
           startIcon={<ExitToApp />}
           onClick={() => {
-            const { logout } = useContext(AuthContext);
-            logout();
+            authContext.logout();
+            navigation.navigate('Login');
           }}
         >
           Sair
