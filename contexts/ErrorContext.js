@@ -45,7 +45,6 @@ export function ErrorProvider({ children }) {
         ? error 
         : error.message || 'Ocorreu um erro inesperado';
       
-      // Verifica se é um erro de conexão
       if (typeof error !== 'string' && isConnectionError(error)) {
         errorMessage = 'Servidor offline. Verifique sua conexão ou contate o suporte.';
       }

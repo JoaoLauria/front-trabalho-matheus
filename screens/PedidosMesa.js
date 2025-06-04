@@ -107,6 +107,21 @@ export default function PedidosMesa({ navigation, route }) {
   };
 
   const handleFecharConta = () => {
+    // Verificar se existem pedidos pendentes (status diferente de 'finalizado' ou 'cancelado')
+    const pedidosPendentes = pedidos.filter(pedido => 
+      pedido.status !== 'finalizado' && pedido.status !== 'cancelado'
+    );
+    
+    if (pedidosPendentes.length > 0) {
+      setAlertDialog({
+        open: true,
+        title: 'Atenção',
+        message: `Não é possível fechar a conta enquanto houver pedidos pendentes. Finalize ou cancele todos os pedidos antes de fechar a conta.`,
+        type: 'warning'
+      });
+      return;
+    }
+    
     setConfirmDialog({
       open: true,
       title: 'Confirmar fechamento',
