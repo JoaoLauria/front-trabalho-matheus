@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { MenuItem } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import { AppFilter, AppTextField, AppSelect, AppButton } from '../common';
 

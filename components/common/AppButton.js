@@ -1,6 +1,6 @@
-;
 import { Button, IconButton as MuiIconButton, Tooltip, CircularProgress, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import AddIcon from '@mui/icons-material/Add';
 
 import { colors } from '../../styles/theme';
 

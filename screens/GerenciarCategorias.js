@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useError } from '../contexts/ErrorContext';
 import { Box, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 import ApiService from '../services/ApiService';
 import { AppPage, AppButton, AppTextField, AppDialog, AppSwitch } from '../components/common';

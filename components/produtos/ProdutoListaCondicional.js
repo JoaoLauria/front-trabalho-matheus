@@ -1,6 +1,9 @@
-;
-
 import { Collapse, Fade, Paper, Box, Typography, IconButton, Avatar } from '@mui/material';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { AppList, AppEmptyState } from '../common';
 

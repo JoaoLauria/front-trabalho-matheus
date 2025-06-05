@@ -1,4 +1,3 @@
-;
 import {
   ListItem,
   ListItemText,
@@ -13,6 +12,14 @@ import {
   Avatar
 } from '@mui/material';
 import { Edit, Delete, CheckCircle, Cancel } from '@mui/icons-material';
+import LocalBarIcon from '@mui/icons-material/LocalBar';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import CakeIcon from '@mui/icons-material/Cake';
+import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CategoryIcon from '@mui/icons-material/Category';
 
 const getCategoryIcon = (categoryName) => {
   if (!categoryName) return <CategoryIcon />;
