@@ -118,12 +118,13 @@ const AppCartItem = ({
         <Box sx={{ width: '10%', textAlign: 'center', flexShrink: 0 }}>
           {showControls && (
             <IconButton 
-              size="small" 
+              size="medium" 
               color="error"
               onClick={onRemove}
               aria-label="Remover item"
+              sx={{ color: 'white', bgcolor: 'error.main', '&:hover': { bgcolor: 'error.dark' } }}
             >
-              <DeleteIcon fontSize="small" />
+              <DeleteIcon fontSize="medium" />
             </IconButton>
           )}
         </Box>

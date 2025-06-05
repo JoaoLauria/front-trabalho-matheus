@@ -37,7 +37,7 @@ const CarrinhoModal = ({
     }}>
       <Badge 
         badgeContent={carrinho.length} 
-        color="primary" 
+        color="white" 
         sx={{ 
           mr: 1.5,
           '& .MuiBadge-badge': {
@@ -50,14 +50,14 @@ const CarrinhoModal = ({
           }
         }}
       >
-        <ShoppingCartIcon sx={{ color: colors.primary.main, fontSize: '1.75rem' }} />
+        <ShoppingCartIcon sx={{ color: "white", fontSize: '1.75rem' }} />
       </Badge>
       <AppTypography.Subtitle 
         component="span" 
         sx={{ 
           fontWeight: 600,
           fontSize: { xs: '1.1rem', sm: '1.25rem' },
-          color: colors.text.primary
+          color: "white"
         }}
       >
         Carrinho de Pedidos
