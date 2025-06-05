@@ -2,6 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { AppBox, AppTypography, AppButton } from './index';
+import { colors } from '../../styles/theme';
 
 /**
  * Componente de modal padronizado para uso em toda a aplicação
@@ -24,6 +25,8 @@ const AppModal = ({
   maxWidth = 'sm',
   fullWidth = true,
   sx = {},
+  headerColor = colors.primary.light,
+  headerTextColor = colors.primary.contrastText,
   ...props
 }) => {
   return (
@@ -46,8 +49,8 @@ const AppModal = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            bgcolor: 'primary.light',
-            color: 'primary.contrastText',
+            bgcolor: headerColor,
+            color: headerTextColor,
             py: 1.5,
             '& .MuiTypography-root': {
               display: 'block'
@@ -169,6 +172,8 @@ AppModal.Delete = ({
     open={open}
     onClose={onClose}
     title={title}
+    headerColor={colors.warning.main}
+    headerTextColor={colors.warning.contrastText}
     actions={
       <>
         <AppButton.CancelButton onClick={onClose}>
@@ -185,13 +190,23 @@ AppModal.Delete = ({
     {...props}
   >
     {children || (
-      <AppBox.ColumnBox>
-        <AppTypography>
+      <AppBox.ColumnBox sx={{ alignItems: 'center', textAlign: 'center' }}>
+        <AppTypography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
           Tem certeza que deseja excluir este item?
         </AppTypography>
-        <AppTypography.Error sx={{ display: 'block', mt: 1 }}>
-          Esta ação não pode ser desfeita.
-        </AppTypography.Error>
+        <Box sx={{ 
+          bgcolor: colors.warning.light, 
+          p: 2, 
+          borderRadius: 1, 
+          border: '1px solid', 
+          borderColor: colors.warning.main,
+          width: '100%',
+          mb: 1
+        }}>
+          <AppTypography.Error sx={{ display: 'block', fontWeight: 'bold' }}>
+            ATENÇÃO: Esta ação não pode ser desfeita!
+          </AppTypography.Error>
+        </Box>
       </AppBox.ColumnBox>
     )}
   </AppModal>

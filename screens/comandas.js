@@ -240,7 +240,7 @@ export default function Comandas({ navigation }) {
                         boxShadow: 'none',
                       }}
                       onClick={() => {
-                        navigation.navigate('PedidosMesa', { mesa: item.id });
+                        navigation.navigate('PedidosMesa', { mesa: item });
                       }}
                     >
                       Selecionar
@@ -348,7 +348,7 @@ export default function Comandas({ navigation }) {
                     
                     setMesas(mesas.map(m => m.id === mesaAlvo.id ? { ...m, seats: qtdPessoas, is_available: false } : m));
                     setModalOpen(false);
-                    navigation.navigate('PedidosMesa', { mesa: mesaAlvo.id });
+                    navigation.navigate('PedidosMesa', { mesa: mesaAlvo });
                   } catch (error) {
                     const errorMsg = `Erro ao abrir mesa: ${error?.message || 'Falha na comunicação com o servidor'}`;
                     setErro(errorMsg);

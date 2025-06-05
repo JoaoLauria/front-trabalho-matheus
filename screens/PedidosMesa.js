@@ -40,7 +40,9 @@ export default function PedidosMesa({ navigation, route }) {
     setCarregando(true);
     setErro(null);
     try {
-      const { data, error } = await ApiService.orders.getOrdersByTable(mesa);
+      // Extrair o ID da mesa se for um objeto
+      const mesaId = typeof mesa === 'object' ? mesa.id : mesa;
+      const { data, error } = await ApiService.orders.getOrdersByTable(mesaId);
       
       if (error) {
         throw new Error(error);
@@ -135,7 +137,9 @@ export default function PedidosMesa({ navigation, route }) {
     try {
       setConfirmDialog(prev => ({ ...prev, open: false }));
       
-      const { error } = await ApiService.tables.setTableAvailable(mesa);
+      // Extrair o ID da mesa se for um objeto
+      const mesaId = typeof mesa === 'object' ? mesa.id : mesa;
+      const { error } = await ApiService.tables.setTableAvailable(mesaId);
       
       if (error) {
         throw new Error(error);
