@@ -1,9 +1,9 @@
 import React from 'react';
-import { IconButton, Divider } from '@mui/material';
+import { IconButton, Divider, Grid, Paper, Typography, Tooltip, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { AppBox, AppTypography } from './index';
+import { AppBox, AppTypography } from './';
 import { formatCurrency } from '../../utils';
 
 /**
@@ -30,91 +30,143 @@ const AppCartItem = ({
     }
   };
 
-  const totalItemPrice = item.price * item.quantity;
   const hasAdditionals = item.additionals && item.additionals.length > 0;
   
+  // Calcular o subtotal do item (preço unitário * quantidade)  
+  const subtotal = item.price * item.quantity;
+
   return (
-    <AppBox sx={{ mb: 2, ...sx }} {...props}>
-      <AppBox.FlexBox sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <AppBox.ColumnBox sx={{ flex: 1 }}>
-          <AppBox.FlexBox sx={{ alignItems: 'center' }}>
-            {showControls && (
-              <AppTypography.Subtitle color="primary.main" sx={{ mr: 1 }}>
-                {item.quantity}x
-              </AppTypography.Subtitle>
-            )}
-            <AppTypography.Subtitle>
+    <Paper elevation={1} sx={{ mb: 2, p: { xs: 1.5, sm: 2 }, borderRadius: 2, width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden', ...sx }} {...props}>
+      {/* Layout principal: Nome | Preço | - quantidade + | Subtotal | ícone de excluir */}
+      <AppBox.FlexBox sx={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* Nome do item */}
+        <Box sx={{ width: '33%', flexShrink: 1, mr: 1 }}>
+          <Tooltip title={item.name} placement="top-start">
+            <AppTypography.Subtitle 
+              sx={{ 
+                fontWeight: 'bold', 
+                color: 'primary.main', 
+                textAlign: 'left',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                width: '100%'
+              }}
+            >
               {item.name}
             </AppTypography.Subtitle>
-          </AppBox.FlexBox>
-          
-          <AppTypography.Price>
-            {formatCurrency(item.price)} {item.quantity > 1 && `(Total: ${formatCurrency(totalItemPrice)})`}
-          </AppTypography.Price>
-          
-          {hasAdditionals && (
-            <AppBox.Paper sx={{ mt: 1, p: 1, bgcolor: 'grey.100' }}>
-              <AppTypography.Caption fontWeight="bold">
-                Adicionais:
-              </AppTypography.Caption>
-              
-              {item.additionals.map((additional, index) => (
-                <AppBox.FlexBox key={index} sx={{ justifyContent: 'space-between', mt: 0.5 }}>
-                  <AppTypography.Caption>
-                    {additional.name} (x{additional.quantity})
-                  </AppTypography.Caption>
-                  <AppTypography.Caption>
-                    {formatCurrency(additional.price * additional.quantity)}
-                  </AppTypography.Caption>
-                </AppBox.FlexBox>
-              ))}
-            </AppBox.Paper>
-          )}
-          
-          {item.observation && (
-            <AppBox sx={{ mt: 1 }}>
-              <AppTypography.Caption fontWeight="bold">
-                Observação:
-              </AppTypography.Caption>
-              <AppTypography.Caption>
-                {item.observation}
-              </AppTypography.Caption>
-            </AppBox>
-          )}
-        </AppBox.ColumnBox>
+          </Tooltip>
+        </Box>
         
-        {showControls && (
-          <AppBox.FlexBox>
-            <IconButton 
-              size="small" 
-              color="primary"
-              onClick={() => handleQuantityChange(-1)}
-              disabled={item.quantity <= 1}
-            >
-              <RemoveIcon fontSize="small" />
-            </IconButton>
-            
-            <IconButton 
-              size="small" 
-              color="primary"
-              onClick={() => handleQuantityChange(1)}
-            >
-              <AddIcon fontSize="small" />
-            </IconButton>
-            
+        {/* Valor unitário */}
+        <Box sx={{ width: '16%', textAlign: 'center', flexShrink: 0 }}>
+          <Typography variant="caption" sx={{ fontWeight: 'medium', display: 'block' }}>
+            Preço
+          </Typography>
+          <AppTypography.Price sx={{ display: 'block' }}>
+            {formatCurrency(item.price)}
+          </AppTypography.Price>
+        </Box>
+        
+        {/* Controles de quantidade */}
+        <Box sx={{ width: '25%', textAlign: 'center', flexShrink: 0 }}>
+          {showControls ? (
+            <AppBox.FlexBox sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              <IconButton 
+                size="small" 
+                color="primary"
+                onClick={() => handleQuantityChange(-1)}
+                disabled={item.quantity <= 1}
+                sx={{ minWidth: '28px', width: '28px', height: '28px', p: 0.5 }}
+              >
+                <RemoveIcon fontSize="small" />
+              </IconButton>
+              
+              <AppTypography.Subtitle sx={{ mx: 0.5, minWidth: '24px', textAlign: 'center' }}>
+                {item.quantity}
+              </AppTypography.Subtitle>
+              
+              <IconButton 
+                size="small" 
+                color="primary"
+                onClick={() => handleQuantityChange(1)}
+                sx={{ minWidth: '28px', width: '28px', height: '28px', p: 0.5 }}
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </AppBox.FlexBox>
+          ) : (
+            <AppBox.FlexBox sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Typography variant="caption" sx={{ fontWeight: 'medium', display: 'block' }}>
+                Qtd: {item.quantity}
+              </Typography>
+            </AppBox.FlexBox>
+          )}
+        </Box>
+        
+        {/* Subtotal */}
+        <Box sx={{ width: '16%', textAlign: 'center', flexShrink: 0 }}>
+          <Typography variant="caption" sx={{ fontWeight: 'medium', display: 'block' }}>
+            Subtotal
+          </Typography>
+          <AppTypography.Price sx={{ display: 'block' }}>
+            {formatCurrency(subtotal)}
+          </AppTypography.Price>
+        </Box>
+        
+        {/* Botão de remover */}
+        <Box sx={{ width: '10%', textAlign: 'center', flexShrink: 0 }}>
+          {showControls && (
             <IconButton 
               size="small" 
               color="error"
-              onClick={() => onRemove && onRemove(item.id)}
+              onClick={onRemove}
+              aria-label="Remover item"
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
-          </AppBox.FlexBox>
-        )}
+          )}
+        </Box>
       </AppBox.FlexBox>
       
+      {/* Adicionais */}
+      {hasAdditionals && (
+        <Paper sx={{ mt: 1, p: 1.5, bgcolor: 'primary.light', borderRadius: 1.5 }}>
+          <Typography variant="caption" fontWeight="bold" sx={{ color: 'primary.contrastText', display: 'block', mb: 0.5 }}>
+            Adicionais
+          </Typography>
+          
+          <Grid container spacing={1}>
+            {item.additionals.map((additional, index) => (
+              <Grid item xs={12} key={index}>
+                <AppBox.FlexBox sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="caption" sx={{ color: 'primary.contrastText' }}>
+                    {additional.name} (x{additional.quantity})
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'primary.contrastText', fontWeight: 'medium', minWidth: '60px', textAlign: 'right' }}>
+                    {formatCurrency(additional.price * additional.quantity)}
+                  </Typography>
+                </AppBox.FlexBox>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
+      )}
+      
+      {/* Observação */}
+      {item.observation && (
+        <Paper sx={{ mt: 1, p: 1.5, bgcolor: 'grey.100', borderRadius: 1.5 }}>
+          <Typography variant="caption" fontWeight="bold" sx={{ display: 'block', mb: 0.5 }}>
+            Observação
+          </Typography>
+          <Typography variant="caption" sx={{ display: 'block' }}>
+            {item.observation}
+          </Typography>
+        </Paper>
+      )}
+      
       <Divider sx={{ mt: 2 }} />
-    </AppBox>
+    </Paper>
   );
 };
 

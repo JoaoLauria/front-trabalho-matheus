@@ -37,7 +37,7 @@ const CarrinhoModal = ({
     }}>
       <Badge 
         badgeContent={carrinho.length} 
-        color="error" 
+        color="primary" 
         sx={{ 
           mr: 1.5,
           '& .MuiBadge-badge': {
@@ -77,36 +77,25 @@ const CarrinhoModal = ({
       title={cartHeader}
     >
       <AppBox sx={{ 
-        bgcolor: 'background.paper', 
-        p: 0,
-        borderRadius: 2,
-        overflow: 'hidden',
-        boxShadow: 'inset 0 0 10px rgba(0,0,0,0.03)',
+        width: '100%',
+        maxWidth: '100%',
         maxHeight: { xs: '50vh', sm: '60vh' },
-        overflowY: 'auto'
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        boxSizing: 'border-box'
       }}>
         <Fade in={true}>
-          <div>
+          <div style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
             {carrinho.length === 0 ? (
               <AppEmptyState.Cart />
             ) : (
-              <AppBox sx={{ p: { xs: 1.5, sm: 2 } }}>
+              <AppBox sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                 {carrinho.map((item, index) => (
-                  <Paper
-                    key={`${item.produto.id}-${index}`}
-                    elevation={0}
-                    sx={{
-                      mb: 2,
-                      borderRadius: 2,
-                      overflow: 'hidden',
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                        transform: 'translateY(-2px)'
-                      }
-                    }}
-                  >
                     <AppCartItem
+                      key={`${item.produto.id}-${index}`}
                       item={{
                         id: index,
                         name: item.produto.name,
@@ -124,9 +113,14 @@ const CarrinhoModal = ({
                       onRemove={() => handleRemoverDoCarrinho(index)}
                       onQuantityChange={(_, newQuantity) => handleAlterarQuantidadeCarrinho(index, newQuantity)}
                       showControls={true}
-                      sx={{ p: { xs: 1.5, sm: 2 }, mb: 0 }}
+                      sx={{
+                        transition: 'all 0.2s ease-in-out',
+                        '&:hover': {
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                          transform: 'translateY(-2px)'
+                        }
+                      }}
                     />
-                  </Paper>
                 ))}
               </AppBox>
             )}
@@ -134,65 +128,41 @@ const CarrinhoModal = ({
         </Fade>
       </AppBox>
       
-      <Paper
-        elevation={0}
+      <Paper 
+        elevation={2}
         sx={{
           mt: 2,
-          borderRadius: 3,
+          borderRadius: 2,
           overflow: 'hidden',
-          background: `linear-gradient(135deg, ${colors.primary.dark} 0%, ${colors.primary.main} 100%)`,
-          boxShadow: '0 8px 20px rgba(0,0,0,0.15)'
+          backgroundColor: 'primary.main',
+          boxShadow: 3
         }}
       >
         <AppBox.ColumnBox sx={{ 
-          p: { xs: 2, sm: 2.5 }, 
+          p: 2,
           color: 'white',
         }}>
-          <AppBox.SpaceBetweenBox sx={{ alignItems: 'center' }}>
-            <AppTypography.Description 
-              color="inherit"
-              sx={{ 
-                fontSize: { xs: '0.9rem', sm: '1rem' },
-                opacity: 0.9
-              }}
-            >
-              Subtotal:
-            </AppTypography.Description>
-            <AppTypography.Description 
-              color="inherit"
-              sx={{ 
-                fontSize: { xs: '0.9rem', sm: '1rem' },
-                fontWeight: 500,
-                opacity: 0.9
-              }}
-            >
-              R$ {total.toFixed(2)}
-            </AppTypography.Description>
-          </AppBox.SpaceBetweenBox>
-          
           <Fade in={true} timeout={500}>
             <AppBox.SpaceBetweenBox 
               sx={{ 
                 alignItems: 'center', 
-                mt: 1.5,
-                py: 1,
-                px: { xs: 1, sm: 1.5 },
-                borderRadius: 2,
-                backgroundColor: 'rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(8px)'
+                py: 1.5,
+                px: 2,
+                borderRadius: 1,
+                backgroundColor: 'rgba(255,255,255,0.1)',
               }}
             >
               <AppTypography.Subtitle 
                 color="inherit" 
                 fontWeight="bold"
-                sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
+                sx={{ fontSize: '1.2rem' }}
               >
                 TOTAL:
               </AppTypography.Subtitle>
               <AppTypography.Subtitle 
                 color="inherit" 
                 fontWeight="bold"
-                sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
+                sx={{ fontSize: '1.2rem' }}
               >
                 R$ {total.toFixed(2)}
               </AppTypography.Subtitle>

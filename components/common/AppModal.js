@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { AppBox, AppTypography, AppButton } from './index';
 
@@ -48,12 +48,17 @@ const AppModal = ({
             alignItems: 'center',
             bgcolor: 'primary.light',
             color: 'primary.contrastText',
-            py: 1.5
+            py: 1.5,
+            '& .MuiTypography-root': {
+              display: 'block'
+            }
           }}
         >
-          <AppTypography.Subtitle color="inherit">
-            {title}
-          </AppTypography.Subtitle>
+          <Box component="span">
+            <AppTypography.Subtitle color="inherit" component="span">
+              {title}
+            </AppTypography.Subtitle>
+          </Box>
           
           <IconButton
             onClick={onClose}
@@ -66,8 +71,10 @@ const AppModal = ({
         </DialogTitle>
       )}
       
-      <DialogContent dividers sx={{ p: 2, maxHeight: '80vh', overflow: 'auto' }}>
-        {children}
+      <DialogContent dividers sx={{ p: 2, maxHeight: '80vh', overflow: 'auto', overflowX: 'hidden' }}>
+        <Box sx={{ width: '100%', maxWidth: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch', boxSizing: 'border-box' }}>
+          {children}
+        </Box>
       </DialogContent>
       
       {actions && (
