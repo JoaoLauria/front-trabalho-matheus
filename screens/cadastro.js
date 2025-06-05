@@ -50,7 +50,7 @@ export default function CadastroUsuario({ navigation }) {
 
     try {
 
-      const resposta = await fetch(`https:
+      const resposta = await fetch(`http://localhost:8000/api/cep/${cep}/`);
 
       const dados = await resposta.json();
 
@@ -209,4 +209,3 @@ export default function CadastroUsuario({ navigation }) {
   );
 
 }
-
