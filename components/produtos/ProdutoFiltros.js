@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { MenuItem } from '@mui/material';
-import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 import { AppFilter, AppTextField, AppSelect, AppButton } from '../common';
 
 const ProdutoFiltros = ({ filtros, categorias, handleFiltroChange, limparFiltros }) => {
   const [filtroExpandido, setFiltroExpandido] = useState(true);
-  
-  
+
   const temFiltrosAtivos = filtros.categoria || filtros.nome || filtros.disponibilidade !== '';
   
   return (

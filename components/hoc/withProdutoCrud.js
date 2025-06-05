@@ -5,8 +5,7 @@ import { salvarProduto, excluirProduto, validarFormularioProduto } from '../../u
 const withProdutoCrud = (WrappedComponent) => {
   return function WithProdutoCrudComponent(props) {
     const { handleApiError, showError, showSuccess } = useError();
-    
-    
+
     const [formData, setFormData] = useState({
       name: '',
       description: '',
@@ -18,14 +17,12 @@ const withProdutoCrud = (WrappedComponent) => {
     const [formErrors, setFormErrors] = useState({});
     const [editingId, setEditingId] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
-    
-    
+
     const [dialogOpen, setDialogOpen] = useState({
       form: false,
       delete: false
     });
-    
-    
+
     const handleNovoProduto = () => {
       setFormData({
         name: '',
@@ -38,8 +35,7 @@ const withProdutoCrud = (WrappedComponent) => {
       setEditingId(null);
       setDialogOpen(prev => ({ ...prev, form: true }));
     };
-    
-    
+
     const handleEditarProduto = (produto) => {
       setFormData({
         name: produto.name,
@@ -52,14 +48,12 @@ const withProdutoCrud = (WrappedComponent) => {
       setEditingId(produto.id);
       setDialogOpen(prev => ({ ...prev, form: true }));
     };
-    
-    
+
     const handleConfirmarExclusao = (id) => {
       setDeleteId(id);
       setDialogOpen(prev => ({ ...prev, delete: true }));
     };
-    
-    
+
     const handleFormChange = (e) => {
       const { name, value, checked, type } = e.target;
       const newValue = type === 'checkbox' ? checked : value;
@@ -68,8 +62,7 @@ const withProdutoCrud = (WrappedComponent) => {
         ...prev,
         [name]: newValue
       }));
-      
-      
+
       if (formErrors[name]) {
         setFormErrors(prev => ({
           ...prev,
@@ -77,8 +70,7 @@ const withProdutoCrud = (WrappedComponent) => {
         }));
       }
     };
-    
-    
+
     const handleSalvarProduto = async () => {
       
       const { errors, isValid } = validarFormularioProduto(formData);
@@ -96,13 +88,10 @@ const withProdutoCrud = (WrappedComponent) => {
           handleApiError(error);
           return;
         }
-        
-        
+
         showSuccess(`Produto ${editingId ? 'atualizado' : 'criado'} com sucesso!`);
         setDialogOpen(prev => ({ ...prev, form: false }));
-        
-        
-        
+
         if (props.buscarDados && typeof props.buscarDados === 'function') {
           await props.buscarDados();
         } else {
@@ -113,8 +102,7 @@ const withProdutoCrud = (WrappedComponent) => {
         handleApiError(err);
       }
     };
-    
-    
+
     const handleExcluirProduto = async () => {
       if (!deleteId) return;
       
@@ -125,15 +113,13 @@ const withProdutoCrud = (WrappedComponent) => {
       } else {
         showSuccess('Produto excluído com sucesso!');
         setDialogOpen(prev => ({ ...prev, delete: false }));
-        
-        
+
         if (props.buscarDados) {
           props.buscarDados();
         }
       }
     };
-    
-    
+
     const handleCloseDialogs = () => {
       setDialogOpen({
         form: false,

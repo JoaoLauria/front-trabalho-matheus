@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { AppPage, AppBox } from './index';
 import AppCard from './AppCard';
 

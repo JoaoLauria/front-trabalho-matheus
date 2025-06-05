@@ -30,8 +30,7 @@ const commonStyles = {
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  
-  
+
   page: {
     maxWidth: 1100,
     margin: '0 auto',
@@ -51,8 +50,7 @@ const commonStyles = {
   sectionContainer: {
     marginBottom: spacing.lg,
   },
-  
-  
+
   card: {
     borderRadius: shape.cardBorderRadius,
     boxShadow: shadows[1],
@@ -72,8 +70,7 @@ const commonStyles = {
     borderTop: `1px solid ${colors.divider}`,
     backgroundColor: colors.grey[50],
   },
-  
-  
+
   form: {
     display: 'flex',
     flexDirection: 'column',
@@ -96,13 +93,11 @@ const commonStyles = {
     gap: spacing.md,
     alignItems: 'center',
   },
-  
-  
+
   input: {
     width: '100%',
   },
-  
-  
+
   buttonContainer: {
     display: 'flex',
     gap: spacing.md,
@@ -114,8 +109,7 @@ const commonStyles = {
     gap: spacing.md,
     marginTop: spacing.md,
   },
-  
-  
+
   table: {
     width: '100%',
     borderCollapse: 'collapse',
@@ -128,8 +122,7 @@ const commonStyles = {
     padding: spacing.sm,
     borderBottom: `1px solid ${colors.divider}`,
   },
-  
-  
+
   list: {
     padding: 0,
     margin: 0,
@@ -149,8 +142,7 @@ const commonStyles = {
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  
-  
+
   mt: {
     xs: { marginTop: spacing.xs },
     sm: { marginTop: spacing.sm },
@@ -193,8 +185,7 @@ const commonStyles = {
     lg: { padding: spacing.lg },
     xl: { padding: spacing.xl },
   },
-  
-  
+
   textCenter: {
     textAlign: 'center',
   },
@@ -210,8 +201,7 @@ const commonStyles = {
   textMuted: {
     color: colors.text.secondary,
   },
-  
-  
+
   statusChip: {
     borderRadius: '16px',
     padding: '4px 12px',
@@ -235,8 +225,7 @@ const commonStyles = {
     backgroundColor: colors.info.light,
     color: colors.info.dark,
   },
-  
-  
+
   fadeIn: {
     animation: 'fadeIn 0.3s ease-in-out',
     '@keyframes fadeIn': {
@@ -244,8 +233,7 @@ const commonStyles = {
       '100%': { opacity: 1 },
     },
   },
-  
-  
+
   responsive: {
     xs: {
       display: 'block',

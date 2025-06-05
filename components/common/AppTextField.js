@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { TextField, InputAdornment } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -76,19 +76,16 @@ export const CurrencyInput = styled((props) => {
   const handleChange = (e) => {
     
     let value = e.target.value.replace(/[^\d.]/g, '');
-    
-    
+
     const parts = value.split('.');
     if (parts.length > 2) {
       value = parts[0] + '.' + parts.slice(1).join('');
     }
-    
-    
+
     if (parts.length > 1 && parts[1].length > 2) {
       value = parts[0] + '.' + parts[1].substring(0, 2);
     }
-    
-    
+
     const newEvent = {
       ...e,
       target: {

@@ -30,7 +30,10 @@
     "react-native-web": "~0.19.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "acorn": "^8.14.1",
+    "acorn-jsx": "^5.3.2",
+    "acorn-walk": "^8.3.4"
   },
   "private": true
 }

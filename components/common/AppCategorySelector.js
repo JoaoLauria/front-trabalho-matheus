@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { Avatar } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import FastfoodIcon from '@mui/icons-material/Fastfood';

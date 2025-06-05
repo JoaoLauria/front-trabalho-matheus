@@ -1,4 +1,4 @@
-import React from 'react';
+;
 
 import { useError } from '../contexts/ErrorContext';
 import { AppPage, AppButton, AppAlert, AppModal } from '../components/common';
@@ -25,8 +25,7 @@ function GerenciarProdutos(props) {
     handleFiltroChange,
     limparFiltros,
     handleToggleExpand,
-    
-    
+
     formData,
     formErrors,
     editingId,
@@ -39,15 +38,12 @@ function GerenciarProdutos(props) {
     handleSalvarProduto,
     handleExcluirProduto,
     handleCloseDialogs,
-    
-    
+
     navigation
   } = props;
   
   const { showError } = useError();
-  
-  
-  
+
   return (
     <AppPage
       title="Gerenciar Produtos"

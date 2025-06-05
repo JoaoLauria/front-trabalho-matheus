@@ -1,4 +1,4 @@
-import React from 'react';
+;
 
 import { SvgIcon } from '@mui/material';
 
@@ -62,8 +62,6 @@ const AppEmptyState = ({
 
       )}
 
-      
-
       {title && (
 
         <AppTypography.Subtitle 
@@ -79,8 +77,6 @@ const AppEmptyState = ({
         </AppTypography.Subtitle>
 
       )}
-
-      
 
       {description && (
 
@@ -99,8 +95,6 @@ const AppEmptyState = ({
         </AppTypography.Description>
 
       )}
-
-      
 
       {action && (
 

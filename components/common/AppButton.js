@@ -1,7 +1,7 @@
-import React from 'react';
+;
 import { Button, IconButton as MuiIconButton, Tooltip, CircularProgress, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Add as AddIcon } from '@mui/icons-material';
+
 import { colors } from '../../styles/theme';
 
 const AppButton = ({

@@ -1,4 +1,4 @@
-import React from 'react';
+;
 
 import { Fade, Paper, Box, Typography, Alert } from '@mui/material';
 
@@ -43,8 +43,6 @@ const CategoriaLista = ({
   erro
 
 }) => {
-
-  
 
   if (categorias.length === 0 && !loading) {
 
@@ -101,8 +99,6 @@ const CategoriaLista = ({
         </Alert>
 
       )}
-
-      
 
       <Fade in={true} timeout={400}>
 
@@ -163,8 +159,6 @@ const CategoriaLista = ({
             </Typography>
 
           </Box>
-
-          
 
           <AppList
 

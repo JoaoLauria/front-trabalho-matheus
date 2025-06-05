@@ -123,12 +123,6 @@ const AppLoginForm = ({
         </AppButton.PrimaryButton>
         
         <AppBox.FlexBox sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-          {onForgotPassword && (
-            <AppLink.Secondary href="#" onClick={e => { e.preventDefault(); onForgotPassword(); }}>
-              Esqueci minha senha
-            </AppLink.Secondary>
-          )}
-          
           {onCreateAccount && (
             <AppLink.Secondary href="#" onClick={e => { e.preventDefault(); onCreateAccount(); }}>
               Criar conta

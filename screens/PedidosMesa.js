@@ -78,21 +78,15 @@ export default function PedidosMesa({ navigation, route }) {
 
     try {
 
-      
-
       const mesaId = typeof mesa === 'object' ? mesa.id : mesa;
 
       const { data, error } = await ApiService.orders.getOrdersByTable(mesaId);
-
-      
 
       if (error) {
 
         throw new Error(error);
 
       }
-
-      
 
       setPedidos(data || []);
 
@@ -101,10 +95,6 @@ export default function PedidosMesa({ navigation, route }) {
     } catch (error) {
 
       const errorMsg = 'Erro ao buscar pedidos';
-
-      
-
-      
 
       handleApiError(error || errorMsg);
 
@@ -140,17 +130,11 @@ export default function PedidosMesa({ navigation, route }) {
 
     if (!pedido) return;
 
-    
-
     try {
 
       const novoStatus = acao === 'finalizar' ? 'finalizado' : 'cancelado';
 
-      
-
       const { error } = await ApiService.orders.updateOrderStatus(pedido.id, novoStatus);
-
-      
 
       if (error) {
 
@@ -158,11 +142,7 @@ export default function PedidosMesa({ navigation, route }) {
 
       }
 
-      
-
       setStatusDialog(prev => ({ ...prev, open: false }));
-
-      
 
       setAlertDialog({
 
@@ -186,8 +166,6 @@ export default function PedidosMesa({ navigation, route }) {
 
       const errorMsg = `Erro ao atualizar status: ${error?.message || 'Falha na comunicação com o servidor'}`;
 
-      
-
       handleApiError(error || errorMsg);
 
       setAlertDialog({
@@ -208,15 +186,11 @@ export default function PedidosMesa({ navigation, route }) {
 
   const handleFecharConta = () => {
 
-    
-
     const pedidosPendentes = pedidos.filter(pedido => 
 
       pedido.status !== 'finalizado' && pedido.status !== 'cancelado'
 
     );
-
-    
 
     if (pedidosPendentes.length > 0) {
 
@@ -235,8 +209,6 @@ export default function PedidosMesa({ navigation, route }) {
       return;
 
     }
-
-    
 
     setConfirmDialog({
 
@@ -260,23 +232,15 @@ export default function PedidosMesa({ navigation, route }) {
 
       setConfirmDialog(prev => ({ ...prev, open: false }));
 
-      
-
-      
-
       const mesaId = typeof mesa === 'object' ? mesa.id : mesa;
 
       const { error } = await ApiService.tables.setTableAvailable(mesaId);
-
-      
 
       if (error) {
 
         throw new Error(error);
 
       }
-
-      
 
       setAlertDialog({
 
@@ -295,8 +259,6 @@ export default function PedidosMesa({ navigation, route }) {
     } catch (error) {
 
       const errorMsg = `Erro ao fechar conta: ${error?.message || 'Falha na comunicação com o servidor'}`;
-
-      
 
       handleApiError(error || errorMsg);
 
@@ -332,8 +294,6 @@ export default function PedidosMesa({ navigation, route }) {
 
       />
 
-      
-
       <ActionButtons 
 
         onNovoPedido={() => navigation.navigate('NovoPedido', { mesa })}
@@ -341,8 +301,6 @@ export default function PedidosMesa({ navigation, route }) {
         onFecharConta={handleFecharConta}
 
       />
-
-      
 
       {carregando ? (
 
@@ -390,8 +348,6 @@ export default function PedidosMesa({ navigation, route }) {
 
       )}
 
-      
-
       <AlertDialog 
 
         open={alertDialog.open}
@@ -408,8 +364,6 @@ export default function PedidosMesa({ navigation, route }) {
 
       />
 
-      
-
       <ConfirmDialog 
 
         open={confirmDialog.open}
@@ -423,8 +377,6 @@ export default function PedidosMesa({ navigation, route }) {
         onCancel={confirmDialog.onCancel}
 
       />
-
-      
 
       <StatusChangeDialog 
 

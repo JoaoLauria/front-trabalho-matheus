@@ -1,4 +1,4 @@
-import React from 'react';
+;
 
 import { 
 
@@ -19,8 +19,6 @@ import {
 } from '@mui/material';
 
 import { Close } from '@mui/icons-material';
-
-import { styled } from '@mui/material/styles';
 
 import AppButton from './AppButton';
 
@@ -57,8 +55,6 @@ const AppDialog = ({
   ...props
 
 }) => {
-
-  
 
   const dialogActions = actions || (
 

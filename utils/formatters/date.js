@@ -102,12 +102,10 @@ export const daysBetween = (date1, date2) => {
   if (isNaN(date1Obj.getTime()) || isNaN(date2Obj.getTime())) {
     return 0;
   }
-  
-  
+
   const utc1 = Date.UTC(date1Obj.getFullYear(), date1Obj.getMonth(), date1Obj.getDate());
   const utc2 = Date.UTC(date2Obj.getFullYear(), date2Obj.getMonth(), date2Obj.getDate());
-  
-  
+
   const diffMs = Math.abs(utc2 - utc1);
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   

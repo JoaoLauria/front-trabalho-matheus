@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  List, ListItem, ListItemText, Typography, Chip, 
-  Box, CircularProgress, Paper, Collapse, IconButton
-} from '@mui/material';
+import { List, ListItem, ListItemText, Typography, Chip, Box, Collapse, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
@@ -18,8 +15,7 @@ const ProdutosList = ({
 }) => {
   
   const [expandedCategories, setExpandedCategories] = useState({});
-  
-  
+
   React.useEffect(() => {
     if (Object.keys(expandedCategories).length === 0 && produtosPorCategoria) {
       const initialExpanded = {};
@@ -29,8 +25,7 @@ const ProdutosList = ({
       setExpandedCategories(initialExpanded);
     }
   }, [produtosPorCategoria, expandedCategories]);
-  
-  
+
   const toggleCategoryExpansion = (categoryId) => {
     setExpandedCategories(prev => ({
       ...prev,
@@ -95,7 +90,6 @@ const ProdutosList = ({
                 {expandedCategories[categoryKey] !== false ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
             </ListItem>
-            
 
             <Collapse in={expandedCategories[categoryKey] !== false} timeout="auto" unmountOnExit>
               {produtos

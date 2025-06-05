@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { Alert, AlertTitle } from '@mui/material';
 
 const AppAlert = ({ children, severity = 'info', title, sx, ...props }) => {

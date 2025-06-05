@@ -146,8 +146,6 @@ const AppList = ({
 
   }
 
-  
-
   if (!items || items.length === 0) {
 
     return (
@@ -257,8 +255,6 @@ const AppList = ({
     );
 
   }
-
-  
 
   return (
 
@@ -392,8 +388,6 @@ export const AppListItem = ({
 
 }) => {
 
-  
-
   const listItemStyles = {
 
     borderRadius: 2,
@@ -460,8 +454,6 @@ export const AppListItem = ({
 
   };
 
-  
-
   const primaryTextProps = {
 
     component: 'div',
@@ -484,8 +476,6 @@ export const AppListItem = ({
 
   };
 
-  
-
   const secondaryTextProps = {
 
     component: 'div',
@@ -507,8 +497,6 @@ export const AppListItem = ({
     }
 
   };
-
-  
 
   const iconStyles = {
 

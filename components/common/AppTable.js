@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { 
   Table, 
   TableBody, 
@@ -36,8 +36,7 @@ const AppTable = ({
     
     return row[column.field];
   };
-  
-  
+
   const renderTableBody = () => {
     if (loading) {
       return (

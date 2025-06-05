@@ -2,36 +2,22 @@ import React, { useState, useContext } from 'react';
 
 import { Box, Paper, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
 
-import { AuthContext } from '../App';
-
 import ApiService from '../services/ApiService';
 
 export default function CadastroUsuario({ navigation }) {
 
   const [form, setForm] = useState({
-
     email: '',
-
     password: '',
-
     full_name: '',
-
     cep: '',
-
     address: '',
-
     address_number: '',
-
     address_complement: '',
-
     neighborhood: '',
-
     city: '',
-
     state: '',
-
     country: 'Brasil',
-
   });
 
   const [loading, setLoading] = useState(false);
@@ -43,49 +29,28 @@ export default function CadastroUsuario({ navigation }) {
   const [buscandoCep, setBuscandoCep] = useState(false);
 
   async function buscarCep(cep) {
-
     setBuscandoCep(true);
-
     setErro('');
-
     try {
-
-      const resposta = await fetch(`http://localhost:8000/api/cep/${cep}/`);
-
+      const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const dados = await resposta.json();
-
+      
       if (dados.erro) {
-
         setErro('CEP não encontrado.');
-
         setForm(f => ({ ...f, address: '', neighborhood: '', city: '', state: '' }));
-
       } else {
-
         setForm(f => ({
-
           ...f,
-
           address: dados.logradouro || '',
-
           neighborhood: dados.bairro || '',
-
           city: dados.localidade || '',
-
           state: dados.uf || '',
-
         }));
-
       }
-
     } catch (e) {
-
       setErro('Erro ao buscar CEP.');
-
     }
-
     setBuscandoCep(false);
-
   }
 
   function handleChange(e) {
@@ -116,15 +81,11 @@ export default function CadastroUsuario({ navigation }) {
 
       const { data, error } = await ApiService.users.createUser(form);
 
-      
-
       if (error) {
 
         throw new Error(error);
 
       }
-
-      
 
       setSucesso('Usuário cadastrado com sucesso!');
 

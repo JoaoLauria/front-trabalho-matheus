@@ -1,9 +1,8 @@
-import React from 'react';
+;
 import { Badge, Fade, Paper } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import { AppBox, AppTypography, AppModal, AppCartItem, AppEmptyState } from './common';
-import { colors } from '../styles/theme';
 
 const CarrinhoModal = ({
   open,
@@ -18,7 +17,6 @@ const CarrinhoModal = ({
   const total = carrinho.reduce((acc, item) => {
 
     let itemTotal = parseFloat(item.produto.price) * item.quantidade;
-    
 
     if (item.adicionaisSelecionados && item.adicionaisSelecionados.length > 0) {
       const adicionaisTotal = item.adicionaisSelecionados.reduce((adcAcc, adc) => {

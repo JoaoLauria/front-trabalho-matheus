@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'http://localhost:8000/api/';
+const API_BASE_URL = 'http://localhost:8000/';
 
 const handleResponse = async (response) => {
   try {
@@ -40,8 +40,7 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
-    
+
     login: async (email, password) => {
       try {
         const response = await fetch(`${API_BASE_URL}/user/login/`, {
@@ -59,8 +58,7 @@ export const ApiService = {
       }
     },
   },
-  
-  
+
   categories: {
     
     getAllCategories: async () => {
@@ -73,7 +71,6 @@ export const ApiService = {
       }
     },
 
-    
     getCategoryById: async (categoryId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`);
@@ -84,7 +81,6 @@ export const ApiService = {
       }
     },
 
-    
     createCategory: async (categoryData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/categories/`, {
@@ -102,7 +98,6 @@ export const ApiService = {
       }
     },
 
-    
     updateCategory: async (categoryId, categoryData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`, {
@@ -120,7 +115,6 @@ export const ApiService = {
       }
     },
 
-    
     patchCategory: async (categoryId, categoryData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`, {
@@ -138,14 +132,12 @@ export const ApiService = {
       }
     },
 
-    
     deleteCategory: async (categoryId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/categories/${categoryId}/`, {
           method: 'DELETE'
         });
-        
-        
+
         if (response.status === 204) {
           return { data: { success: true }, error: null };
         }
@@ -157,8 +149,7 @@ export const ApiService = {
       }
     }
   },
-  
-  
+
   products: {
     
     getProducts: async ({ category = '', search = '', is_available = '' } = {}) => {
@@ -176,7 +167,6 @@ export const ApiService = {
       }
     },
 
-    
     getProductsByCategory: async (categoryId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/?category=${categoryId}`);
@@ -187,7 +177,6 @@ export const ApiService = {
       }
     },
 
-    
     getProductById: async (productId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/${productId}/`);
@@ -198,7 +187,6 @@ export const ApiService = {
       }
     },
 
-    
     createProduct: async (productData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/`, {
@@ -216,7 +204,6 @@ export const ApiService = {
       }
     },
 
-    
     updateProduct: async (productId, productData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
@@ -234,7 +221,6 @@ export const ApiService = {
       }
     },
 
-    
     patchProduct: async (productId, productData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
@@ -252,7 +238,6 @@ export const ApiService = {
       }
     },
 
-    
     deleteProduct: async (productId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
@@ -270,7 +255,6 @@ export const ApiService = {
       }
     },
 
-    
     getProductAdditionals: async (productId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/products/${productId}/additionals/`);
@@ -281,8 +265,7 @@ export const ApiService = {
       }
     },
   },
-  
-  
+
   orders: {
     
     createOrder: async (orderData) => {
@@ -301,8 +284,7 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
-    
+
     getOrdersByTable: async (tableId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/tables/${tableId}/orders/`);
@@ -312,8 +294,7 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
-    
+
     updateOrderStatus: async (orderId, status) => {
       try {
         const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status/`, {
@@ -331,8 +312,7 @@ export const ApiService = {
       }
     }
   },
-  
-  
+
   tables: {
     
     getAllTables: async () => {
@@ -344,8 +324,7 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
-    
+
     createTable: async (tableData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/tables/`, {
@@ -362,8 +341,7 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
-    
+
     setTableUnavailable: async (tableId, peopleData) => {
       try {
         const response = await fetch(`${API_BASE_URL}/tables/${tableId}/set-unavailable/`, {
@@ -380,8 +358,7 @@ export const ApiService = {
         return { data: null, error: error.message };
       }
     },
-    
-    
+
     setTableAvailable: async (tableId) => {
       try {
         const response = await fetch(`${API_BASE_URL}/tables/${tableId}/set-available/`, {

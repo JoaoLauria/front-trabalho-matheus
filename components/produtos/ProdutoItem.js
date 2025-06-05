@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import {
   ListItem,
   ListItemText,
@@ -21,7 +21,6 @@ import {
   Cancel 
 } from '@mui/icons-material';
 import { formatCurrency } from '../../utils/formatters/currency';
-import { colors } from '../../styles/theme';
 
 const ProdutoItem = ({ produto, onEditClick, onDeleteClick }) => {
   

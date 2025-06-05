@@ -1,25 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useError } from '../contexts/ErrorContext';
-import { Box, Typography, Alert } from '@mui/material';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  ArrowBack as ArrowBackIcon,
-  Category as CategoryIcon,
-  AddCircle as AddCircleIcon,
-  RestaurantMenu as RestaurantMenuIcon,
-  PostAdd as PostAddIcon
-} from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+
 import ApiService from '../services/ApiService';
-import { 
-  AppPage, 
-  AppButton, 
-  AppTextField, 
-  AppList, 
-  AppDialog, 
-  AppSwitch 
-} from '../components/common';
+import { AppPage, AppButton, AppTextField, AppDialog, AppSwitch } from '../components/common';
 import CategoriaLista from '../components/categorias/CategoriaLista';
 import commonStyles from '../styles/commonStyles';
 
@@ -37,7 +21,6 @@ export default function GerenciarCategorias({ navigation }) {
     is_active: true
   });
 
-  
   const buscarCategorias = async () => {
     setLoading(true);
     setErro('');
@@ -47,16 +30,13 @@ export default function GerenciarCategorias({ navigation }) {
       if (categoriasError) {
         throw new Error(categoriasError);
       }
-      
-      
+
       const { data: produtos, error: produtosError } = await ApiService.products.getProducts();
       
       if (produtosError) {
-        
-        
+
       }
-      
-      
+
       const categoriasComContagem = categorias.map(categoria => {
         const produtosVinculados = produtos ? produtos.filter(p => p.category === categoria.id) : [];
         return {
@@ -80,7 +60,6 @@ export default function GerenciarCategorias({ navigation }) {
     buscarCategorias();
   }, []);
 
-  
   const handleNovaCategoria = () => {
     setCategoriaAtual(null);
     setFormData({
@@ -91,7 +70,6 @@ export default function GerenciarCategorias({ navigation }) {
     setDialogOpen(true);
   };
 
-  
   const handleEditarCategoria = (categoria) => {
     setCategoriaAtual(categoria);
     setFormData({
@@ -102,13 +80,11 @@ export default function GerenciarCategorias({ navigation }) {
     setDialogOpen(true);
   };
 
-  
   const handleConfirmarExclusao = (categoria) => {
     setCategoriaAtual(categoria);
     setConfirmDeleteDialogOpen(true);
   };
 
-  
   const handleExcluirCategoria = async () => {
     if (!categoriaAtual) return;
     
@@ -119,8 +95,7 @@ export default function GerenciarCategorias({ navigation }) {
       if (error) {
         throw new Error(error);
       }
-      
-      
+
       setCategorias(categorias.filter(cat => cat.id !== categoriaAtual.id));
       setConfirmDeleteDialogOpen(false);
       setCategoriaAtual(null);
@@ -135,7 +110,6 @@ export default function GerenciarCategorias({ navigation }) {
     }
   };
 
-  
   const handleInputChange = (e) => {
     const { name, value, checked } = e.target;
     setFormData({
@@ -144,7 +118,6 @@ export default function GerenciarCategorias({ navigation }) {
     });
   };
 
-  
   const handleSalvarCategoria = async () => {
     setLoading(true);
     setErro('');
@@ -164,12 +137,10 @@ export default function GerenciarCategorias({ navigation }) {
       if (error) {
         throw new Error(error);
       }
-      
-      
+
       await buscarCategorias();
       setDialogOpen(false);
-      
-      
+
       const mensagem = categoriaAtual
         ? `Categoria "${formData.name}" atualizada com sucesso.`
         : `Categoria "${formData.name}" criada com sucesso.`;

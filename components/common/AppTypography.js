@@ -1,10 +1,8 @@
-import React from 'react';
+;
 
 import { Typography, styled } from '@mui/material';
 
 const AppTypography = styled(Typography)(({ theme }) => ({
-
-  
 
 }));
 

@@ -15,8 +15,7 @@ export const calcularTotal = (pedidos) => {
       if (pedido.total && !isNaN(parseFloat(pedido.total))) {
         return total + parseFloat(pedido.total);
       }
-      
-      
+
       if (Array.isArray(pedido.items)) {
         const itemsTotal = pedido.items.reduce((itemsSum, item) => {
           
@@ -26,11 +25,9 @@ export const calcularTotal = (pedidos) => {
             (item.product_price) || 
             0
           );
-          
-          
+
           const quantity = parseInt(item.quantity || 1);
-          
-          
+
           let additionalsTotal = 0;
           if (Array.isArray(item.additionals)) {
             additionalsTotal = item.additionals.reduce((sum, additional) => {

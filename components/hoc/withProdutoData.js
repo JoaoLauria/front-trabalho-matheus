@@ -5,26 +5,22 @@ import { carregarDadosProdutos, aplicarFiltrosProdutos } from '../../utils/produ
 const withProdutoData = (WrappedComponent) => {
   return function WithProdutoDataComponent(props) {
     const { handleApiError, showError } = useError();
-    
-    
+
     const [produtos, setProdutos] = useState([]);
     const [produtosFiltrados, setProdutosFiltrados] = useState([]);
     const [produtosAgrupados, setProdutosAgrupados] = useState({});
     const [categorias, setCategorias] = useState([]);
     const [expandedCategories, setExpandedCategories] = useState([]);
-    
-    
+
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState('');
-    
-    
+
     const [filtros, setFiltros] = useState({
       nome: '',
       categoria: '',
       disponibilidade: ''
     });
-    
-    
+
     const [filtroExpandido, setFiltroExpandido] = useState(true);
     
     useEffect(() => {
@@ -34,8 +30,7 @@ const withProdutoData = (WrappedComponent) => {
     useEffect(() => {
       aplicarFiltros();
     }, [filtros, produtos]);
-    
-    
+
     const buscarDados = async () => {
       try {
         
@@ -54,8 +49,7 @@ const withProdutoData = (WrappedComponent) => {
           setCategorias(categorias || []);
           setProdutos(produtos || []);
           setProdutosFiltrados(produtos || []);
-          
-          
+
           const { produtosFiltrados: novosFiltrados, produtosAgrupados: novosAgrupados } = 
             aplicarFiltrosProdutos(produtos || [], filtros, categorias || []);
           
@@ -70,8 +64,7 @@ const withProdutoData = (WrappedComponent) => {
         setLoading(false);
       }
     };
-    
-    
+
     const aplicarFiltros = () => {
       if (!produtos.length) return;
       
@@ -80,14 +73,12 @@ const withProdutoData = (WrappedComponent) => {
       setProdutosFiltrados(produtosFiltrados);
       setProdutosAgrupados(produtosAgrupados);
     };
-    
-    
+
     const handleFiltroChange = (e) => {
       const { name, value } = e.target;
       setFiltros(prev => ({ ...prev, [name]: value }));
     };
-    
-    
+
     const limparFiltros = () => {
       setFiltros({
         nome: '',
@@ -95,8 +86,7 @@ const withProdutoData = (WrappedComponent) => {
         disponibilidade: ''
       });
     };
-    
-    
+
     const handleToggleExpand = (categoriaId) => {
       setExpandedCategories(prev => {
         if (prev.includes(categoriaId)) {

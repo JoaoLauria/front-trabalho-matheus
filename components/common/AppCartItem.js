@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { IconButton, Divider, Grid, Paper, Typography, Tooltip, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -22,8 +22,7 @@ const AppCartItem = ({
   };
 
   const hasAdditionals = item.additionals && item.additionals.length > 0;
-  
-  
+
   const subtotal = item.price * item.quantity;
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { Box, Typography, Paper, Chip, IconButton } from '@mui/material';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import PeopleIcon from '@mui/icons-material/People';

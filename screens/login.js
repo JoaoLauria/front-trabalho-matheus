@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { AppLoginForm, AppAuthLayout } from '../components/common';
 
 export default function Login({ navigation }) {
@@ -7,8 +7,7 @@ export default function Login({ navigation }) {
   };
   
   const handleForgotPassword = () => {
-    
-    
+
   };
 
   return (

@@ -11,18 +11,15 @@ export const sortByProperty = (array, property, ascending = true) => {
     if (!a.hasOwnProperty(property) || !b.hasOwnProperty(property)) {
       return 0;
     }
-    
-    
+
     let valueA = a[property];
     let valueB = b[property];
-    
-    
+
     if (typeof valueA === 'string' && typeof valueB === 'string') {
       valueA = valueA.toLowerCase();
       valueB = valueB.toLowerCase();
     }
-    
-    
+
     if (valueA < valueB) {
       return ascending ? -1 : 1;
     }
@@ -45,8 +42,7 @@ export const filterByProperty = (array, property, value) => {
     if (!item.hasOwnProperty(property)) {
       return false;
     }
-    
-    
+
     if (typeof item[property] === 'string' && typeof value === 'string') {
       return item[property].toLowerCase().includes(value.toLowerCase());
     }
@@ -65,16 +61,13 @@ export const groupByProperty = (array, property) => {
     if (!item.hasOwnProperty(property)) {
       return groups;
     }
-    
-    
+
     const key = item[property];
-    
-    
+
     if (!groups[key]) {
       groups[key] = [];
     }
-    
-    
+
     groups[key].push(item);
     
     return groups;
@@ -101,16 +94,13 @@ export const removeDuplicatesByProperty = (array, property) => {
     if (!item.hasOwnProperty(property)) {
       return true;
     }
-    
-    
+
     const key = item[property];
-    
-    
+
     if (seen.has(key)) {
       return false;
     }
-    
-    
+
     seen.add(key);
     
     return true;
@@ -127,8 +117,7 @@ export const findByProperty = (array, property, value) => {
     if (!item.hasOwnProperty(property)) {
       return false;
     }
-    
-    
+
     return item[property] === value;
   }) || null;
 };
@@ -143,11 +132,9 @@ export const mapToObject = (array, keyProperty) => {
     if (!item.hasOwnProperty(keyProperty)) {
       return obj;
     }
-    
-    
+
     const key = item[keyProperty];
-    
-    
+
     obj[key] = item;
     
     return obj;

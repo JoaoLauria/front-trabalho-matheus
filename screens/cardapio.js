@@ -1,4 +1,4 @@
-import React from 'react';
+;
 
 import { Button } from '@mui/material';
 
@@ -18,8 +18,6 @@ export default function Cardapio({ mesa, onVoltar }) {
 
   }
 
-  
-
   const styles = {
 
     container: {
@@ -29,6 +27,4 @@ export default function Cardapio({ mesa, onVoltar }) {
     }
 
   };
-
-  
 

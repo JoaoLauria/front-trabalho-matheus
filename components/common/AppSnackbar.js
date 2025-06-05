@@ -1,5 +1,5 @@
-import React from 'react';
-import { Snackbar, Alert, Typography } from '@mui/material';
+;
+import { Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const AppSnackbar = ({

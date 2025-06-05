@@ -6,7 +6,7 @@ import StatusChangeDialog from '../components/StatusChangeDialog';
 import PedidoItem from '../components/PedidoItem';
 import MesaHeader from '../components/MesaHeader';
 import ActionButtons from '../components/ActionButtons';
-import { calcularTotal, formatarMoeda, getStatusColor } from '../utils/utils';
+import { calcularTotal } from '../utils/utils';
 import ApiService from '../services/ApiService';
 
 export default function PedidosMesa({ navigation, route }) {
@@ -39,9 +39,7 @@ export default function PedidosMesa({ navigation, route }) {
     setErro(null);
     try {
       const { data, error } = await ApiService.orders.getOrdersByTable(mesa);
-      
-      
-      
+
       if (Array.isArray(data) && data.length > 0) {
         const primeiroPedido = data[0];
         

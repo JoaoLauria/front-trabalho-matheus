@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useError } from '../contexts/ErrorContext';
-import { 
-  Grid, Paper, Typography, Button, Box, Tooltip, CircularProgress, Alert, 
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, 
-  Menu, MenuItem, ListItemIcon, ListItemText
-} from '@mui/material';
+import { Grid, Paper, Typography, Button, Box, Tooltip, CircularProgress, Alert, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import { 
   Restaurant, EventSeat, ExitToApp, Add, Menu as MenuIcon, 
   Category, Settings, Dashboard, RestaurantMenu
@@ -21,8 +17,7 @@ export default function Comandas({ navigation }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [mesaAlvo, setMesaAlvo] = useState(null);
   const [qtdPessoas, setQtdPessoas] = useState('1');
-  
-  
+
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const menuOpen = Boolean(menuAnchorEl);
   
@@ -79,7 +74,6 @@ export default function Comandas({ navigation }) {
   useEffect(() => {
     buscarMesas();
   }, []);
-  
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -131,18 +125,6 @@ export default function Comandas({ navigation }) {
               </ListItemIcon>
               <ListItemText>Gerenciar Produtos</ListItemText>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <ListItemIcon>
-                <Dashboard fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Dashboard</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Configurações</ListItemText>
-            </MenuItem>
           </Menu>
         </Box>
         <Button
@@ -151,8 +133,7 @@ export default function Comandas({ navigation }) {
           startIcon={<ExitToApp />}
           onClick={() => {
             authContext.logout();
-            
-            
+
           }}
         >
           Sair

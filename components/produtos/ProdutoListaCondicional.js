@@ -1,32 +1,12 @@
-import React from 'react';
+;
 
-import { Collapse, Fade, Paper, Box, Typography, IconButton, Divider, Badge, Avatar } from '@mui/material';
+import { Collapse, Fade, Paper, Box, Typography, IconButton, Avatar } from '@mui/material';
 
-import { 
-
-  ExpandLess as ExpandLessIcon, 
-
-  ExpandMore as ExpandMoreIcon,
-
-  Category as CategoryIcon,
-
-  Restaurant as RestaurantIcon,
-
-  RestaurantMenu as RestaurantMenuIcon,
-
-  Fastfood as FastfoodIcon
-
-} from '@mui/icons-material';
-
-import { AppList, AppBox, AppTypography, AppEmptyState } from '../common';
+import { AppList, AppEmptyState } from '../common';
 
 import ProdutoItem from './ProdutoItem';
 
-import { formatCurrency } from '../../utils/formatters/currency';
-
 import commonStyles from '../../styles/commonStyles';
-
-import { colors } from '../../styles/theme';
 
 const restaurantTheme = {
 
@@ -70,8 +50,6 @@ const ProdutoListaCondicional = ({
 
 }) => {
 
-  
-
   if (produtosFiltrados.length === 0 && !loading) {
 
     return (
@@ -110,13 +88,9 @@ const ProdutoListaCondicional = ({
 
   }
 
-  
-
   if (filtros.categoria) {
 
     const categoryName = produtosFiltrados[0]?.categoria?.name || 'Produtos';
-
-    
 
     return (
 
@@ -206,8 +180,6 @@ const ProdutoListaCondicional = ({
 
             </Box>
 
-            
-
             <AppList
 
               loading={loading}
@@ -254,8 +226,6 @@ const ProdutoListaCondicional = ({
 
   }
 
-  
-
   return (
 
     <Box sx={{ 
@@ -278,21 +248,13 @@ const ProdutoListaCondicional = ({
 
         if (!grupo.produtos.length) return null;
 
-        
-
         const isExpanded = expandedCategories.includes(grupo.categoria.id);
-
-        
-
-        
 
         const categoryIcons = [<RestaurantIcon />, <RestaurantMenuIcon />, <FastfoodIcon />];
 
         const iconIndex = grupo.categoria.id % 3;
 
         const categoryIcon = categoryIcons[iconIndex];
-
-        
 
         return (
 
@@ -422,8 +384,6 @@ const ProdutoListaCondicional = ({
 
                   </Box>
 
-                  
-
                   <IconButton 
 
                     size="small" 
@@ -455,8 +415,6 @@ const ProdutoListaCondicional = ({
                   </IconButton>
 
                 </Box>
-
-                
 
                 <Collapse in={isExpanded} timeout={300}>
 

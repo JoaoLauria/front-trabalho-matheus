@@ -33,11 +33,9 @@ export const removeAccents = (text) => {
 
 export const formatPhone = (phone) => {
   if (!phone) return '';
-  
-  
+
   const cleaned = phone.replace(/\D/g, '');
-  
-  
+
   if (cleaned.length === 8) {
     
     return cleaned.replace(/(\d{4})(\d{4})/, '$1-$2');
@@ -51,15 +49,13 @@ export const formatPhone = (phone) => {
     
     return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
   }
-  
-  
+
   return cleaned;
 };
 
 export const formatCPF = (cpf) => {
   if (!cpf) return '';
-  
-  
+
   const cleaned = cpf.replace(/\D/g, '');
   
   if (cleaned.length !== 11) {
@@ -71,8 +67,7 @@ export const formatCPF = (cpf) => {
 
 export const formatCNPJ = (cnpj) => {
   if (!cnpj) return '';
-  
-  
+
   const cleaned = cnpj.replace(/\D/g, '');
   
   if (cleaned.length !== 14) {
@@ -84,8 +79,7 @@ export const formatCNPJ = (cnpj) => {
 
 export const formatCEP = (cep) => {
   if (!cep) return '';
-  
-  
+
   const cleaned = cep.replace(/\D/g, '');
   
   if (cleaned.length !== 8) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useError } from '../contexts/ErrorContext';
-import { Paper, Box, CircularProgress, Typography, Fab, Container, TextField, Button } from '@mui/material';
+import { Paper, CircularProgress, Typography, Fab } from '@mui/material';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
@@ -14,7 +14,7 @@ import ItensSelecionados from '../components/ItensSelecionados';
 import CarrinhoModal from '../components/CarrinhoModal';
 
 import ApiService from '../services/ApiService';
-import { agruparProdutosPorCategoria, adicionaisIguais, formatarMoeda } from '../utils/utils';
+import { agruparProdutosPorCategoria, adicionaisIguais } from '../utils/utils';
 
 const NovoPedido = () => {
   const navigation = useNavigation();
@@ -108,8 +108,6 @@ const NovoPedido = () => {
       setLoading(false);
     }
   }
-
-  
 
   async function handleSelecionarItem(produto) {
     setLoading(true);
@@ -333,7 +331,6 @@ const NovoPedido = () => {
       if (error) {
         throw new Error(error);
       }
-      
 
       setCarrinho([]);
       setCarrinhoModalOpen(false);

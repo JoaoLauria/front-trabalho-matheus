@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Avatar, Typography, Chip } from '@mui/material';
+;
+import { Box, Avatar, Typography } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
@@ -46,7 +46,6 @@ const CategoriaSelector = ({ categorias = [], categoriaId, setCategoriaId }) => 
           Todas
         </Typography>
       </Box>
-      
 
       {categorias.map(categoria => (
         <Box 

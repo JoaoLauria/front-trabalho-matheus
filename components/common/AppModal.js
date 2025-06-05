@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { AppBox, AppTypography, AppButton } from './index';

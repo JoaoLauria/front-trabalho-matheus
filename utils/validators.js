@@ -8,21 +8,17 @@ export const isValidEmail = (email) => {
 
 export const isValidCPF = (cpf) => {
   if (!cpf) return false;
-  
-  
+
   const cleaned = cpf.replace(/\D/g, '');
-  
-  
+
   if (cleaned.length !== 11) {
     return false;
   }
-  
-  
+
   if (/^(\d)\1+$/.test(cleaned)) {
     return false;
   }
-  
-  
+
   let sum = 0;
   for (let i = 0; i < 9; i++) {
     sum += parseInt(cleaned.charAt(i)) * (10 - i);
@@ -36,8 +32,7 @@ export const isValidCPF = (cpf) => {
   if (remainder !== parseInt(cleaned.charAt(9))) {
     return false;
   }
-  
-  
+
   sum = 0;
   for (let i = 0; i < 10; i++) {
     sum += parseInt(cleaned.charAt(i)) * (11 - i);
@@ -57,21 +52,17 @@ export const isValidCPF = (cpf) => {
 
 export const isValidCNPJ = (cnpj) => {
   if (!cnpj) return false;
-  
-  
+
   const cleaned = cnpj.replace(/\D/g, '');
-  
-  
+
   if (cleaned.length !== 14) {
     return false;
   }
-  
-  
+
   if (/^(\d)\1+$/.test(cleaned)) {
     return false;
   }
-  
-  
+
   let size = cleaned.length - 2;
   let numbers = cleaned.substring(0, size);
   const digits = cleaned.substring(size);
@@ -89,8 +80,7 @@ export const isValidCNPJ = (cnpj) => {
   if (result !== parseInt(digits.charAt(0))) {
     return false;
   }
-  
-  
+
   size = size + 1;
   numbers = cleaned.substring(0, size);
   sum = 0;
@@ -113,16 +103,13 @@ export const isValidCNPJ = (cnpj) => {
 
 export const isValidCEP = (cep) => {
   if (!cep) return false;
-  
-  
+
   const cleaned = cep.replace(/\D/g, '');
-  
-  
+
   if (cleaned.length !== 8) {
     return false;
   }
-  
-  
+
   if (/^(\d)\1+$/.test(cleaned)) {
     return false;
   }
@@ -132,16 +119,13 @@ export const isValidCEP = (cep) => {
 
 export const isValidPhone = (phone) => {
   if (!phone) return false;
-  
-  
+
   const cleaned = phone.replace(/\D/g, '');
-  
-  
+
   if (cleaned.length < 8 || cleaned.length > 11) {
     return false;
   }
-  
-  
+
   if (/^(\d)\1+$/.test(cleaned)) {
     return false;
   }
@@ -171,13 +155,11 @@ export const isValidNumber = (value) => {
   if (value === null || value === undefined || value === '') {
     return false;
   }
-  
-  
+
   if (typeof value === 'number') {
     return !isNaN(value) && isFinite(value);
   }
-  
-  
+
   const numValue = parseFloat(value.replace(',', '.'));
   return !isNaN(numValue) && isFinite(numValue);
 };

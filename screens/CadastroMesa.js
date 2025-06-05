@@ -60,12 +60,10 @@ export default function CadastroMesa({ navigation }) {
         message: 'Mesa cadastrada com sucesso!',
         severity: 'success'
       });
-      
 
       setNumeroMesa('');
       setCapacidade('');
       setDescricao('');
-      
 
       navigation.navigate('Comandas');
     } catch (error) {

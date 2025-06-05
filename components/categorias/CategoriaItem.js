@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import {
   ListItem,
   ListItemText,
@@ -12,22 +12,7 @@ import {
   Tooltip,
   Avatar
 } from '@mui/material';
-import { 
-  Edit, 
-  Delete, 
-  Category as CategoryIcon,
-  LocalOffer, 
-  CheckCircle, 
-  Cancel,
-  Restaurant as RestaurantIcon,
-  Fastfood as FastfoodIcon,
-  LocalCafe as LocalCafeIcon,
-  LocalBar as LocalBarIcon,
-  Cake as CakeIcon,
-  LocalPizza as LocalPizzaIcon,
-  EmojiFoodBeverage as EmojiFoodBeverageIcon
-} from '@mui/icons-material';
-import { colors } from '../../styles/theme';
+import { Edit, Delete, CheckCircle, Cancel } from '@mui/icons-material';
 
 const getCategoryIcon = (categoryName) => {
   if (!categoryName) return <CategoryIcon />;

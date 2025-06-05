@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import { 
   FormControl, 
   InputLabel, 
@@ -54,8 +54,7 @@ const AppSelect = ({
         </Box>
       );
     }
-    
-    
+
     const selectedValue = typeof selected === 'string' ? selected : selected.toString();
     const option = options.find(opt => {
       const optKey = typeof opt[valueKey] === 'string' ? opt[valueKey] : opt[valueKey].toString();
@@ -64,8 +63,7 @@ const AppSelect = ({
     
     return option ? option[labelKey] : selected;
   };
-  
-  
+
   const { renderValue: customRenderValue, ...otherProps } = props;
   
   return (
