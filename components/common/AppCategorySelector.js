@@ -7,9 +7,6 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import { AppBox, AppTypography } from './index';
 
-/**
- * Mapeamento de ícones para categorias comuns
- */
 const categoryIcons = {
   'Bebidas': <LocalCafeIcon fontSize="large" />,
   'Lanches': <FastfoodIcon fontSize="large" />,
@@ -18,15 +15,6 @@ const categoryIcons = {
   'default': <RestaurantIcon fontSize="large" />
 };
 
-/**
- * Componente para seleção visual de categorias com ícones
- * 
- * @param {Array} categories - Lista de categorias para exibir
- * @param {string|number} selectedCategoryId - ID da categoria selecionada
- * @param {function} onSelectCategory - Função chamada quando uma categoria é selecionada
- * @param {boolean} showAllOption - Se deve mostrar a opção "Todas"
- * @param {object} sx - Estilos adicionais para o componente
- */
 const AppCategorySelector = ({ 
   categories = [], 
   selectedCategoryId, 

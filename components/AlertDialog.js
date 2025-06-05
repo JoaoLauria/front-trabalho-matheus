@@ -18,7 +18,7 @@ const AlertDialog = ({
   onClose, 
   title, 
   message, 
-  type = 'info', // 'info', 'success', 'error'
+  type = 'info', 
   confirmText = 'OK',
   onConfirm = null
 }) => {

@@ -77,7 +77,7 @@ const NovoPedido = () => {
       setCategorias(data || []);
     } catch (error) {
       const errorMsg = 'Falha ao carregar categorias. Tente novamente.';
-      console.error('Erro ao buscar categorias:', error);
+      
       setError(errorMsg);
       handleApiError(error || errorMsg);
     } finally {
@@ -101,7 +101,7 @@ const NovoPedido = () => {
       setProdutos(data || []);
     } catch (error) {
       const errorMsg = 'Falha ao carregar produtos. Tente novamente.';
-      console.error('Erro ao buscar produtos:', error);
+      
       setError(errorMsg);
       handleApiError(error || errorMsg);
     } finally {
@@ -109,23 +109,23 @@ const NovoPedido = () => {
     }
   }
 
-  // Função fetchAdicionais removida pois a API ainda não está implementada
+  
 
   async function handleSelecionarItem(produto) {
     setLoading(true);
     try {
-      // Removida chamada à API de adicionais que ainda não está implementada
+      
       const novoItem = {
         ...produto,
         quantidade: 1,
         observacao: '',
-        adicionais: [] // Inicializado com array vazio até que a API esteja disponível
+        adicionais: [] 
       };
 
       setItensSelecionados(prev => [...prev, novoItem]);
     } catch (error) {
       const errorMsg = `Erro ao selecionar produto: ${error?.message || 'Falha na comunicação com o servidor'}`;
-      console.error('Erro ao selecionar item:', error);
+      
       handleApiError(error || errorMsg);
       setAlertDialog({
         open: true,
@@ -347,7 +347,7 @@ const NovoPedido = () => {
       });
     } catch (error) {
       const errorMsg = `Erro ao finalizar pedido: ${error?.message || 'Falha na comunicação com o servidor'}`;
-      console.error('Erro ao salvar pedido:', error);
+      
       setError(`Falha ao salvar pedido: ${error?.message || 'Erro desconhecido'}`);
       handleApiError(error || errorMsg);
       setAlertDialog({

@@ -7,8 +7,8 @@ export default function Login({ navigation }) {
   };
   
   const handleForgotPassword = () => {
-    // Implementar a navegação para a tela de recuperação de senha
-    console.log('Navegar para recuperação de senha');
+    
+    
   };
 
   return (

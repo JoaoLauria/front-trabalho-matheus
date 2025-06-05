@@ -5,18 +5,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { AppBox, AppTypography, AppList } from './index';
 import { formatCurrency } from '../../utils';
 
-/**
- * Componente para exibição de lista de produtos com opções de seleção
- * 
- * @param {Array} products - Lista de produtos para exibir
- * @param {function} onSelectProduct - Função chamada quando um produto é selecionado
- * @param {function} onAddProduct - Função chamada quando o botão de adicionar é clicado
- * @param {boolean} selectable - Se os produtos podem ser selecionados
- * @param {boolean} showQuantityControls - Se deve mostrar controles de quantidade
- * @param {object} selectedItems - Objeto com IDs de produtos e suas quantidades
- * @param {function} onQuantityChange - Função chamada quando a quantidade de um produto é alterada
- * @param {object} sx - Estilos adicionais para o componente
- */
 const AppProductList = ({
   products = [],
   onSelectProduct,
@@ -147,7 +135,6 @@ const AppProductList = ({
   );
 };
 
-// Variantes do AppProductList
 AppProductList.Selectable = (props) => (
   <AppProductList selectable={true} {...props} />
 );

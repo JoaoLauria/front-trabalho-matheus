@@ -1,9 +1,6 @@
 import React from 'react';
 import { Link } from '@mui/material';
 
-/**
- * Componente de link padronizado para navegação e ações.
- */
 const AppLink = ({ children, onClick, sx, ...props }) => {
   return (
     <Link
@@ -26,7 +23,6 @@ const AppLink = ({ children, onClick, sx, ...props }) => {
   );
 };
 
-// Variantes do AppLink
 AppLink.Primary = (props) => <AppLink color="primary.main" {...props} />;
 AppLink.Secondary = (props) => <AppLink color="text.secondary" {...props} />;
 AppLink.Action = (props) => (

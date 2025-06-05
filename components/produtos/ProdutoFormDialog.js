@@ -81,7 +81,7 @@ const ProdutoFormDialog = ({
       }));
     }
 
-    // Limpar erro do campo quando o usuário digita
+    
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -99,7 +99,7 @@ const ProdutoFormDialog = ({
   const handleSubmit = () => {
     try {
       if (validateForm()) {
-        // Garantir que o preço seja um número válido
+        
         const priceString = String(formData.price).replace(',', '.');
         const priceValue = parseFloat(priceString);
         
@@ -120,7 +120,7 @@ const ProdutoFormDialog = ({
         onSave(produtoData, produto ? produto.id : null);
       }
     } catch (error) {
-      console.error('Erro ao processar formulário:', error);
+      
     }
   };
 

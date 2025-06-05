@@ -2,19 +2,6 @@ import React from 'react';
 import { Snackbar, Alert, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-/**
- * Componente de notificação reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {boolean} props.open - Se a notificação está aberta
- * @param {string} props.message - Mensagem a ser exibida
- * @param {function} props.onClose - Função a ser chamada quando a notificação for fechada
- * @param {number} props.duration - Duração em ms que a notificação ficará visível (padrão: 6000ms)
- * @param {string} props.severity - Tipo de alerta (error, success, info, warning)
- * @param {string} props.variant - Variante do alerta (filled, outlined, standard)
- * @param {string} props.position - Posição da notificação (top-left, top-center, top-right, bottom-left, bottom-center, bottom-right)
- * @returns {JSX.Element} Componente de notificação
- */
 const AppSnackbar = ({
   open,
   message,
@@ -25,7 +12,7 @@ const AppSnackbar = ({
   position = 'bottom-center',
   ...props
 }) => {
-  // Mapeia a posição para as propriedades do Snackbar
+  
   const getPosition = () => {
     const positions = {
       'top-left': { vertical: 'top', horizontal: 'left' },
@@ -71,7 +58,6 @@ const AppSnackbar = ({
   );
 };
 
-// Variantes predefinidas
 export const SuccessSnackbar = styled((props) => (
   <AppSnackbar severity="success" {...props} />
 ))({});

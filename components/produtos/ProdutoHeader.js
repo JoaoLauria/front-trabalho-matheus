@@ -30,7 +30,7 @@ const ProdutoHeader = ({ onAddClick, loading }) => {
           position: 'relative'
         }}
       >
-        {/* Elemento decorativo */}
+        {}
         <Box 
           sx={{ 
             position: 'absolute',

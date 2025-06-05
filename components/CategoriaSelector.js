@@ -6,7 +6,6 @@ import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 
-
 const categoriaIcons = {
   'Bebidas': <LocalCafeIcon fontSize="large" />,
   'Lanches': <FastfoodIcon fontSize="large" />,

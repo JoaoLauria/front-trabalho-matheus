@@ -4,18 +4,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { AppBox, AppTypography, AppButton } from './index';
 import { colors } from '../../styles/theme';
 
-/**
- * Componente de modal padronizado para uso em toda a aplicação
- * 
- * @param {boolean} open - Se o modal está aberto ou não
- * @param {function} onClose - Função chamada quando o modal é fechado
- * @param {string} title - Título do modal
- * @param {ReactNode} children - Conteúdo do modal
- * @param {ReactNode} actions - Ações do modal (botões)
- * @param {string} maxWidth - Largura máxima do modal (xs, sm, md, lg, xl)
- * @param {boolean} fullWidth - Se o modal deve ocupar toda a largura disponível
- * @param {object} sx - Estilos adicionais para o modal
- */
 const AppModal = ({
   open,
   onClose,
@@ -89,7 +77,6 @@ const AppModal = ({
   );
 };
 
-// Variantes do AppModal
 AppModal.Cart = ({
   open,
   onClose,
@@ -223,27 +210,50 @@ AppModal.Form = ({
   ...props
 }) => (
   <AppModal
+
     open={open}
+
     onClose={onClose}
+
     title={title}
+
     actions={
+
       <>
+
         <AppButton.CancelButton onClick={onClose}>
+
           Cancelar
+
         </AppButton.CancelButton>
+
         <AppButton.SaveButton 
+
           onClick={onSave}
+
           disabled={saveDisabled}
+
           loading={loading}
+
         >
+
           Salvar
+
         </AppButton.SaveButton>
+
       </>
+
     }
+
     {...props}
+
   >
+
     {children}
+
   </AppModal>
+
 );
 
 export default AppModal;
+

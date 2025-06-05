@@ -4,18 +4,10 @@ import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
 
 import { AppFilter, AppTextField, AppSelect, AppButton } from '../common';
 
-/**
- * Componente de filtros para produtos
- * @param {Object} props - Propriedades do componente
- * @param {Object} props.filtros - Estado atual dos filtros
- * @param {Array} props.categorias - Lista de categorias disponíveis
- * @param {Function} props.handleFiltroChange - Função para alterar os filtros
- * @param {Function} props.limparFiltros - Função para limpar todos os filtros
- */
 const ProdutoFiltros = ({ filtros, categorias, handleFiltroChange, limparFiltros }) => {
   const [filtroExpandido, setFiltroExpandido] = useState(true);
   
-  // Verifica se algum filtro está ativo
+  
   const temFiltrosAtivos = filtros.categoria || filtros.nome || filtros.disponibilidade !== '';
   
   return (

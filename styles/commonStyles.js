@@ -1,8 +1,7 @@
 import { colors, spacing, shape, shadows } from './theme';
 
-// Estilos comuns para serem reutilizados em todo o projeto
 const commonStyles = {
-  // Layouts
+  
   flexColumn: {
     display: 'flex',
     flexDirection: 'column',
@@ -32,7 +31,7 @@ const commonStyles = {
     alignItems: 'center',
   },
   
-  // Containers
+  
   page: {
     maxWidth: 1100,
     margin: '0 auto',
@@ -53,7 +52,7 @@ const commonStyles = {
     marginBottom: spacing.lg,
   },
   
-  // Cards
+  
   card: {
     borderRadius: shape.cardBorderRadius,
     boxShadow: shadows[1],
@@ -74,7 +73,7 @@ const commonStyles = {
     backgroundColor: colors.grey[50],
   },
   
-  // Forms
+  
   form: {
     display: 'flex',
     flexDirection: 'column',
@@ -98,12 +97,12 @@ const commonStyles = {
     alignItems: 'center',
   },
   
-  // Inputs
+  
   input: {
     width: '100%',
   },
   
-  // Botões
+  
   buttonContainer: {
     display: 'flex',
     gap: spacing.md,
@@ -116,7 +115,7 @@ const commonStyles = {
     marginTop: spacing.md,
   },
   
-  // Tabelas
+  
   table: {
     width: '100%',
     borderCollapse: 'collapse',
@@ -130,7 +129,7 @@ const commonStyles = {
     borderBottom: `1px solid ${colors.divider}`,
   },
   
-  // Listas
+  
   list: {
     padding: 0,
     margin: 0,
@@ -151,7 +150,7 @@ const commonStyles = {
     alignItems: 'center',
   },
   
-  // Espaçamentos
+  
   mt: {
     xs: { marginTop: spacing.xs },
     sm: { marginTop: spacing.sm },
@@ -195,7 +194,7 @@ const commonStyles = {
     xl: { padding: spacing.xl },
   },
   
-  // Texto
+  
   textCenter: {
     textAlign: 'center',
   },
@@ -212,7 +211,7 @@ const commonStyles = {
     color: colors.text.secondary,
   },
   
-  // Status
+  
   statusChip: {
     borderRadius: '16px',
     padding: '4px 12px',
@@ -237,7 +236,7 @@ const commonStyles = {
     color: colors.info.dark,
   },
   
-  // Animações
+  
   fadeIn: {
     animation: 'fadeIn 0.3s ease-in-out',
     '@keyframes fadeIn': {
@@ -246,7 +245,7 @@ const commonStyles = {
     },
   },
   
-  // Responsividade
+  
   responsive: {
     xs: {
       display: 'block',

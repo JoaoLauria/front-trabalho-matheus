@@ -1,7 +1,4 @@
-// Funções utilitárias para manipulação de pedidos
 
-// Este arquivo foi migrado para utils.js
-// Mantendo exportações para compatibilidade com código existente
 
 import {
   formatarDataHora,
@@ -25,7 +22,6 @@ export {
   calcularTotalCarrinho
 };
 
-// Função legada mantida para compatibilidade
 export const comparaAdicionais = (adicionais1, adicionais2) => {
   if (!adicionais1 || !adicionais2) return false;
   if (adicionais1.length !== adicionais2.length) return false;

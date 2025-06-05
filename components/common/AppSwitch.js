@@ -9,22 +9,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-/**
- * Componente de switch reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {string} props.label - Rótulo do switch
- * @param {string} props.name - Nome do switch
- * @param {boolean} props.checked - Se o switch está marcado
- * @param {function} props.onChange - Função a ser chamada quando o valor mudar
- * @param {boolean} props.disabled - Se o switch está desabilitado
- * @param {string} props.error - Mensagem de erro
- * @param {string} props.helperText - Texto de ajuda
- * @param {string} props.color - Cor do switch (primary, secondary, success, error, warning, info)
- * @param {string} props.size - Tamanho do switch (small, medium)
- * @param {Object} props.sx - Estilos adicionais
- * @returns {JSX.Element} Componente de switch
- */
 const AppSwitch = ({
   label,
   name,
@@ -70,7 +54,6 @@ const AppSwitch = ({
   );
 };
 
-// Variantes predefinidas
 export const StatusSwitch = styled((props) => {
   const { value, onChange, ...otherProps } = props;
   

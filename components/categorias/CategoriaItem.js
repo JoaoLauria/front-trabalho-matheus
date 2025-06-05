@@ -29,7 +29,6 @@ import {
 } from '@mui/icons-material';
 import { colors } from '../../styles/theme';
 
-// Função para selecionar o ícone apropriado com base no nome da categoria
 const getCategoryIcon = (categoryName) => {
   if (!categoryName) return <CategoryIcon />;
   
@@ -48,20 +47,20 @@ const getCategoryIcon = (categoryName) => {
   } else if (name.includes('chá') || name.includes('cha') || name.includes('tea')) {
     return <EmojiFoodBeverageIcon />;
   } else {
-    // Ícone padrão para outras categorias
+    
     return <RestaurantIcon />;
   }
 };
 
 const CategoriaItem = ({ categoria, onEditClick, onDeleteClick }) => {
-  // Definir cores para tema de restaurante - consistente com ProdutoItem
+  
   const restaurantTheme = {
-    available: '#4caf50',      // Verde para categorias ativas
-    unavailable: '#f44336',    // Vermelho para categorias inativas
-    price: '#ff9800',         // Laranja para destaques
-    background: '#f9f5f0',     // Fundo bege claro para tema de restaurante
-    cardBg: '#ffffff',         // Branco para o fundo do card
-    shadow: 'rgba(0,0,0,0.1)'  // Sombra suave
+    available: '#4caf50',      
+    unavailable: '#f44336',    
+    price: '#ff9800',         
+    background: '#f9f5f0',     
+    cardBg: '#ffffff',         
+    shadow: 'rgba(0,0,0,0.1)'  
   };
 
   return (
@@ -86,7 +85,7 @@ const CategoriaItem = ({ categoria, onEditClick, onDeleteClick }) => {
             p: { xs: 1.5, sm: 2 }
           }}
         >
-          {/* Avatar com ícone de categoria */}
+          {}
           <Avatar 
             sx={{ 
               bgcolor: categoria.is_active !== false ? `${restaurantTheme.available}15` : `${restaurantTheme.unavailable}15`,

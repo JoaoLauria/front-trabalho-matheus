@@ -37,7 +37,7 @@ export default function GerenciarCategorias({ navigation }) {
     is_active: true
   });
 
-  // Buscar todas as categorias
+  
   const buscarCategorias = async () => {
     setLoading(true);
     setErro('');
@@ -48,15 +48,15 @@ export default function GerenciarCategorias({ navigation }) {
         throw new Error(categoriasError);
       }
       
-      // Buscar produtos para contar quantos estão vinculados a cada categoria
+      
       const { data: produtos, error: produtosError } = await ApiService.products.getProducts();
       
       if (produtosError) {
-        console.warn('Erro ao buscar produtos para contagem:', produtosError);
-        // Continua mesmo com erro na contagem de produtos
+        
+        
       }
       
-      // Adicionar contagem de produtos a cada categoria
+      
       const categoriasComContagem = categorias.map(categoria => {
         const produtosVinculados = produtos ? produtos.filter(p => p.category === categoria.id) : [];
         return {
@@ -68,7 +68,7 @@ export default function GerenciarCategorias({ navigation }) {
       setCategorias(categoriasComContagem || []);
     } catch (error) {
       const errorMsg = 'Falha ao carregar categorias. Tente novamente.';
-      console.error('Erro ao buscar categorias:', error);
+      
       setErro(errorMsg);
       handleApiError(error || errorMsg);
     } finally {
@@ -80,7 +80,7 @@ export default function GerenciarCategorias({ navigation }) {
     buscarCategorias();
   }, []);
 
-  // Abrir diálogo para criar nova categoria
+  
   const handleNovaCategoria = () => {
     setCategoriaAtual(null);
     setFormData({
@@ -91,24 +91,24 @@ export default function GerenciarCategorias({ navigation }) {
     setDialogOpen(true);
   };
 
-  // Abrir diálogo para editar categoria existente
+  
   const handleEditarCategoria = (categoria) => {
     setCategoriaAtual(categoria);
     setFormData({
       name: categoria.name || '',
       description: categoria.description || '',
-      is_active: categoria.is_active !== false // se is_active for undefined, assume true
+      is_active: categoria.is_active !== false 
     });
     setDialogOpen(true);
   };
 
-  // Abrir diálogo de confirmação para excluir categoria
+  
   const handleConfirmarExclusao = (categoria) => {
     setCategoriaAtual(categoria);
     setConfirmDeleteDialogOpen(true);
   };
 
-  // Excluir categoria
+  
   const handleExcluirCategoria = async () => {
     if (!categoriaAtual) return;
     
@@ -120,14 +120,14 @@ export default function GerenciarCategorias({ navigation }) {
         throw new Error(error);
       }
       
-      // Atualizar lista de categorias após exclusão
+      
       setCategorias(categorias.filter(cat => cat.id !== categoriaAtual.id));
       setConfirmDeleteDialogOpen(false);
       setCategoriaAtual(null);
       showSuccess(`Categoria "${categoriaAtual.name}" excluída com sucesso.`);
     } catch (error) {
       const errorMsg = `Erro ao excluir categoria: ${error?.message || 'Falha na comunicação com o servidor'}`;
-      console.error('Erro ao excluir categoria:', error);
+      
       setErro(errorMsg);
       handleApiError(error || errorMsg);
     } finally {
@@ -135,7 +135,7 @@ export default function GerenciarCategorias({ navigation }) {
     }
   };
 
-  // Atualizar campo do formulário
+  
   const handleInputChange = (e) => {
     const { name, value, checked } = e.target;
     setFormData({
@@ -144,7 +144,7 @@ export default function GerenciarCategorias({ navigation }) {
     });
   };
 
-  // Salvar categoria (criar nova ou atualizar existente)
+  
   const handleSalvarCategoria = async () => {
     setLoading(true);
     setErro('');
@@ -152,10 +152,10 @@ export default function GerenciarCategorias({ navigation }) {
       let response;
       
       if (categoriaAtual) {
-        // Atualizar categoria existente
+        
         response = await ApiService.categories.updateCategory(categoriaAtual.id, formData);
       } else {
-        // Criar nova categoria
+        
         response = await ApiService.categories.createCategory(formData);
       }
       
@@ -165,11 +165,11 @@ export default function GerenciarCategorias({ navigation }) {
         throw new Error(error);
       }
       
-      // Atualizar lista de categorias após salvar
+      
       await buscarCategorias();
       setDialogOpen(false);
       
-      // Mostrar mensagem de sucesso
+      
       const mensagem = categoriaAtual
         ? `Categoria "${formData.name}" atualizada com sucesso.`
         : `Categoria "${formData.name}" criada com sucesso.`;
@@ -177,7 +177,7 @@ export default function GerenciarCategorias({ navigation }) {
     } catch (error) {
       const action = categoriaAtual ? 'atualizar' : 'criar';
       const errorMsg = `Erro ao ${action} categoria: ${error?.message || 'Falha na comunicação com o servidor'}`;
-      console.error(`Erro ao ${action} categoria:`, error);
+      
       setErro(errorMsg);
       handleApiError(error || errorMsg);
     } finally {
@@ -209,7 +209,7 @@ export default function GerenciarCategorias({ navigation }) {
         erro={erro}
       />
 
-      {/* Diálogo para criar/editar categoria */}
+      {}
       <AppDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
@@ -257,7 +257,7 @@ export default function GerenciarCategorias({ navigation }) {
         </Box>
       </AppDialog>
 
-      {/* Diálogo de confirmação para excluir categoria */}
+      {}
       <AppDialog.DeleteConfirmDialog
         open={confirmDeleteDialogOpen}
         onClose={() => setConfirmDeleteDialogOpen(false)}

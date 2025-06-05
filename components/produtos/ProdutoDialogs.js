@@ -4,20 +4,6 @@ import { MenuItem } from '@mui/material';
 import { AppModal, AppTextField, AppSelect, AppSwitch, AppBox } from '../common';
 import { formatCurrency } from '../../utils/formatters/currency';
 
-/**
- * Componente que encapsula os diálogos de formulário e confirmação de exclusão de produtos
- * @param {Object} props - Propriedades do componente
- * @param {boolean} props.dialogOpen - Estado que controla a abertura do diálogo de formulário (vem de dialogOpen.form do HOC)
-
- * @param {Object} props.formData - Dados do formulário
- * @param {Object} props.formErrors - Erros de validação do formulário
- * @param {Function} props.handleFormChange - Função para atualizar os campos do formulário
- * @param {Function} props.handleSalvarProduto - Função para salvar o produto
- * @param {Function} props.handleExcluirProduto - Função para excluir o produto
- * @param {Function} props.handleCloseDialogs - Função para fechar todos os diálogos
- * @param {Array} props.categorias - Lista de categorias disponíveis
- * @param {number|null} props.editingId - ID do produto em edição, null se for novo produto
- */
 const ProdutoDialogs = ({
   dialogOpen,
   formData,
@@ -31,7 +17,7 @@ const ProdutoDialogs = ({
 }) => {
   return (
     <>
-      {/* Modal de Formulário de Produto */}
+      {}
       <AppModal.Form
         open={dialogOpen}
         onClose={handleCloseDialogs}

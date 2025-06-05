@@ -30,7 +30,7 @@ export default function App() {
           setLogado(true);
         }
       } catch (error) {
-        console.error('Erro ao recuperar token:', error);
+        
       }
     };
     

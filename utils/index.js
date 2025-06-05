@@ -1,11 +1,10 @@
-// Importa e exporta todas as funções utilitárias
+
 import currencyFormatters from './formatters/currency';
 import dateFormatters from './formatters/date';
 import textFormatters from './formatters/text';
 import validators from './validators';
 import arrayUtils from './arrayUtils';
 
-// Exporta todas as funções individualmente
 export const {
   formatCurrency,
   parseCurrency,
@@ -56,7 +55,6 @@ export const {
   mapToObject
 } = arrayUtils;
 
-// Funções para mapear status para cores e textos
 export const getStatusColor = (status) => {
   const statusMap = {
     'active': 'success',
@@ -91,7 +89,6 @@ export const getStatusText = (status) => {
   return statusMap[status] || status;
 };
 
-// Função para calcular o valor total de um pedido
 export const calculateOrderTotal = (items = []) => {
   return items.reduce((total, item) => {
     const itemPrice = item.price || 0;
@@ -104,22 +101,18 @@ export const calculateOrderTotal = (items = []) => {
   }, 0);
 };
 
-// Função para gerar um ID único
 export const generateUniqueId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);
 };
 
-// Função para formatar um valor monetário para exibição
 export const formatMoneyDisplay = (value) => {
   return formatCurrency(value, true);
 };
 
-// Função para formatar um valor monetário para input
 export const formatMoneyInput = (value) => {
   return formatCurrency(value, false);
 };
 
-// Exporta todos os módulos agrupados
 export default {
   currency: currencyFormatters,
   date: dateFormatters,

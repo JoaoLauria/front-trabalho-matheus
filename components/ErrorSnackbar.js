@@ -1,15 +1,6 @@
 import React from 'react';
 import { Snackbar, Alert } from '@mui/material';
 
-/**
- * Componente para exibir notificações em um Snackbar
- * @param {boolean} open - Se o Snackbar está aberto ou não
- * @param {string} message - Mensagem a ser exibida
- * @param {function} onClose - Função para fechar o Snackbar
- * @param {number} duration - Duração em ms que o Snackbar ficará visível (padrão: 6000ms)
- * @param {string} severity - Tipo de alerta (error, success, info, warning)
- * @returns {JSX.Element} Componente Snackbar com Alert
- */
 export default function ErrorSnackbar({ open, message, onClose, duration = 6000, severity = 'error' }) {
   return (
     <Snackbar

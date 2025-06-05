@@ -2,25 +2,6 @@ import React from 'react';
 import { TextField, InputAdornment } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-/**
- * Componente de campo de texto reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {string} props.label - Rótulo do campo
- * @param {string} props.name - Nome do campo
- * @param {string} props.value - Valor do campo
- * @param {function} props.onChange - Função a ser chamada quando o valor do campo mudar
- * @param {string} props.variant - Variante do campo (outlined, filled, standard)
- * @param {boolean} props.fullWidth - Se o campo deve ocupar toda a largura disponível
- * @param {boolean} props.required - Se o campo é obrigatório
- * @param {boolean} props.disabled - Se o campo está desabilitado
- * @param {string} props.error - Mensagem de erro
- * @param {string} props.helperText - Texto de ajuda
- * @param {string} props.type - Tipo do campo (text, password, number, etc)
- * @param {React.ReactNode} props.startAdornment - Elemento a ser exibido no início do campo
- * @param {React.ReactNode} props.endAdornment - Elemento a ser exibido no final do campo
- * @returns {JSX.Element} Componente de campo de texto
- */
 const AppTextField = ({
   label,
   name,
@@ -70,7 +51,6 @@ const AppTextField = ({
   );
 };
 
-// Variantes predefinidas
 export const TextInput = styled(AppTextField)({});
 
 export const NumberInput = styled((props) => (
@@ -94,21 +74,21 @@ export const SearchInput = styled((props) => (
 
 export const CurrencyInput = styled((props) => {
   const handleChange = (e) => {
-    // Remove caracteres não numéricos, exceto ponto
+    
     let value = e.target.value.replace(/[^\d.]/g, '');
     
-    // Garante que só exista um ponto decimal
+    
     const parts = value.split('.');
     if (parts.length > 2) {
       value = parts[0] + '.' + parts.slice(1).join('');
     }
     
-    // Limita a 2 casas decimais
+    
     if (parts.length > 1 && parts[1].length > 2) {
       value = parts[0] + '.' + parts[1].substring(0, 2);
     }
     
-    // Cria um novo evento com o valor formatado
+    
     const newEvent = {
       ...e,
       target: {

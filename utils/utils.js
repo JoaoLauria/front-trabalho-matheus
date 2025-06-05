@@ -11,15 +11,15 @@ export const calcularTotal = (pedidos) => {
   return pedidos
     .filter(p => p && p.status && p.status.toLowerCase() !== 'cancelado')
     .reduce((total, pedido) => {
-      // Tenta obter o total do pedido diretamente
+      
       if (pedido.total && !isNaN(parseFloat(pedido.total))) {
         return total + parseFloat(pedido.total);
       }
       
-      // Se não tiver total, calcula baseado nos itens
+      
       if (Array.isArray(pedido.items)) {
         const itemsTotal = pedido.items.reduce((itemsSum, item) => {
-          // Tenta obter o preço do item de várias formas possíveis
+          
           const itemPrice = parseFloat(
             item.price || 
             (item.product && item.product.price) || 
@@ -27,10 +27,10 @@ export const calcularTotal = (pedidos) => {
             0
           );
           
-          // Multiplica pelo quantidade
+          
           const quantity = parseInt(item.quantity || 1);
           
-          // Soma adicionais se existirem
+          
           let additionalsTotal = 0;
           if (Array.isArray(item.additionals)) {
             additionalsTotal = item.additionals.reduce((sum, additional) => {
@@ -52,7 +52,7 @@ export const agruparProdutosPorCategoria = (produtos) => {
   if (!Array.isArray(produtos)) return {};
   
   return produtos.reduce((acc, produto) => {
-    // Usar category_details.name como chave para agrupar produtos
+    
     const categoriaNome = produto.category_details?.name || 'Sem categoria';
     
     if (!acc[categoriaNome]) {
@@ -127,7 +127,6 @@ export const calcularTotalCarrinho = (carrinho) => {
   }, 0);
 };
 
-// Função legada mantida para compatibilidade, alternativa ao adicionaisIguais
 export const comparaAdicionais = (adicionais1, adicionais2) => {
   if (!adicionais1 || !adicionais2) return false;
   if (adicionais1.length !== adicionais2.length) return false;

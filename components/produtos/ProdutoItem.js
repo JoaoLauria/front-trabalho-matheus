@@ -24,14 +24,14 @@ import { formatCurrency } from '../../utils/formatters/currency';
 import { colors } from '../../styles/theme';
 
 const ProdutoItem = ({ produto, onEditClick, onDeleteClick }) => {
-  // Definir cores para tema de restaurante
+  
   const restaurantTheme = {
-    available: '#4caf50',      // Verde para produtos disponíveis
-    unavailable: '#f44336',    // Vermelho para produtos indisponíveis
-    price: '#ff9800',         // Laranja para preços
-    background: '#f9f5f0',     // Fundo bege claro para tema de restaurante
-    cardBg: '#ffffff',         // Branco para o fundo do card
-    shadow: 'rgba(0,0,0,0.1)'  // Sombra suave
+    available: '#4caf50',      
+    unavailable: '#f44336',    
+    price: '#ff9800',         
+    background: '#f9f5f0',     
+    cardBg: '#ffffff',         
+    shadow: 'rgba(0,0,0,0.1)'  
   };
 
   return (
@@ -56,7 +56,7 @@ const ProdutoItem = ({ produto, onEditClick, onDeleteClick }) => {
             p: { xs: 1.5, sm: 2 }
           }}
         >
-          {/* Avatar com ícone de prato */}
+          {}
           <Avatar 
             sx={{ 
               bgcolor: produto.is_available ? `${restaurantTheme.available}15` : `${restaurantTheme.unavailable}15`,

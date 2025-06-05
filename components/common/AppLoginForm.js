@@ -6,14 +6,6 @@ import ApiService from '../../services/ApiService';
 import { AppBox, AppTypography, AppTextField, AppButton, AppAlert, AppLink } from './index';
 import { isValidEmail } from '../../utils';
 
-/**
- * Componente de formulário de login padronizado
- * 
- * @param {Function} onSuccess - Callback executado após login bem-sucedido
- * @param {Function} onForgotPassword - Callback para "Esqueci minha senha"
- * @param {Function} onCreateAccount - Callback para "Criar conta"
- * @param {Object} sx - Estilos adicionais para o componente
- */
 const AppLoginForm = ({
   onSuccess,
   onForgotPassword,
@@ -34,7 +26,7 @@ const AppLoginForm = ({
     e.preventDefault();
     setErro('');
     
-    // Validação de campos
+    
     if (!email) {
       setErro('O e-mail é obrigatório.');
       return;
@@ -69,7 +61,7 @@ const AppLoginForm = ({
       
       setErro(errorMsg);
       handleApiError(error || errorMsg);
-      console.error('Erro ao fazer login:', error);
+      
     } finally {
       setLoading(false);
     }

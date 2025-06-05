@@ -4,14 +4,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { AppBox, AppTextField } from './index';
 
-/**
- * Componente de barra de busca padronizado para pesquisa em toda a aplicação.
- * 
- * @param {string} value - Valor atual da busca
- * @param {function} onChange - Função chamada quando o valor da busca muda
- * @param {string} placeholder - Texto de placeholder para o campo de busca
- * @param {object} sx - Estilos adicionais para o componente
- */
 const AppSearchBar = ({ 
   value, 
   onChange, 
@@ -75,7 +67,6 @@ const AppSearchBar = ({
   );
 };
 
-// Variantes do AppSearchBar
 AppSearchBar.Product = (props) => (
   <AppSearchBar 
     placeholder="Buscar produtos por nome..."

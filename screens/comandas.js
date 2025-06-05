@@ -22,7 +22,7 @@ export default function Comandas({ navigation }) {
   const [mesaAlvo, setMesaAlvo] = useState(null);
   const [qtdPessoas, setQtdPessoas] = useState('1');
   
-  // Estado para controlar o menu burger
+  
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const menuOpen = Boolean(menuAnchorEl);
   
@@ -49,7 +49,6 @@ export default function Comandas({ navigation }) {
     navigation.navigate('GerenciarProdutos');
   };
 
-
   const buscarMesas = async () => {
     setLoading(true);
     setErro('');
@@ -63,7 +62,7 @@ export default function Comandas({ navigation }) {
       if (Array.isArray(data)) {
         setMesas(data);
       } else {
-        console.error('Resposta da API não é um array:', data);
+        
         setMesas([]);
       }
     } catch (error) {
@@ -71,12 +70,11 @@ export default function Comandas({ navigation }) {
       
       setErro(errorMsg);
       handleApiError(error || errorMsg);
-      console.error('Erro ao buscar mesas:', error);
+      
     } finally {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     buscarMesas();
@@ -153,8 +151,8 @@ export default function Comandas({ navigation }) {
           startIcon={<ExitToApp />}
           onClick={() => {
             authContext.logout();
-            // Não precisamos navegar manualmente, o App.js vai redirecionar automaticamente
-            // devido à renderização condicional baseada no estado de autenticação
+            
+            
           }}
         >
           Sair

@@ -5,16 +5,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { AppBox, AppTypography, AppButton } from './index';
 
-/**
- * Componente de filtro padronizado para uso em toda a aplicação
- * 
- * @param {ReactNode} children - Elementos de filtro a serem renderizados
- * @param {boolean} expanded - Se o filtro está expandido ou não
- * @param {function} onToggleExpand - Função chamada quando o botão de expandir/recolher é clicado
- * @param {string} title - Título do filtro
- * @param {function} onClearFilters - Função chamada quando o botão de limpar filtros é clicado
- * @param {object} sx - Estilos adicionais para o componente
- */
 const AppFilter = ({
   children,
   expanded = true,
@@ -89,7 +79,6 @@ const AppFilter = ({
   );
 };
 
-// Variantes do AppFilter
 AppFilter.Item = ({ children, xs = 12, sm = 6, md = 4, lg, ...props }) => (
   <Grid item xs={xs} sm={sm} md={md} lg={lg} {...props} sx={{ overflow: 'visible', width: '100%', ...props.sx }}>
     {children}

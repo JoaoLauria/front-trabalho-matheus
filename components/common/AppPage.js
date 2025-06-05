@@ -3,21 +3,6 @@ import { Box, Typography, Paper, CircularProgress, IconButton, Fade } from '@mui
 import { ArrowBack } from '@mui/icons-material';
 import { colors } from '../../styles/theme';
 
-/**
- * Componente de página padrão para ser usado como base em todas as telas
- * 
- * @param {Object} props - Propriedades do componente
- * @param {string} props.title - Título da página
- * @param {React.ReactNode} props.children - Conteúdo da página
- * @param {boolean} props.loading - Se a página está em estado de carregamento
- * @param {boolean} props.showBackButton - Se deve exibir o botão de voltar
- * @param {function} props.onBackClick - Função a ser chamada quando o botão de voltar for clicado
- * @param {React.ReactNode} props.headerActions - Ações a serem exibidas no cabeçalho
- * @param {React.ReactNode} props.footer - Rodapé da página
- * @param {boolean} props.paper - Se deve envolver o conteúdo em um Paper
- * @param {Object} props.sx - Estilos adicionais para a página
- * @returns {JSX.Element} Componente de página
- */
 const AppPage = ({
   title,
   children,
@@ -47,12 +32,12 @@ const AppPage = ({
           minHeight: '100vh',
           maxHeight: '100vh',
           overflow: 'auto',
-          p: { xs: 1.5, sm: 2 }, // Padding responsivo
+          p: { xs: 1.5, sm: 2 }, 
           ...sx
         }}
         {...props}
       >
-        {/* Cabeçalho */}
+        {}
         {(title || showBackButton || headerActions) && (
           <Box 
             sx={{ 
@@ -115,7 +100,7 @@ const AppPage = ({
           </Box>
         )}
         
-        {/* Conteúdo */}
+        {}
         {loading ? (
           <Box 
             sx={{ 
@@ -165,7 +150,7 @@ const AppPage = ({
           )
         )}
         
-        {/* Rodapé */}
+        {}
         {footer && (
           <Box sx={{ mt: 2.5, mb: 1 }}>
             {footer}

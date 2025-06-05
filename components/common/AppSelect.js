@@ -10,26 +10,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-/**
- * Componente de seleção reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {string} props.label - Rótulo do campo
- * @param {string} props.name - Nome do campo
- * @param {any} props.value - Valor selecionado
- * @param {function} props.onChange - Função a ser chamada quando o valor mudar
- * @param {Array} props.options - Opções de seleção
- * @param {string} props.valueKey - Chave do valor nas opções (padrão: 'id')
- * @param {string} props.labelKey - Chave do rótulo nas opções (padrão: 'name')
- * @param {boolean} props.fullWidth - Se o campo deve ocupar toda a largura disponível
- * @param {boolean} props.required - Se o campo é obrigatório
- * @param {boolean} props.disabled - Se o campo está desabilitado
- * @param {string} props.error - Mensagem de erro
- * @param {string} props.helperText - Texto de ajuda
- * @param {boolean} props.multiple - Se permite seleção múltipla
- * @param {Object} props.sx - Estilos adicionais
- * @returns {JSX.Element} Componente de seleção
- */
 const AppSelect = ({
   label,
   name,
@@ -47,7 +27,7 @@ const AppSelect = ({
   sx = {},
   ...props
 }) => {
-  // Função para renderizar os itens selecionados no modo múltiplo
+  
   const renderValue = (selected) => {
     if (!selected || (Array.isArray(selected) && selected.length === 0)) {
       return <em>Selecione</em>;
@@ -57,7 +37,7 @@ const AppSelect = ({
       return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {selected.map((value) => {
-            // Para lidar com valores numéricos e string
+            
             const optionValue = typeof value === 'string' ? value : value.toString();
             const option = options.find(opt => {
               const optKey = typeof opt[valueKey] === 'string' ? opt[valueKey] : opt[valueKey].toString();
@@ -75,7 +55,7 @@ const AppSelect = ({
       );
     }
     
-    // Para lidar com valores numéricos e string
+    
     const selectedValue = typeof selected === 'string' ? selected : selected.toString();
     const option = options.find(opt => {
       const optKey = typeof opt[valueKey] === 'string' ? opt[valueKey] : opt[valueKey].toString();
@@ -85,7 +65,7 @@ const AppSelect = ({
     return option ? option[labelKey] : selected;
   };
   
-  // Extraímos renderValue dos props para não passá-lo para o FormControl
+  
   const { renderValue: customRenderValue, ...otherProps } = props;
   
   return (
@@ -131,7 +111,6 @@ const AppSelect = ({
   );
 };
 
-// Variantes predefinidas
 export const SimpleSelect = styled(AppSelect)({});
 
 export const MultiSelect = styled((props) => (

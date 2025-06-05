@@ -4,22 +4,6 @@ import { styled } from '@mui/material/styles';
 import { Add as AddIcon } from '@mui/icons-material';
 import { colors } from '../../styles/theme';
 
-/**
- * Componente de botão reutilizável com variantes predefinidas
- * 
- * @param {Object} props - Propriedades do componente
- * @param {string} props.variant - Variante do botão (contained, outlined, text)
- * @param {string} props.color - Cor do botão (primary, secondary, success, error, warning, info)
- * @param {string} props.size - Tamanho do botão (small, medium, large)
- * @param {boolean} props.fullWidth - Se o botão deve ocupar toda a largura disponível
- * @param {function} props.onClick - Função a ser chamada quando o botão for clicado
- * @param {boolean} props.disabled - Se o botão está desabilitado
- * @param {string} props.type - Tipo do botão (button, submit, reset)
- * @param {React.ReactNode} props.startIcon - Ícone a ser exibido no início do botão
- * @param {React.ReactNode} props.endIcon - Ícone a ser exibido no final do botão
- * @param {React.ReactNode} props.children - Conteúdo do botão
- * @returns {JSX.Element} Componente de botão
- */
 const AppButton = ({
   variant = 'contained',
   color = 'primary',
@@ -35,7 +19,7 @@ const AppButton = ({
   sx = {},
   ...props
 }) => {
-  // Estilos modernos para botões
+  
   const buttonStyles = {
     borderRadius: '12px',
     textTransform: 'none',
@@ -79,19 +63,6 @@ const AppButton = ({
   );
 };
 
-/**
- * Componente de botão de ícone reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {React.ReactNode} props.icon - Ícone a ser exibido
- * @param {string} props.color - Cor do botão (primary, secondary, success, error, warning, info)
- * @param {string} props.size - Tamanho do botão (small, medium, large)
- * @param {function} props.onClick - Função a ser chamada quando o botão for clicado
- * @param {boolean} props.disabled - Se o botão está desabilitado
- * @param {string} props.tooltip - Texto da dica ao passar o mouse
- * @param {string} props.tooltipPlacement - Posição da dica (top, bottom, left, right)
- * @returns {JSX.Element} Componente de botão de ícone
- */
 export const IconButton = ({
   icon,
   color = 'default',
@@ -103,7 +74,7 @@ export const IconButton = ({
   sx = {},
   ...props
 }) => {
-  // Estilos modernos para botões de ícone
+  
   const iconButtonStyles = {
     borderRadius: '10px',
     padding: size === 'large' ? '12px' : size === 'small' ? '6px' : '8px',
@@ -152,7 +123,6 @@ export const IconButton = ({
   return button;
 };
 
-// Variantes predefinidas
 export const PrimaryButton = styled(AppButton)({});
 
 export const SecondaryButton = styled((props) => (
@@ -175,7 +145,6 @@ export const InfoButton = styled((props) => (
   <AppButton color="info" {...props} />
 ))({});
 
-// Botões de ação comuns
 export const SaveButton = styled((props) => (
   <AppButton 
     color="primary" 

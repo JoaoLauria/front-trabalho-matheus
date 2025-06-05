@@ -9,15 +9,9 @@ import withProdutoData from '../components/hoc/withProdutoData';
 import withProdutoCrud from '../components/hoc/withProdutoCrud';
 import commonStyles from '../styles/commonStyles';
 
-/**
- * Componente para gerenciamento de produtos
- * Utiliza HOCs para separação de responsabilidades:
- * - withProdutoData: gerencia dados, filtros e listagem
- * - withProdutoCrud: gerencia operações de criação, edição e exclusão
- */
 function GerenciarProdutos(props) {
   const { 
-    // Props do withProdutoData
+    
     produtos,
     produtosFiltrados,
     produtosAgrupados,
@@ -32,7 +26,7 @@ function GerenciarProdutos(props) {
     limparFiltros,
     handleToggleExpand,
     
-    // Props do withProdutoCrud
+    
     formData,
     formErrors,
     editingId,
@@ -46,13 +40,13 @@ function GerenciarProdutos(props) {
     handleExcluirProduto,
     handleCloseDialogs,
     
-    // Props do componente pai
+    
     navigation
   } = props;
   
   const { showError } = useError();
   
-  // Componente simplificado que usa as funções dos HOCs
+  
   
   return (
     <AppPage
@@ -74,7 +68,7 @@ function GerenciarProdutos(props) {
         </AppAlert>
       )}
       
-      {/* Filtros */}
+      {}
       <ProdutoFiltros 
         filtros={filtros} 
         categorias={categorias} 
@@ -82,7 +76,7 @@ function GerenciarProdutos(props) {
         limparFiltros={limparFiltros} 
       />
       
-      {/* Lista de Produtos */}
+      {}
       <ProdutoListaCondicional 
         loading={loading}
         filtros={filtros}
@@ -95,7 +89,7 @@ function GerenciarProdutos(props) {
         handleNovoProduto={handleNovoProduto}
       />
       
-      {/* Diálogos de produto (formulário) */}
+      {}
       <ProdutoDialogs 
         dialogOpen={dialogOpen.form}
         formData={formData}
@@ -108,7 +102,7 @@ function GerenciarProdutos(props) {
         editingId={editingId}
       />
       
-      {/* Modal de Confirmação de Exclusão */}
+      {}
       <AppModal.Delete
         open={dialogOpen.delete}
         onClose={handleCloseDialogs}
@@ -124,6 +118,4 @@ function GerenciarProdutos(props) {
   );
 }
 
-// Aplicar os HOCs ao componente GerenciarProdutos
-// withProdutoData deve ser o mais externo para que withProdutoCrud tenha acesso às suas props
 export default withProdutoData(withProdutoCrud(GerenciarProdutos));

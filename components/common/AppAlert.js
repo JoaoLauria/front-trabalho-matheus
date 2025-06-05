@@ -1,9 +1,6 @@
 import React from 'react';
 import { Alert, AlertTitle } from '@mui/material';
 
-/**
- * Componente de alerta padronizado para exibir mensagens informativas, de sucesso, erro ou aviso.
- */
 const AppAlert = ({ children, severity = 'info', title, sx, ...props }) => {
   return (
     <Alert 
@@ -20,7 +17,6 @@ const AppAlert = ({ children, severity = 'info', title, sx, ...props }) => {
   );
 };
 
-// Variantes do AppAlert
 AppAlert.Error = (props) => <AppAlert severity="error" {...props} />;
 AppAlert.Warning = (props) => <AppAlert severity="warning" {...props} />;
 AppAlert.Info = (props) => <AppAlert severity="info" {...props} />;

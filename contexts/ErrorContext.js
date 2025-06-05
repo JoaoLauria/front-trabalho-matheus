@@ -36,7 +36,6 @@ export function ErrorProvider({ children }) {
     });
   };
 
-
   const isConnectionError = (error) => {
     if (!error || !error.message) return false;
     
@@ -48,7 +47,6 @@ export function ErrorProvider({ children }) {
       'Network request failed'
     ].some(term => error.message.includes(term));
   };
-
 
   const handleApiError = (error) => {
     if (error) {

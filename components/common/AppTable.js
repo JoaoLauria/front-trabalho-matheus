@@ -14,23 +14,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-/**
- * Componente de tabela reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {Array} props.columns - Colunas da tabela
- * @param {Array} props.data - Dados da tabela
- * @param {boolean} props.loading - Se a tabela está em estado de carregamento
- * @param {string} props.emptyMessage - Mensagem a ser exibida quando a tabela estiver vazia
- * @param {boolean} props.pagination - Se deve exibir paginação
- * @param {number} props.page - Página atual
- * @param {number} props.rowsPerPage - Número de linhas por página
- * @param {function} props.onPageChange - Função a ser chamada quando a página mudar
- * @param {function} props.onRowsPerPageChange - Função a ser chamada quando o número de linhas por página mudar
- * @param {number} props.totalCount - Total de registros
- * @param {Object} props.sx - Estilos adicionais
- * @returns {JSX.Element} Componente de tabela
- */
 const AppTable = ({
   columns = [],
   data = [],
@@ -45,7 +28,7 @@ const AppTable = ({
   sx = {},
   ...props
 }) => {
-  // Função para renderizar o conteúdo da célula
+  
   const renderCell = (column, row) => {
     if (column.render) {
       return column.render(row[column.field], row);
@@ -54,7 +37,7 @@ const AppTable = ({
     return row[column.field];
   };
   
-  // Função para renderizar o corpo da tabela
+  
   const renderTableBody = () => {
     if (loading) {
       return (
@@ -144,7 +127,6 @@ const AppTable = ({
   );
 };
 
-// Variantes predefinidas
 export const SimpleTable = styled(AppTable)({});
 
 export const DenseTable = styled((props) => (

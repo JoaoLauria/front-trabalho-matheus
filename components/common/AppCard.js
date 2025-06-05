@@ -2,19 +2,6 @@ import React from 'react';
 import { Card, CardHeader, CardContent, CardActions, Typography, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-/**
- * Componente de card reutilizável
- * 
- * @param {Object} props - Propriedades do componente
- * @param {string} props.title - Título do card
- * @param {string} props.subheader - Subtítulo do card
- * @param {React.ReactNode} props.avatar - Avatar a ser exibido no card
- * @param {React.ReactNode} props.action - Ação a ser exibida no card (geralmente um ícone)
- * @param {React.ReactNode} props.children - Conteúdo do card
- * @param {React.ReactNode} props.footer - Rodapé do card
- * @param {Object} props.sx - Estilos adicionais para o card
- * @returns {JSX.Element} Componente de card
- */
 const AppCard = ({
   title,
   subheader,
@@ -47,7 +34,6 @@ const AppCard = ({
   );
 };
 
-// Variantes predefinidas
 export const PrimaryCard = styled(AppCard)(({ theme }) => ({
   '& .MuiCardHeader-root': {
     backgroundColor: theme.palette.primary.main,

@@ -16,10 +16,10 @@ const ProdutosList = ({
   itensSelecionados, 
   handleSelecionarItem 
 }) => {
-  // Estado para controlar quais categorias estão expandidas
+  
   const [expandedCategories, setExpandedCategories] = useState({});
   
-  // Inicializar todas as categorias como expandidas na primeira renderização
+  
   React.useEffect(() => {
     if (Object.keys(expandedCategories).length === 0 && produtosPorCategoria) {
       const initialExpanded = {};
@@ -30,7 +30,7 @@ const ProdutosList = ({
     }
   }, [produtosPorCategoria, expandedCategories]);
   
-  // Função para alternar a expansão de uma categoria
+  
   const toggleCategoryExpansion = (categoryId) => {
     setExpandedCategories(prev => ({
       ...prev,
@@ -66,7 +66,7 @@ const ProdutosList = ({
     <List sx={{ maxHeight: 'calc(100vh - 320px)', overflow: 'auto' }}>
 
       {Object.entries(produtosPorCategoria || {}).map(([categoriaNome, produtos]) => {
-        // Usamos o nome da categoria diretamente como chave
+        
         const categoryKey = categoriaNome;
         
         return (

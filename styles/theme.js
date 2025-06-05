@@ -1,15 +1,14 @@
 import { createTheme } from '@mui/material/styles';
 
-// Definição de cores principais do sistema - Esquema mais moderno
 const colors = {
   primary: {
-    main: '#FF5722', // Laranja vibrante
+    main: '#FF5722', 
     light: '#FF8A65',
     dark: '#E64A19',
     contrastText: '#ffffff',
   },
   secondary: {
-    main: '#2196F3', // Azul moderno
+    main: '#2196F3', 
     light: '#64B5F6',
     dark: '#1976D2',
     contrastText: '#ffffff',
@@ -51,7 +50,7 @@ const colors = {
     900: '#212121',
   },
   background: {
-    default: '#f8f9fa', // Cinza mais claro e moderno
+    default: '#f8f9fa', 
     paper: '#ffffff',
     card: '#ffffff',
   },
@@ -63,7 +62,6 @@ const colors = {
   divider: 'rgba(0, 0, 0, 0.12)',
 };
 
-// Definição de espaçamentos
 const spacing = {
   xs: 4,
   sm: 8,
@@ -73,7 +71,6 @@ const spacing = {
   xxl: 48,
 };
 
-// Definição de bordas e sombras - Mais arredondadas para estilo mobile
 const shape = {
   borderRadius: 12,
   cardBorderRadius: 16,
@@ -81,7 +78,6 @@ const shape = {
   inputBorderRadius: 8,
 };
 
-// Definição de sombras
 const shadows = [
   'none',
   '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
@@ -91,7 +87,6 @@ const shadows = [
   '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
 ];
 
-// Criação do tema
 const theme = createTheme({
   palette: {
     primary: colors.primary,
@@ -190,13 +185,13 @@ const theme = createTheme({
           borderRadius: shape.buttonBorderRadius,
           textTransform: 'none',
           boxShadow: 'none',
-          padding: '12px 24px', // Botões maiores para toque em mobile
+          padding: '12px 24px', 
           fontSize: '1rem',
           fontWeight: 500,
           transition: 'all 0.2s ease-in-out',
           '&:hover': {
             boxShadow: shadows[2],
-            transform: 'translateY(-2px)', // Efeito sutil de elevação
+            transform: 'translateY(-2px)', 
           },
         },
         contained: {
@@ -213,12 +208,12 @@ const theme = createTheme({
           },
         },
         outlined: {
-          borderWidth: '2px', // Bordas mais visíveis
+          borderWidth: '2px', 
           '&:hover': {
             borderWidth: '2px',
           },
         },
-        // Botão de tamanho pequeno para ações secundárias
+        
         sizeSmall: {
           padding: '8px 16px',
           fontSize: '0.875rem',
@@ -248,7 +243,7 @@ const theme = createTheme({
             fontSize: '1rem',
             transition: 'box-shadow 0.2s ease-in-out',
             '&.Mui-focused': {
-              boxShadow: '0 0 0 3px rgba(255, 87, 34, 0.2)', // Sombra sutil na cor primária quando focado
+              boxShadow: '0 0 0 3px rgba(255, 87, 34, 0.2)', 
             },
             '& fieldset': {
               borderWidth: '1px',
@@ -270,7 +265,7 @@ const theme = createTheme({
           borderRadius: shape.cardBorderRadius,
           boxShadow: shadows[5],
           overflow: 'hidden',
-          maxWidth: '95%', // Evita que o diálogo fique muito próximo das bordas em mobile
+          maxWidth: '95%', 
           margin: '16px',
         },
       },
@@ -301,7 +296,7 @@ const theme = createTheme({
           padding: '16px 24px',
           borderTop: `1px solid ${colors.grey[200]}`,
           '& .MuiButton-root': {
-            minWidth: '120px', // Botões mais largos para melhor toque em mobile
+            minWidth: '120px', 
           },
         },
       },
@@ -310,14 +305,14 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: shape.borderRadius,
-          padding: '12px 16px', // Mais espaço para toque em mobile
+          padding: '12px 16px', 
           marginBottom: '4px',
           transition: 'background-color 0.2s ease-in-out',
           '&:hover': {
             backgroundColor: colors.grey[100],
           },
           '&.Mui-selected': {
-            backgroundColor: `${colors.primary.light}20`, // Versão transparente da cor primária
+            backgroundColor: `${colors.primary.light}20`, 
             '&:hover': {
               backgroundColor: `${colors.primary.light}30`,
             },
@@ -328,8 +323,8 @@ const theme = createTheme({
     MuiListItemIcon: {
       styleOverrides: {
         root: {
-          minWidth: '42px', // Ícones mais próximos do texto
-          color: colors.primary.main, // Ícones na cor primária
+          minWidth: '42px', 
+          color: colors.primary.main, 
         },
       },
     },
@@ -374,7 +369,7 @@ const theme = createTheme({
             boxShadow: shadows[4],
             padding: '12px 16px',
           },
-          // Posicionamento melhor para mobile
+          
           '@media (min-width: 600px)': {
             top: '24px',
             bottom: 'auto',
@@ -401,7 +396,7 @@ const theme = createTheme({
         action: {
           paddingLeft: '16px',
         },
-        // Cores mais vibrantes para os alertas
+        
         standardSuccess: {
           backgroundColor: '#E8F5E9',
           color: '#2E7D32',
@@ -423,6 +418,5 @@ const theme = createTheme({
   },
 });
 
-// Exporta o tema e as constantes para uso em outros componentes
 export { colors, spacing, shape, shadows };
 export default theme;

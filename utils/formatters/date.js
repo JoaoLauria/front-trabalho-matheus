@@ -1,9 +1,4 @@
-/**
- * Formata uma data para o formato brasileiro (DD/MM/YYYY)
- * 
- * @param {Date|string} date - Data a ser formatada
- * @returns {string} Data formatada
- */
+
 export const formatDate = (date) => {
   if (!date) return '';
   
@@ -20,12 +15,6 @@ export const formatDate = (date) => {
   return `${day}/${month}/${year}`;
 };
 
-/**
- * Formata uma hora para o formato HH:MM
- * 
- * @param {Date|string} date - Data/hora a ser formatada
- * @returns {string} Hora formatada
- */
 export const formatTime = (date) => {
   if (!date) return '';
   
@@ -41,12 +30,6 @@ export const formatTime = (date) => {
   return `${hours}:${minutes}`;
 };
 
-/**
- * Formata uma data e hora para o formato brasileiro (DD/MM/YYYY HH:MM)
- * 
- * @param {Date|string} date - Data/hora a ser formatada
- * @returns {string} Data e hora formatadas
- */
 export const formatDateTime = (date) => {
   if (!date) return '';
   
@@ -60,12 +43,6 @@ export const formatDateTime = (date) => {
   return `${dateString} ${timeString}`;
 };
 
-/**
- * Formata uma data para o formato ISO (YYYY-MM-DD)
- * 
- * @param {Date|string} date - Data a ser formatada
- * @returns {string} Data formatada no padrão ISO
- */
 export const formatISODate = (date) => {
   if (!date) return '';
   
@@ -82,12 +59,6 @@ export const formatISODate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-/**
- * Converte uma string de data no formato brasileiro (DD/MM/YYYY) para um objeto Date
- * 
- * @param {string} dateString - String de data no formato DD/MM/YYYY
- * @returns {Date} Objeto Date
- */
 export const parseDate = (dateString) => {
   if (!dateString) return null;
   
@@ -106,12 +77,6 @@ export const parseDate = (dateString) => {
   return isNaN(date.getTime()) ? null : date;
 };
 
-/**
- * Retorna a data atual formatada
- * 
- * @param {string} format - Formato de saída ('date', 'time', 'datetime', 'iso')
- * @returns {string} Data atual formatada
- */
 export const getCurrentDate = (format = 'date') => {
   const now = new Date();
   
@@ -128,13 +93,6 @@ export const getCurrentDate = (format = 'date') => {
   }
 };
 
-/**
- * Calcula a diferença entre duas datas em dias
- * 
- * @param {Date|string} date1 - Primeira data
- * @param {Date|string} date2 - Segunda data
- * @returns {number} Diferença em dias
- */
 export const daysBetween = (date1, date2) => {
   if (!date1 || !date2) return 0;
   
@@ -145,11 +103,11 @@ export const daysBetween = (date1, date2) => {
     return 0;
   }
   
-  // Converte para UTC para evitar problemas com horário de verão
+  
   const utc1 = Date.UTC(date1Obj.getFullYear(), date1Obj.getMonth(), date1Obj.getDate());
   const utc2 = Date.UTC(date2Obj.getFullYear(), date2Obj.getMonth(), date2Obj.getDate());
   
-  // Calcula a diferença em milissegundos e converte para dias
+  
   const diffMs = Math.abs(utc2 - utc1);
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   

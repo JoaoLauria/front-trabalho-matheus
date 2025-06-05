@@ -6,15 +6,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { AppBox, AppTypography } from './';
 import { formatCurrency } from '../../utils';
 
-/**
- * Componente para exibir itens no carrinho com controles de quantidade
- * 
- * @param {Object} item - Item do carrinho com nome, preço, quantidade e adicionais
- * @param {function} onRemove - Função chamada quando o item é removido
- * @param {function} onQuantityChange - Função chamada quando a quantidade é alterada
- * @param {boolean} showControls - Se deve mostrar controles de quantidade e remoção
- * @param {object} sx - Estilos adicionais para o componente
- */
 const AppCartItem = ({
   item,
   onRemove,
@@ -32,14 +23,14 @@ const AppCartItem = ({
 
   const hasAdditionals = item.additionals && item.additionals.length > 0;
   
-  // Calcular o subtotal do item (preço unitário * quantidade)  
+  
   const subtotal = item.price * item.quantity;
 
   return (
     <Paper elevation={1} sx={{ mb: 2, p: { xs: 1.5, sm: 2 }, borderRadius: 2, width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden', ...sx }} {...props}>
-      {/* Layout principal: Nome | Preço | - quantidade + | Subtotal | ícone de excluir */}
+      {}
       <AppBox.FlexBox sx={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-        {/* Nome do item */}
+        {}
         <Box sx={{ width: '33%', flexShrink: 1, mr: 1 }}>
           <Tooltip title={item.name} placement="top-start">
             <AppTypography.Subtitle 
@@ -58,7 +49,7 @@ const AppCartItem = ({
           </Tooltip>
         </Box>
         
-        {/* Valor unitário */}
+        {}
         <Box sx={{ width: '16%', textAlign: 'center', flexShrink: 0 }}>
           <Typography variant="caption" sx={{ fontWeight: 'medium', display: 'block' }}>
             Preço
@@ -68,7 +59,7 @@ const AppCartItem = ({
           </AppTypography.Price>
         </Box>
         
-        {/* Controles de quantidade */}
+        {}
         <Box sx={{ width: '25%', textAlign: 'center', flexShrink: 0 }}>
           {showControls ? (
             <AppBox.FlexBox sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -104,7 +95,7 @@ const AppCartItem = ({
           )}
         </Box>
         
-        {/* Subtotal */}
+        {}
         <Box sx={{ width: '16%', textAlign: 'center', flexShrink: 0 }}>
           <Typography variant="caption" sx={{ fontWeight: 'medium', display: 'block' }}>
             Subtotal
@@ -114,7 +105,7 @@ const AppCartItem = ({
           </AppTypography.Price>
         </Box>
         
-        {/* Botão de remover */}
+        {}
         <Box sx={{ width: '10%', textAlign: 'center', flexShrink: 0 }}>
           {showControls && (
             <IconButton 
@@ -130,7 +121,7 @@ const AppCartItem = ({
         </Box>
       </AppBox.FlexBox>
       
-      {/* Adicionais */}
+      {}
       {hasAdditionals && (
         <Paper sx={{ mt: 1, p: 1.5, bgcolor: 'primary.light', borderRadius: 1.5 }}>
           <Typography variant="caption" fontWeight="bold" sx={{ color: 'primary.contrastText', display: 'block', mb: 0.5 }}>
@@ -154,7 +145,7 @@ const AppCartItem = ({
         </Paper>
       )}
       
-      {/* Observação */}
+      {}
       {item.observation && (
         <Paper sx={{ mt: 1, p: 1.5, bgcolor: 'grey.100', borderRadius: 1.5 }}>
           <Typography variant="caption" fontWeight="bold" sx={{ display: 'block', mb: 0.5 }}>
@@ -171,7 +162,6 @@ const AppCartItem = ({
   );
 };
 
-// Variantes do AppCartItem
 AppCartItem.ReadOnly = (props) => (
   <AppCartItem showControls={false} {...props} />
 );

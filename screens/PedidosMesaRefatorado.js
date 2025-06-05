@@ -41,7 +41,7 @@ export default function PedidosMesa({ navigation, route }) {
       const { data, error } = await ApiService.orders.getOrdersByTable(mesa);
       
       
-      // Análise detalhada da estrutura dos dados
+      
       if (Array.isArray(data) && data.length > 0) {
         const primeiroPedido = data[0];
         
@@ -70,7 +70,7 @@ export default function PedidosMesa({ navigation, route }) {
       }
     } catch (error) {
       setErro('Não foi possível carregar os pedidos. Tente novamente.');
-      console.error(error);
+      
     } finally {
       setCarregando(false);
     }

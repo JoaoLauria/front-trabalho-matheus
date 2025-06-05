@@ -27,7 +27,6 @@ export default function PedidoItem({ pedido, onStatusChange }) {
     return 'Produto';
   };
 
-
   const getProductPrice = (item) => {
 
     if (item.subtotal && !isNaN(parseFloat(item.subtotal))) {
@@ -51,7 +50,6 @@ export default function PedidoItem({ pedido, onStatusChange }) {
     }
     return 0;
   };
-
 
   const getAdditionals = (item) => {
 
