@@ -1,0 +1,321 @@
+import React, { useState, useContext } from 'react';
+
+import { Box, Paper, Typography, TextField, Button, Alert, CircularProgress } from '@mui/material';
+
+import ApiService from '../services/ApiService';
+
+export default function CadastroUsuario({ navigation }) {
+
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    full_name: '',
+    cep: '',
+    address: '',
+    address_number: '',
+    address_complement: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    country: 'Brasil',
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const [erro, setErro] = useState('');
+
+  const [sucesso, setSucesso] = useState('');
+
+  const [buscandoCep, setBuscandoCep] = useState(false);
+
+  async function buscarCep(cep) {
+    setBuscandoCep(true);
+    setErro('');
+    try {
+      const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const dados = await resposta.json();
+
+      if (dados.erro) {
+        setErro('CEP não encontrado.');
+        setForm(f => ({ ...f, address: '', neighborhood: '', city: '', state: '' }));
+      } else {
+        setForm(f => ({
+          ...f,
+          address: dados.logradouro || '',
+          neighborhood: dados.bairro || '',
+          city: dados.localidade || '',
+          state: dados.uf || '',
+        }));
+      }
+    } catch (e) {
+      setErro('Erro ao buscar CEP.');
+    }
+    setBuscandoCep(false);
+  }
+
+  function handleChange(e) {
+
+    const { name, value } = e.target;
+
+    setForm(f => ({ ...f, [name]: value }));
+
+    if (name === 'cep' && value.length === 8) {
+
+      buscarCep(value);
+
+    }
+
+  }
+
+  async function handleSubmit(e) {
+
+    e.preventDefault();
+
+    setErro('');
+
+    setSucesso('');
+
+    setLoading(true);
+
+    try {
+
+      const { data, error } = await ApiService.users.createUser(form);
+
+      if (error) {
+
+        throw new Error(error);
+
+      }
+
+      setSucesso('Usuário cadastrado com sucesso!');
+
+      setForm({
+
+        email: '', password: '', full_name: '', cep: '', address: '', address_number: '', address_complement: '', neighborhood: '', city: '', state: '', country: 'Brasil',
+
+      });
+
+    } catch (err) {
+
+      setErro(err.message || 'Erro ao cadastrar usuário.');
+
+    }
+
+    setLoading(false);
+
+  }
+
+  return (
+
+    <Box
+      sx={{
+        height: '100vh',
+        bgcolor: 'background.default',
+        display: 'flex',
+        flexDirection: 'column', // adiciona direção de coluna
+        justifyContent: 'flex-start', // conteúdo começa no topo
+        p: { xs: 2, sm: 4 },
+        overflowY: 'auto',
+      }}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: 480,
+          mx: 'auto',
+          px: { xs: 2, sm: 0 },   // padding horizontal em xs para não "grudar" nas bordas
+        }}
+      >
+        <Paper
+          elevation={6}
+          sx={{
+            p: { xs: 3, sm: 6 },
+            borderRadius: 4,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            boxSizing: 'border-box', // garante padding dentro do tamanho
+          }}
+        >
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            color="primary.main"
+            gutterBottom
+            align="center"
+            sx={{
+              wordBreak: 'break-word', // evita overflow no texto
+            }}
+          >
+            Cadastro de Usuário
+          </Typography>
+
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ width: '100%', mt: 1 }}
+            noValidate
+          >
+            <TextField
+              label="E-mail"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              autoComplete="email"
+              variant="outlined"
+            />
+            <TextField
+              label="Senha"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              autoComplete="new-password"
+              variant="outlined"
+            />
+            <TextField
+              label="Nome Completo"
+              name="full_name"
+              value={form.full_name}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+            />
+            <TextField
+              label="CEP"
+              name="cep"
+              value={form.cep}
+              onChange={(e) => {
+                const numericValue = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+                handleChange({ target: { name: 'cep', value: numericValue } });
+              }}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+              inputProps={{ maxLength: 8, inputMode: 'numeric' }}
+              helperText="Apenas números"
+            />
+            <TextField
+              label="Endereço"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+              disabled={buscandoCep}
+            />
+            <TextField
+              label="Número"
+              name="address_number"
+              value={form.address_number}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+            />
+            <TextField
+              label="Complemento"
+              name="address_complement"
+              value={form.address_complement}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              variant="outlined"
+            />
+            <TextField
+              label="Bairro"
+              name="neighborhood"
+              value={form.neighborhood}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+              disabled={buscandoCep}
+            />
+            <TextField
+              label="Cidade"
+              name="city"
+              value={form.city}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+              disabled={buscandoCep}
+            />
+            <TextField
+              label="Estado"
+              name="state"
+              value={form.state}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+              disabled={buscandoCep}
+            />
+            <TextField
+              label="País"
+              name="country"
+              value={form.country}
+              onChange={handleChange}
+              margin="normal"
+              fullWidth
+              required
+              variant="outlined"
+            />
+
+            {erro && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {erro}
+              </Alert>
+            )}
+
+            {sucesso && (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                {sucesso}
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2, fontWeight: 700, borderRadius: 2, py: 1.2 }}
+              disabled={loading || buscandoCep}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar'}
+            </Button>
+
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              sx={{ mb: 1, borderRadius: 2 }}
+              onClick={() => navigation.navigate('Login')}
+              disabled={loading}
+            >
+              Voltar para Login
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
+  );
+}
